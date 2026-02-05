@@ -224,22 +224,51 @@ class KnowledgeProcessor:
         tags: Optional[list[str]] = None,
     ) -> list[Document]:
         """
-        Process an image file.
+        Process an image file using Vision LLM to generate description.
 
-        For MVP, we store metadata and a placeholder.
-        Full implementation would use Vision LLM for description.
+        Args:
+            path: Path to the image file
+            tags: Optional tags for categorization
+
+        Returns:
+            List containing a single Document with image description
         """
-        # For MVP: store basic metadata
-        # TODO: Integrate Vision LLM for image description
-        doc = Document(
-            content=f"[Image: {path.name}]",
-            modality=ModalityType.IMAGE,
-            source_path=str(path),
-            title=path.stem,
-            tags=tags or [],
-            metadata={"original_file": str(path)},
-        )
-        return [doc]
+        from memomind.llm.client import LLMClient
+
+        try:
+            # Use Vision LLM to describe the image
+            llm_client = LLMClient()
+            description = llm_client.describe_image(str(path))
+
+            # Create document with the generated description
+            doc = Document(
+                content=description,
+                modality=ModalityType.IMAGE,
+                source_path=str(path),
+                title=path.stem,
+                tags=tags or [],
+                metadata={
+                    "original_file": str(path),
+                    "processing_method": "vision_llm",
+                },
+            )
+            return [doc]
+
+        except Exception as e:
+            # Fallback to basic metadata if Vision LLM fails
+            doc = Document(
+                content=f"[Image: {path.name}] (无法生成描述: {str(e)})",
+                modality=ModalityType.IMAGE,
+                source_path=str(path),
+                title=path.stem,
+                tags=tags or [],
+                metadata={
+                    "original_file": str(path),
+                    "processing_method": "fallback",
+                    "error": str(e),
+                },
+            )
+            return [doc]
 
     def _process_audio_file(
         self,
@@ -247,22 +276,103 @@ class KnowledgeProcessor:
         tags: Optional[list[str]] = None,
     ) -> list[Document]:
         """
-        Process an audio file.
+        Process an audio file using Whisper for transcription.
 
-        For MVP, we store metadata.
-        Full implementation would use Whisper for transcription.
+        Args:
+            path: Path to the audio file
+            tags: Optional tags for categorization
+
+        Returns:
+            List of Documents containing transcribed text chunks
         """
-        # For MVP: store basic metadata
-        # TODO: Integrate Whisper for audio transcription
-        doc = Document(
-            content=f"[Audio: {path.name}]",
-            modality=ModalityType.AUDIO,
-            source_path=str(path),
-            title=path.stem,
-            tags=tags or [],
-            metadata={"original_file": str(path)},
-        )
-        return [doc]
+        try:
+            # Try to use Whisper for transcription
+            transcription = self._transcribe_audio_whisper(path)
+
+            if not transcription:
+                raise ValueError("Empty transcription result")
+
+            # Chunk the transcription if it's long
+            chunks = self._chunk_text(transcription)
+
+            documents = []
+            for i, chunk in enumerate(chunks):
+                doc = Document(
+                    content=chunk,
+                    modality=ModalityType.AUDIO,
+                    source_path=str(path),
+                    title=path.stem,
+                    tags=tags or [],
+                    chunk_index=i,
+                    total_chunks=len(chunks),
+                    metadata={
+                        "original_file": str(path),
+                        "processing_method": "whisper",
+                    },
+                )
+                documents.append(doc)
+
+            return documents
+
+        except ImportError:
+            # Whisper not installed, use fallback
+            doc = Document(
+                content=f"[Audio: {path.name}] (需要安装 whisper: pip install openai-whisper)",
+                modality=ModalityType.AUDIO,
+                source_path=str(path),
+                title=path.stem,
+                tags=tags or [],
+                metadata={
+                    "original_file": str(path),
+                    "processing_method": "fallback",
+                    "error": "whisper not installed",
+                },
+            )
+            return [doc]
+
+        except Exception as e:
+            # Fallback to basic metadata if transcription fails
+            doc = Document(
+                content=f"[Audio: {path.name}] (转录失败: {str(e)})",
+                modality=ModalityType.AUDIO,
+                source_path=str(path),
+                title=path.stem,
+                tags=tags or [],
+                metadata={
+                    "original_file": str(path),
+                    "processing_method": "fallback",
+                    "error": str(e),
+                },
+            )
+            return [doc]
+
+    def _transcribe_audio_whisper(self, path: Path) -> str:
+        """
+        Transcribe audio using OpenAI Whisper.
+
+        Args:
+            path: Path to the audio file
+
+        Returns:
+            Transcribed text
+        """
+        try:
+            import whisper
+
+            # Load the model (use "base" for balance of speed/accuracy)
+            # Options: tiny, base, small, medium, large
+            model = whisper.load_model("base")
+
+            # Transcribe
+            result = model.transcribe(str(path), language="zh")
+
+            return result["text"]
+
+        except ImportError:
+            raise ImportError(
+                "openai-whisper is required for audio transcription. "
+                "Install with: pip install openai-whisper"
+            )
 
     def _chunk_text(
         self,
