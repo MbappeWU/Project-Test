@@ -1,0 +1,97 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "memomind"
+version = "0.1.0"
+description = "A multimodal personal memory agent with knowledge base and long/short-term memory"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [
+    { name = "MemoMind Team" }
+]
+keywords = ["ai", "agent", "memory", "knowledge-base", "multimodal", "rag"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    # CLI
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+
+    # Configuration
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "pyyaml>=6.0",
+
+    # LLM
+    "litellm>=1.0.0",
+    "anthropic>=0.18.0",
+
+    # Embeddings & Vector Store
+    "sentence-transformers>=2.2.0",
+    "chromadb>=0.4.0",
+
+    # Document Processing
+    "pypdf>=3.0.0",
+    "python-docx>=1.0.0",
+    "pillow>=10.0.0",
+
+    # Utilities
+    "python-dotenv>=1.0.0",
+    "tenacity>=8.0.0",
+    "keyring>=24.0.0",
+]
+
+[project.optional-dependencies]
+audio = [
+    "openai-whisper>=20231117",
+    "soundfile>=0.12.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+
+[project.scripts]
+memomind = "memomind.cli.main:app"
+
+[project.urls]
+Homepage = "https://github.com/MbappeWU/Project-Test"
+Documentation = "https://github.com/MbappeWU/Project-Test/docs"
+Repository = "https://github.com/MbappeWU/Project-Test"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/memomind"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=memomind --cov-report=term-missing"
