@@ -70,6 +70,26 @@ memomind config init
 export ANTHROPIC_API_KEY=your-key-here
 ```
 
+### OAuth 登录 (推荐)
+
+MemoMind 支持通过 OAuth 授权登录 Anthropic 和 OpenAI 账号，无需手动管理 API Key：
+
+```bash
+# 使用 Anthropic 账号登录
+memomind auth login --provider anthropic
+
+# 使用 OpenAI 账号登录
+memomind auth login --provider openai
+
+# 查看认证状态
+memomind auth status
+
+# 退出登录
+memomind auth logout --provider anthropic
+```
+
+OAuth 登录会自动打开浏览器进行授权，令牌会安全存储在本地。
+
 ### 验证安装
 
 ```bash

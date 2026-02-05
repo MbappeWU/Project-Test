@@ -9,6 +9,17 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 import yaml
 
 
+class AuthSettings(BaseSettings):
+    """Authentication settings."""
+
+    # Authentication method: "api_key" or "oauth"
+    method: Literal["api_key", "oauth"] = "api_key"
+    # OAuth callback port for local server
+    oauth_callback_port: int = 8642
+    # Whether to automatically open browser for OAuth
+    oauth_auto_open_browser: bool = True
+
+
 class LLMSettings(BaseSettings):
     """LLM provider settings."""
 
@@ -17,6 +28,8 @@ class LLMSettings(BaseSettings):
     temperature: float = 0.7
     max_tokens: int = 4096
     api_key: Optional[str] = None
+    # Authentication method for this provider
+    auth_method: Literal["api_key", "oauth"] = "api_key"
 
 
 class EmbeddingSettings(BaseSettings):
@@ -61,6 +74,7 @@ class Settings(BaseSettings):
     )
 
     # Sub-settings
+    auth: AuthSettings = Field(default_factory=AuthSettings)
     llm: LLMSettings = Field(default_factory=LLMSettings)
     embeddings: EmbeddingSettings = Field(default_factory=EmbeddingSettings)
     memory: MemorySettings = Field(default_factory=MemorySettings)
@@ -118,11 +132,17 @@ class Settings(BaseSettings):
         """Save settings to config file."""
         self.ensure_directories()
         config_data = {
+            "auth": {
+                "method": self.auth.method,
+                "oauth_callback_port": self.auth.oauth_callback_port,
+                "oauth_auto_open_browser": self.auth.oauth_auto_open_browser,
+            },
             "llm": {
                 "provider": self.llm.provider,
                 "model": self.llm.model,
                 "temperature": self.llm.temperature,
                 "max_tokens": self.llm.max_tokens,
+                "auth_method": self.llm.auth_method,
             },
             "embeddings": {
                 "provider": self.embeddings.provider,
@@ -153,6 +173,8 @@ class Settings(BaseSettings):
                 config_data = yaml.safe_load(f) or {}
 
             # Update settings from config file
+            if "auth" in config_data:
+                settings.auth = AuthSettings(**config_data["auth"])
             if "llm" in config_data:
                 settings.llm = LLMSettings(**config_data["llm"])
             if "embeddings" in config_data:

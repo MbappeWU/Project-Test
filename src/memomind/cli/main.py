@@ -262,6 +262,87 @@ def memory(
 
 
 @app.command()
+def auth(
+    action: str = typer.Argument("status", help="操作: login, logout, status"),
+    provider: str = typer.Option(None, "--provider", "-p", help="提供商: anthropic, openai"),
+):
+    """Manage OAuth authentication."""
+    from memomind.auth import OAuthManager, OAuthError
+    from memomind.config import get_settings
+
+    settings = get_settings()
+    oauth = OAuthManager()
+
+    if action == "status":
+        # Show authentication status
+        from memomind.llm.client import LLMClient
+
+        client = LLMClient()
+        current_provider = settings.llm.provider
+
+        console.print(Panel.fit(
+            f"[bold]当前提供商:[/bold] {current_provider}\n"
+            f"[bold]认证方式:[/bold] {settings.llm.auth_method}\n"
+            f"[bold]认证状态:[/bold] {client.get_auth_method()}",
+            title="认证状态",
+        ))
+
+        # Show detailed status for each provider
+        console.print("\n[bold]各提供商状态:[/bold]")
+        status = oauth.get_auth_status()
+        for prov, info in status.items():
+            if info.get("logged_in"):
+                expires = info.get("expires_at", "N/A")
+                console.print(f"  {prov}: [green]已登录[/green] (过期: {expires})")
+            else:
+                console.print(f"  {prov}: [dim]未登录[/dim]")
+
+    elif action == "login":
+        # OAuth login
+        target_provider = provider or settings.llm.provider
+
+        if target_provider not in ("anthropic", "openai"):
+            console.print(f"[red]不支持的提供商: {target_provider}[/red]")
+            console.print("[yellow]支持: anthropic, openai[/yellow]")
+            raise typer.Exit(1)
+
+        console.print(f"[bold blue]正在启动 {target_provider} OAuth 登录...[/bold blue]")
+
+        def status_callback(message: str):
+            console.print(f"  [dim]{message}[/dim]")
+
+        try:
+            token = oauth.login(target_provider, callback=status_callback)
+            console.print(f"\n[green]✅ {target_provider} 登录成功![/green]")
+
+            # Update settings to use OAuth
+            settings.llm.auth_method = "oauth"
+            settings.save()
+            console.print("[dim]已更新配置使用 OAuth 认证[/dim]")
+
+        except OAuthError as e:
+            console.print(f"\n[red]❌ 登录失败: {e}[/red]")
+            raise typer.Exit(1)
+
+    elif action == "logout":
+        # OAuth logout
+        target_provider = provider or settings.llm.provider
+
+        if oauth.logout(target_provider):
+            console.print(f"[green]已退出 {target_provider}[/green]")
+
+            # Revert to API key auth
+            settings.llm.auth_method = "api_key"
+            settings.save()
+        else:
+            console.print(f"[yellow]{target_provider} 未登录[/yellow]")
+
+    else:
+        console.print(f"[red]未知操作: {action}[/red]")
+        console.print("[yellow]可用操作: login, logout, status[/yellow]")
+
+
+@app.command()
 def config(
     action: str = typer.Argument("show", help="操作: show, set, init"),
     key: str = typer.Option(None, "--key", "-k", help="配置键"),
@@ -276,6 +357,7 @@ def config(
         console.print(Panel.fit(
             f"LLM Provider: {settings.llm.provider}\n"
             f"LLM Model: {settings.llm.model}\n"
+            f"Auth Method: {settings.llm.auth_method}\n"
             f"Embedding Model: {settings.embeddings.model}\n"
             f"Data Path: {settings.storage.base_path}\n"
             f"Log Level: {settings.log_level}",
@@ -292,7 +374,23 @@ def config(
             console.print("[red]请提供 --key 和 --value[/red]")
             raise typer.Exit(1)
 
-        console.print(f"[yellow]配置设置功能开发中: {key}={value}[/yellow]")
+        # Support setting auth method
+        if key == "llm.auth_method":
+            if value in ("api_key", "oauth"):
+                settings.llm.auth_method = value
+                settings.save()
+                console.print(f"[green]已设置 {key}={value}[/green]")
+            else:
+                console.print("[red]auth_method 必须是 'api_key' 或 'oauth'[/red]")
+        elif key == "llm.provider":
+            if value in ("anthropic", "openai", "ollama"):
+                settings.llm.provider = value
+                settings.save()
+                console.print(f"[green]已设置 {key}={value}[/green]")
+            else:
+                console.print("[red]provider 必须是 'anthropic', 'openai' 或 'ollama'[/red]")
+        else:
+            console.print(f"[yellow]配置设置功能开发中: {key}={value}[/yellow]")
 
     else:
         console.print(f"[red]未知操作: {action}[/red]")

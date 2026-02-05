@@ -21,28 +21,76 @@ class LLMClient:
     - Anthropic Claude
     - OpenAI GPT
     - Ollama (local models)
+
+    Authentication methods:
+    - API Key (direct or via environment variable)
+    - OAuth (via OAuthManager)
     """
 
     def __init__(self, api_key: Optional[str] = None):
         self.settings = get_settings()
         self._api_key = api_key
         self._client = None
+        self._oauth_manager = None
+
+    @property
+    def oauth_manager(self):
+        """Lazy-load OAuth manager."""
+        if self._oauth_manager is None:
+            from memomind.auth import OAuthManager
+            self._oauth_manager = OAuthManager()
+        return self._oauth_manager
 
     @property
     def api_key(self) -> Optional[str]:
-        """Get API key from settings or environment."""
+        """Get API key from OAuth, settings, or environment."""
         if self._api_key:
             return self._api_key
         if self.settings.llm.api_key:
             return self.settings.llm.api_key
 
-        # Try environment variables
         provider = self.settings.llm.provider
+
+        # Check if OAuth is configured for this provider
+        if self.settings.llm.auth_method == "oauth":
+            try:
+                oauth_key = self.oauth_manager.get_api_key(provider)
+                if oauth_key:
+                    return oauth_key
+            except Exception:
+                pass  # Fall back to env vars
+
+        # Try environment variables
         if provider == "anthropic":
             return os.getenv("ANTHROPIC_API_KEY")
         elif provider == "openai":
             return os.getenv("OPENAI_API_KEY")
         return None
+
+    def is_authenticated(self) -> bool:
+        """Check if the client has valid authentication."""
+        return self.api_key is not None
+
+    def get_auth_method(self) -> str:
+        """Get the current authentication method being used."""
+        provider = self.settings.llm.provider
+
+        # Check OAuth first
+        if self.settings.llm.auth_method == "oauth":
+            if self.oauth_manager.is_logged_in(provider):
+                return "oauth"
+
+        # Check explicit API key
+        if self._api_key or self.settings.llm.api_key:
+            return "api_key"
+
+        # Check environment variable
+        if provider == "anthropic" and os.getenv("ANTHROPIC_API_KEY"):
+            return "api_key (env)"
+        elif provider == "openai" and os.getenv("OPENAI_API_KEY"):
+            return "api_key (env)"
+
+        return "none"
 
     def _get_client(self):
         """Get or create the LLM client."""
