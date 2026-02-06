@@ -263,11 +263,14 @@ def memory(
 
 @app.command()
 def auth(
-    action: str = typer.Argument("status", help="操作: login, logout, status"),
-    provider: str = typer.Option(None, "--provider", "-p", help="提供商: anthropic, openai"),
+    action: str = typer.Argument("status", help="操作: login, logout, status, configure"),
+    provider: str = typer.Option(None, "--provider", "-p", help="平台: anthropic, openai, douyin, kuaishou, xiaohongshu"),
+    client_id: str = typer.Option(None, "--client-id", help="应用 Client ID (社交平台需要)"),
+    client_secret: str = typer.Option(None, "--client-secret", help="应用 Client Secret (可选)"),
+    force: bool = typer.Option(False, "--force", "-f", help="强制重新登录"),
 ):
-    """Manage OAuth authentication."""
-    from memomind.auth import OAuthManager, OAuthError
+    """Manage OAuth authentication for LLM and social platforms."""
+    from memomind.auth import OAuthManager, OAuthError, get_supported_providers
     from memomind.config import get_settings
 
     settings = get_settings()
@@ -275,50 +278,94 @@ def auth(
 
     if action == "status":
         # Show authentication status
-        from memomind.llm.client import LLMClient
-
-        client = LLMClient()
-        current_provider = settings.llm.provider
-
         console.print(Panel.fit(
-            f"[bold]当前提供商:[/bold] {current_provider}\n"
-            f"[bold]认证方式:[/bold] {settings.llm.auth_method}\n"
-            f"[bold]认证状态:[/bold] {client.get_auth_method()}",
+            f"[bold]当前 LLM 提供商:[/bold] {settings.llm.provider}\n"
+            f"[bold]认证方式:[/bold] {settings.llm.auth_method}",
             title="认证状态",
         ))
 
-        # Show detailed status for each provider
-        console.print("\n[bold]各提供商状态:[/bold]")
         status = oauth.get_auth_status()
-        for prov, info in status.items():
+
+        # Show LLM providers
+        console.print("\n[bold]LLM 提供商:[/bold]")
+        for prov in oauth.get_llm_providers():
+            info = status.get(prov, {})
             if info.get("logged_in"):
                 expires = info.get("expires_at", "N/A")
-                console.print(f"  {prov}: [green]已登录[/green] (过期: {expires})")
+                if info.get("can_refresh") and not info.get("token_valid"):
+                    console.print(f"  {prov}: [yellow]令牌已过期，可自动刷新[/yellow]")
+                else:
+                    console.print(f"  {prov}: [green]已登录[/green] (过期: {expires})")
             else:
                 console.print(f"  {prov}: [dim]未登录[/dim]")
 
-    elif action == "login":
-        # OAuth login
-        target_provider = provider or settings.llm.provider
+        # Show social platforms
+        console.print("\n[bold]社交平台:[/bold]")
+        for prov in oauth.get_social_platforms():
+            info = status.get(prov, {})
+            if not info.get("configured"):
+                console.print(f"  {prov}: [dim]未配置凭证[/dim] (运行 memomind auth configure --provider {prov})")
+            elif info.get("logged_in"):
+                open_id = info.get("open_id", "")[:8] + "..." if info.get("open_id") else ""
+                if info.get("can_refresh") and not info.get("token_valid"):
+                    console.print(f"  {prov}: [yellow]令牌已过期，可自动刷新[/yellow] {open_id}")
+                else:
+                    expires = info.get("expires_at", "N/A")
+                    console.print(f"  {prov}: [green]已登录[/green] {open_id} (过期: {expires})")
+            else:
+                console.print(f"  {prov}: [dim]未登录[/dim]")
 
-        if target_provider not in ("anthropic", "openai"):
-            console.print(f"[red]不支持的提供商: {target_provider}[/red]")
-            console.print("[yellow]支持: anthropic, openai[/yellow]")
+    elif action == "configure":
+        # Configure social platform credentials
+        if not provider:
+            console.print("[red]请指定平台: --provider <platform>[/red]")
+            console.print("[yellow]支持的社交平台: douyin, kuaishou, xiaohongshu[/yellow]")
             raise typer.Exit(1)
 
-        console.print(f"[bold blue]正在启动 {target_provider} OAuth 登录...[/bold blue]")
+        if provider not in oauth.get_social_platforms():
+            console.print(f"[red]{provider} 不需要配置凭证或不支持[/red]")
+            console.print("[yellow]需要配置的平台: douyin, kuaishou, xiaohongshu[/yellow]")
+            raise typer.Exit(1)
+
+        if not client_id:
+            console.print("[red]请提供 --client-id[/red]")
+            console.print(f"[dim]示例: memomind auth configure --provider {provider} --client-id YOUR_APP_KEY[/dim]")
+            raise typer.Exit(1)
+
+        oauth.configure_platform(provider, client_id, client_secret)
+        console.print(f"[green]✅ {provider} 凭证已保存[/green]")
+        console.print(f"[dim]现在可以运行: memomind auth login --provider {provider}[/dim]")
+
+    elif action == "login":
+        # OAuth login
+        if not provider:
+            console.print("[red]请指定平台: --provider <platform>[/red]")
+            supported = get_supported_providers()
+            console.print(f"[yellow]LLM 提供商: {', '.join(supported['llm'])}[/yellow]")
+            console.print(f"[yellow]社交平台: {', '.join(supported['social'])}[/yellow]")
+            raise typer.Exit(1)
+
+        console.print(f"[bold blue]正在启动 {provider} OAuth 登录...[/bold blue]")
 
         def status_callback(message: str):
             console.print(f"  [dim]{message}[/dim]")
 
         try:
-            token = oauth.login(target_provider, callback=status_callback)
-            console.print(f"\n[green]✅ {target_provider} 登录成功![/green]")
+            token = oauth.login(provider, callback=status_callback, force=force)
+            console.print(f"\n[green]✅ {provider} 登录成功![/green]")
 
-            # Update settings to use OAuth
-            settings.llm.auth_method = "oauth"
-            settings.save()
-            console.print("[dim]已更新配置使用 OAuth 认证[/dim]")
+            if token.open_id:
+                console.print(f"[dim]用户 ID: {token.open_id}[/dim]")
+            if token.expires_at:
+                console.print(f"[dim]令牌过期: {token.expires_at.strftime('%Y-%m-%d %H:%M')}[/dim]")
+            if token.refresh_expires_at:
+                console.print(f"[dim]刷新令牌过期: {token.refresh_expires_at.strftime('%Y-%m-%d %H:%M')}[/dim]")
+
+            # Update settings for LLM providers
+            if provider in oauth.get_llm_providers():
+                settings.llm.auth_method = "oauth"
+                settings.save()
+                console.print("[dim]已更新配置使用 OAuth 认证[/dim]")
 
         except OAuthError as e:
             console.print(f"\n[red]❌ 登录失败: {e}[/red]")
@@ -326,20 +373,23 @@ def auth(
 
     elif action == "logout":
         # OAuth logout
-        target_provider = provider or settings.llm.provider
+        if not provider:
+            console.print("[red]请指定平台: --provider <platform>[/red]")
+            raise typer.Exit(1)
 
-        if oauth.logout(target_provider):
-            console.print(f"[green]已退出 {target_provider}[/green]")
+        if oauth.logout(provider):
+            console.print(f"[green]已退出 {provider}[/green]")
 
-            # Revert to API key auth
-            settings.llm.auth_method = "api_key"
-            settings.save()
+            # Revert to API key auth for LLM providers
+            if provider in oauth.get_llm_providers():
+                settings.llm.auth_method = "api_key"
+                settings.save()
         else:
-            console.print(f"[yellow]{target_provider} 未登录[/yellow]")
+            console.print(f"[yellow]{provider} 未登录[/yellow]")
 
     else:
         console.print(f"[red]未知操作: {action}[/red]")
-        console.print("[yellow]可用操作: login, logout, status[/yellow]")
+        console.print("[yellow]可用操作: login, logout, status, configure[/yellow]")
 
 
 @app.command()

@@ -72,7 +72,9 @@ export ANTHROPIC_API_KEY=your-key-here
 
 ### OAuth 登录 (推荐)
 
-MemoMind 支持通过 OAuth 授权登录 Anthropic 和 OpenAI 账号，无需手动管理 API Key：
+MemoMind 支持通过 OAuth 授权登录，一次授权后自动保持登录状态，无需每次手动输入凭证。
+
+#### LLM 提供商登录
 
 ```bash
 # 使用 Anthropic 账号登录
@@ -80,15 +82,35 @@ memomind auth login --provider anthropic
 
 # 使用 OpenAI 账号登录
 memomind auth login --provider openai
+```
 
-# 查看认证状态
+#### 社交平台登录
+
+支持抖音、快手、小红书等社交平台，用于收集多模态内容：
+
+```bash
+# 1. 首先配置平台应用凭证 (需要先在平台开放平台注册应用)
+memomind auth configure --provider douyin --client-id YOUR_CLIENT_KEY
+memomind auth configure --provider kuaishou --client-id YOUR_APP_ID
+memomind auth configure --provider xiaohongshu --client-id YOUR_APP_ID
+
+# 2. 登录平台
+memomind auth login --provider douyin
+memomind auth login --provider kuaishou
+memomind auth login --provider xiaohongshu
+
+# 查看所有平台认证状态
 memomind auth status
 
 # 退出登录
-memomind auth logout --provider anthropic
+memomind auth logout --provider douyin
 ```
 
-OAuth 登录会自动打开浏览器进行授权，令牌会安全存储在本地。
+OAuth 登录特性：
+- 一次授权，自动保持登录状态
+- 令牌过期时自动刷新，无需重新登录
+- 令牌安全存储在系统密钥链中
+- 刷新令牌有效期通常为30天
 
 ### 验证安装
 
