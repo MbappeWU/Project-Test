@@ -139,8 +139,9 @@ function drawMixed(ctx, text, x, y, cjkFont, latinFont) {
   ctx.textAlign = align;
 }
 
-// Greedy line breaking: Latin breaks at spaces, Chinese between characters (never before
-// closing punctuation).
+// Line breaking: Latin breaks at spaces, Chinese between characters (never before closing
+// punctuation). Wrapped text is balanced: it takes the narrowest width that needs no extra
+// line, so a caption never ends with one stranded word.
 function wrapMixed(ctx, text, maxW, cjkFont, latinFont) {
   const tokens = [];
   let word = '';
@@ -158,19 +159,31 @@ function wrapMixed(ctx, text, maxW, cjkFont, latinFont) {
     }
   }
   if (word) tokens.push(word);
-  const lines = [];
-  let line = '';
-  for (const t of tokens) {
-    const next = line + t;
-    if (line && measureMixed(ctx, next.trimEnd(), cjkFont, latinFont) > maxW) {
-      lines.push(line.trimEnd());
-      line = t.trimStart();
-    } else {
-      line = next;
+  const fill = (width) => {
+    const lines = [];
+    let line = '';
+    for (const t of tokens) {
+      const next = line + t;
+      if (line && measureMixed(ctx, next.trimEnd(), cjkFont, latinFont) > width) {
+        lines.push(line.trimEnd());
+        line = t.trimStart();
+      } else {
+        line = next;
+      }
     }
+    if (line.trim()) lines.push(line.trimEnd());
+    return lines;
+  };
+  const greedy = fill(maxW);
+  if (greedy.length < 2) return greedy;
+  let lo = maxW / greedy.length;
+  let hi = maxW;
+  for (let i = 0; i < 12; i++) {
+    const mid = (lo + hi) / 2;
+    if (fill(mid).length > greedy.length) lo = mid;
+    else hi = mid;
   }
-  if (line.trim()) lines.push(line.trimEnd());
-  return lines;
+  return fill(hi);
 }
 
 const FACE = { kai: FONTS.kai, brush: FONTS.brush, serif: FONTS.serif };

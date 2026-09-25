@@ -10,6 +10,7 @@ const canvas = nodeCanvas();
 
 test('hook titles break after full-width punctuation', () => {
   assert.deepEqual(hookLines('画一轮中秋月，送给想念的人'), ['画一轮中秋月', '送给想念的人']);
+  assert.deepEqual(hookLines('朋友不怕远：天涯若比邻'), ['朋友不怕远', '天涯若比邻']);
   assert.deepEqual(hookLines('长城不是一天建成的'), ['长城不是一天建成的']);
 });
 

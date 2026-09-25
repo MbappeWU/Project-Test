@@ -16,7 +16,7 @@ const SAFE = { hookTop: 150, captionBottom: 470 };
 
 // Titles break after a full-width comma or colon so they sit in balanced lines.
 export function hookLines(text) {
-  return text.split(/(?<=[，：])/).map((t) => t.replace(/[，]$/, '')).filter(Boolean);
+  return text.split(/(?<=[，：])/).map((t) => t.replace(/[，：]$/, '')).filter(Boolean);
 }
 
 export class ShortDirector {
