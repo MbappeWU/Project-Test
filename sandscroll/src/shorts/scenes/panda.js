@@ -36,12 +36,12 @@ export default {
     acts.push(K.reveal((st) => st.mask(bank, { feather: 2, rough: 0.3, roughScale: 0.1 }), { op: 'set', level: (x, y) => soil(x, y) * (0.85 + 1.05 * smoothstep(ground, 1880, y / s)), order: 'left', duration: 2 }));
     acts.push(K.reveal((st) => st.mask(ellipse(450, ground + 16, 380, 34, 0, 48), { feather: 16 }), { op: 'add', amount: 0.5, order: 'out', duration: 0.5 }));
     acts.push(...rock(stage));
-    // The panda first (the hero), then the stalk it grips, growing up through its paw.
+    // The panda first (the hero); a middle layer of paler culms passes behind its ears.
     const pd = panda(stage, rng, { x: 440, y: ground - 4, u: 100 });
     acts.push(...pd.body, ...pd.head, ...pd.twig);
-    // A middle layer of paler culms, passing behind the ears.
     acts.push(...culm(stage, [[338, 600], [346, 200], [350, -80]], { w: 24, level: 1.35, nodes: [0.19, 0.44, 0.68, 0.88], quick: true, exclude: pd.ears }));
     acts.push(...culm(stage, [[589, 600], [580, 200], [576, -80]], { w: 22, level: 1.3, nodes: [0.16, 0.41, 0.66, 0.86], quick: true, exclude: pd.ears }));
+    // The stalk it grips grows up out of the rock's split, then the paw closes over it.
     acts.push(...culm(stage, [[800, 1100], [786, 700], [772, 200], [766, -80]], { w: 36, level: 2.45, nodes: [0.15, 0.33, 0.51, 0.69, 0.87] }));
     acts.push(...pd.grip);
     // Near bamboo framing the left side.

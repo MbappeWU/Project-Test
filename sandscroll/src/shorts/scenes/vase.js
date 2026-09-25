@@ -63,7 +63,7 @@ export default {
     acts.push(...roseLeaves(stage, 470, 610, -0.95, 38, rng));
     acts.push(...roseLeaves(stage, 646, 792, 0.95, 40, rng));
     acts.push(...peony(stage, rng, peonyC[0], peonyC[1], 194));
-    acts.push(...rose(stage, rng, roseC[0], roseC[1], 114));
+    acts.push(...rose(stage, roseC[0], roseC[1], 114));
     acts.push(...bud(stage, budC[0], budC[1], 38));
     acts.push(...peonyLeaf(stage, 404, 736, 0.55, 170, rng, 2.4));
     // A rose spray trailing out over the vase's shoulder toward the table.
@@ -72,9 +72,9 @@ export default {
     acts.push(...roseLeaves(stage, vx + 300, mouth + 180, 0.2, 36, rng));
     acts.push(...bud(stage, vx + 364, mouth + 318, 24, Math.PI));
     // Last, the lamp: the arrangement's soft shadow falls on the wall to the right.
-    const shade = [v.outline.map(([px, py]) => [px + 74 + (table - py) * 0.04, py - 8]), ellipse(peonyC[0] + 86, peonyC[1] + 14, 190, 150, 0, 40), ellipse(roseC[0] + 80, roseC[1] + 16, 110, 96, 0, 32)];
+    const shadow = [v.outline.map(([px, py]) => [px + 74 + (table - py) * 0.04, py - 8]), ellipse(peonyC[0] + 86, peonyC[1] + 14, 190, 150, 0, 40), ellipse(roseC[0] + 80, roseC[1] + 16, 110, 96, 0, 32)];
     acts.push(K.reveal((st) => {
-      const m = st.mask(shade, { feather: 26 });
+      const m = st.mask(shadow, { feather: 26 });
       const front = st.mask([v.outline, ellipse(peonyC[0], peonyC[1] - 10, 205, 176, 0, 48)], { feather: 2 });
       return m.map((a, X, Y) => a * (1 - front.at(X, Y)) * (1 - smoothstep(table - 60, table - 34, Y / s)));
     }, { op: 'add', amount: 0.26, order: 'right', duration: 1.2 }));
@@ -208,12 +208,12 @@ function peony(stage, rng, cx, cy, R, squash = 0.8) {
     { n: 5, r0: 0.05, r1: 0.4, hw: 0.56, lift: 0.21, dark: 1.8, light: 0.05, rot: 0.9 },
     { n: 4, r0: 0.02, r1: 0.24, hw: 0.7, lift: 0.26, dark: 1.9, light: 0.08, rot: 0.3 },
   ];
-  for (const L of layers) {
+  for (const ring of layers) {
     // Back petals first, the ones facing us last.
-    const angles = Array.from({ length: L.n }, (_, i) => L.rot + (i * TAU) / L.n + rng.float(-0.12, 0.12)).sort((p, q) => Math.sin(p) - Math.sin(q));
+    const angles = Array.from({ length: ring.n }, (_, i) => ring.rot + (i * TAU) / ring.n + rng.float(-0.12, 0.12)).sort((p, q) => Math.sin(p) - Math.sin(q));
     for (const a of angles) {
-      const poly = petalPoly(a, L.hw, L.r0, L.r1 * rng.float(0.92, 1.05), L.lift, rng.float(0, 10));
-      acts.push(K.reveal((st) => st.mask(poly, { feather: 1, rough: 0.2, roughScale: 0.4 }), { op: 'set', level: shade(L.r0, L.r1, L.lift, L.dark, L.light), order: 'out', duration: 0.35 + L.r1 * 0.5, rest: 0.03 }));
+      const poly = petalPoly(a, ring.hw, ring.r0, ring.r1 * rng.float(0.92, 1.05), ring.lift, rng.float(0, 10));
+      acts.push(K.reveal((st) => st.mask(poly, { feather: 1, rough: 0.2, roughScale: 0.4 }), { op: 'set', level: shade(ring.r0, ring.r1, ring.lift, ring.dark, ring.light), order: 'out', duration: 0.35 + ring.r1 * 0.5, rest: 0.03 }));
     }
   }
   // Golden stamens at the heart: bright specks round a dark centre.
@@ -231,7 +231,7 @@ function peony(stage, rng, cx, cy, R, squash = 0.8) {
 
 // Rose in three-quarter view, built from the back: arching back petals, a tight dark heart with
 // its spiral, then cupped petals whose rolled lips catch the light, each lower and wider.
-function rose(stage, rng, cx, cy, R) {
+function rose(stage, cx, cy, R) {
   const acts = [];
   const s = stage.s;
   const Q = (pts) => pts.map(([a, b]) => [cx + a * R, cy + b * R]);
