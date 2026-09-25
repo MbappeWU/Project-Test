@@ -37,17 +37,16 @@ const wanted = args.only ? args.only.split(',') : null;
 fs.mkdirSync(args.out, { recursive: true });
 const canvas = nodeCanvas();
 
-const summary = [];
+const baseOf = (i, scene) => path.join(args.out, `EP${String(i + 1).padStart(2, '0')}-${scene.id}`);
+
 for (const [i, scene] of SHORTS.entries()) {
   if (wanted && !wanted.includes(scene.id)) continue;
-  const ep = episodeLabel(i);
-  const base = path.join(args.out, `EP${String(i + 1).padStart(2, '0')}-${scene.id}`);
+  const base = baseOf(i, scene);
   const t0 = performance.now();
-  const info = await renderShort(scene, ep, base);
-  summary.push({ scene, ep, base, ...info });
+  const info = await renderShort(scene, episodeLabel(i), base);
   console.log(`${path.basename(base)}: ${info.seconds.toFixed(1)}s video in ${((performance.now() - t0) / 1000).toFixed(0)}s`);
 }
-if (!args.preview) writeCopyIndex(summary);
+if (!args.preview) writeCopyIndex();
 
 async function renderShort(scene, ep, base) {
   const director = new ShortDirector({ scene, width, height, seed, canvas, episode: ep, drawSeconds: Number(args.draw), cta: CTA });
@@ -142,9 +141,14 @@ function copyText(scene, ep) {
   return `${lines.join('\n')}\n`;
 }
 
-function writeCopyIndex(items) {
-  if (!items.length) return;
+// Lists every episode rendered into the output folder, so rendering in batches with --only
+// still leaves one complete copy.md.
+function writeCopyIndex() {
   const md = ['# 一沙一世界 · 发布文案', ''];
-  for (const it of items) md.push(`## ${path.basename(it.base)}`, '', '```', copyText(it.scene, it.ep).trim(), '```', '');
+  for (const [i, scene] of SHORTS.entries()) {
+    const base = baseOf(i, scene);
+    if (!fs.existsSync(`${base}.mp4`)) continue;
+    md.push(`## ${path.basename(base)}`, '', '```', copyText(scene, episodeLabel(i)).trim(), '```', '');
+  }
   fs.writeFileSync(path.join(args.out, 'copy.md'), `${md.join('\n')}\n`);
 }
