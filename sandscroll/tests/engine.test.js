@@ -5,6 +5,8 @@ import { Show } from '../src/core/show.js';
 import { SCENES, PROGRAM } from '../src/scenes/index.js';
 import { polygonMask, feather } from '../src/core/mask.js';
 import { SandField } from '../src/core/field.js';
+import { Stage } from '../src/core/stage.js';
+import { reveal } from '../src/core/actions.js';
 import { nodeCanvas } from '../src/node/canvas.js';
 
 const canvas = nodeCanvas();
@@ -30,6 +32,20 @@ test('shapes entirely off the table give empty masks without errors', () => {
   const off = polygonMask([[[500, 10], [540, 10], [540, 30]]], 100, 100);
   assert.equal(off.w * off.h, 0);
   assert.equal(feather(off, 3, 100, 100).a.length, 0);
+});
+
+test('reveal skips non-finite level and amount values instead of poisoning the sand', () => {
+  const stage = new Stage({ width: 160, height: 90, seed: 1, canvas });
+  const table = [[[0, 0], [1920, 0], [1920, 1080], [0, 1080]]];
+  for (const opts of [
+    { op: 'add', amount: (x) => (x % 2 ? NaN : 0.5) },
+    { op: 'set', level: (x, y) => (y % 3 ? 1 : Infinity) },
+  ]) {
+    const act = reveal((st) => st.mask(table), { ...opts, duration: 1, rest: 0 });
+    act.begin(stage);
+    act.step(stage, 0, 1);
+  }
+  assert.ok(stage.field.d.every(Number.isFinite));
 });
 
 test('carving moves sand to the rim instead of deleting it all', () => {

@@ -178,10 +178,12 @@ export function reveal(buildMask, opts = {}) {
           const x = j % W;
           const y = (j / W) | 0;
           if (op === 'set') {
+            // A NaN from a scene's level/amount function would stick in the field for good.
             const T = lv ? lv(x, y) : level;
-            d[j] += (T - d[j]) * a;
+            if (Number.isFinite(T)) d[j] += (T - d[j]) * a;
           } else if (op === 'add') {
-            d[j] += (am ? am(x, y) : amount) * a;
+            const v = am ? am(x, y) : amount;
+            if (Number.isFinite(v)) d[j] += v * a;
           } else {
             d[j] *= 1 - strength * a;
           }
