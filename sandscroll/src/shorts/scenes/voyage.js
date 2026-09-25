@@ -24,16 +24,20 @@ export default {
     const ship = rig({ ox: 560, oy: 1190, k: 1, dir: -1, tilt: 0.03 });
     const acts = [];
 
-    // Sky: storm-dark overhead, breaking into a dawn glow low on the horizon ahead of the ship;
-    // cloud banks dark against the glow with fiery undersides, lit streaks higher up.
+    // Sky: storm-dark overhead, breaking into a dawn glow low on the horizon ahead of the ship,
+    // with low cloud banks dark against the glow and lit from below.
     const skyGrain = stage.mottle(1, 0.08, 0.004, off);
     acts.push(...K.cover(stage, (x, y) => (0.42 + 1.75 * (1 - smoothstep(560, H0 + 30, y / s)) ** 0.8) * skyGrain(x, y), { y0: -60, y1: H0 + 20 }));
     acts.push(K.reveal((st) => K.radialMask(st, sunX, H0, 30, 720, 1.5), { op: 'carve', strength: 0.72, order: 'out', duration: 3.5, jitter: 0.06 }));
     const glow = (x) => Math.exp(-(((x - sunX) / 420) ** 2));
-    for (const [x0, x1, y, thick] of [[-60, 600, 962, 14], [300, 870, 986, 12], [-60, 400, 900, 12], [560, 1140, 872, 16]]) {
+    for (const [x0, x1, y, thick] of [[-80, 640, 962, 11], [300, 870, 986, 9], [-80, 420, 902, 9], [560, 1140, 872, 12]]) {
       acts.push(...cloudBank(stage, rng, { x0, x1, y: y + rng.float(-8, 8), thick, glow }));
     }
-    // The long wind: broad palm swirls sweeping round the ship toward the dawn.
+    // Storm cloud rolling overhead, then the long wind: broad palm swirls tearing through it and
+    // sweeping round the ship toward the dawn.
+    for (const [y, x0, x1] of [[110, -120, 700], [60, 380, 1200], [300, -120, 420]]) {
+      acts.push(K.pour(spline([[x0, y], [(x0 + x1) / 2, y + rng.float(-40, 40)], [x1, y + rng.float(-30, 30)]], 10), { width: 240, amount: 0.9, speed: 900, hard: 0.02, scatter: 0.02, rest: 0.05, taper: K.taperBoth }));
+    }
     const winds = [
       [1340, 1420, 1060, 1.05, 1.44, 130, 0.72],
       [1400, 1300, 1230, 1.0, 1.38, 80, 0.9],
@@ -41,8 +45,8 @@ export default {
       [1500, 1250, 1180, 1.12, 1.33, 60, 0.8],
     ];
     for (const [cx, cy, r, a0, a1, w, target] of winds) {
-      const pts = arc(cx + rng.float(-30, 30), cy, r, Math.PI * a0, Math.PI * a1, 40);
-      acts.push(K.palm(pts, { width: w, speed: 1500, target, rate: 0.6, streak: stage.streaks[Math.round(target * 10) % 3], hard: 0.1, rest: 0.1, taper: K.taperBoth }));
+      const pts = arc(cx + rng.float(-30, 30), cy, r, Math.PI * a0, Math.PI * a1, 40).filter(([, y]) => y < 800);
+      acts.push(K.palm(pts, { width: w, speed: 620, target, rate: 0.6, streak: stage.streaks[Math.round(target * 10) % 3], hard: 0.1, rest: 0.1, taper: K.taperBoth }));
     }
 
     // Sea: bright under the dawn, deepening toward the viewer, with the sun's path of light.
@@ -55,11 +59,11 @@ export default {
         duration: 6,
       }),
     );
-    acts.push(...K.moonPath(stage, rng, { x: sunX + 12, horizon: H0, spread: 60, count: 36, strength: 0.75 }));
+    acts.push(...K.moonPath(stage, rng, { x: sunX + 12, horizon: H0, spread: 60, count: 22, strength: 0.75 }));
     for (const [y, amp, lambda] of [[1030, 3, 70], [1062, 4, 90], [1100, 6, 110], [1146, 8, 140]]) acts.push(...swell(stage, rng, { y, amp, lambda, x0: rng.float(-100, 200), span: rng.float(700, 1000) }));
 
     acts.push(...ship.draw(stage));
-    acts.push(...foreground(stage, rng, { ship, H0 }));
+    acts.push(...foreground(stage, rng, { ship, H0, sunX }));
     acts.push(...gulls());
     acts.push(K.inscribe(stage, { columns: this.poem.columns, x: 986, y: 478, size: 56, mode: 'carve', strength: 0.9, perChar: 1.15 }));
     acts.push(...K.seal(stage, this.seal, 913, 958, { size: 58, seed: rng.int(1, 999) }));
@@ -67,23 +71,24 @@ export default {
   },
 };
 
-// A long low cloud: darker than the glowing sky behind it, its underside lit by the dawn.
+// A long low cloud: darker than the glowing sky behind it, ragged on top, its underside lit by
+// the dawn.
 function cloudBank(stage, rng, { x0, x1, y, thick, glow }) {
-  const n = 12;
+  const n = 24;
   const top = [];
   const under = [];
   for (let i = 0; i <= n; i++) {
     const u = i / n;
     const x = x0 + (x1 - x0) * u;
-    const t = Math.sin(Math.PI * u) ** 1.3;
-    top.push([x, y - thick * t * rng.float(0.7, 1.2)]);
-    under.push([x, y + thick * 0.35 * t * rng.float(0.6, 1.1)]);
+    const t = Math.sin(Math.PI * u) ** 1.3 * (0.55 + 0.45 * Math.abs(Math.sin(u * 9 + x0)));
+    top.push([x, y - thick * t * rng.float(0.6, 1.2)]);
+    under.push([x, y + thick * 0.3 * t]);
   }
-  const outline = [...spline(top, 6), ...spline(under.reverse(), 6)];
+  const outline = [...spline(top, 4), ...spline(under.reverse(), 4)];
   const s = stage.s;
   return [
-    K.reveal((st) => st.mask(outline, { feather: 4, rough: 0.3, roughScale: 0.12 }), { op: 'set', level: (x) => 1.15 + 0.35 * (1 - glow(x / s)), order: 'left', duration: 1.4, jitter: 0.08, rest: 0.05 }),
-    K.carve(spline(under.slice().reverse().filter((_, i) => i > 0 && i < n), 8), { width: 4, strength: 0.35 + 0.4 * glow((x0 + x1) / 2), speed: 700, rim: 0.1, rest: 0.05, taper: K.taperBoth }),
+    K.reveal((st) => st.mask(outline, { feather: 3, rough: 0.35, roughScale: 0.15 }), { op: 'set', level: (x) => 1.05 + 0.35 * (1 - glow(x / s)), order: 'left', duration: 1.4, jitter: 0.08, rest: 0.05 }),
+    K.carve(spline(under.slice().reverse().filter((_, i) => i > 1 && i < n - 1), 6), { width: 3.5, strength: 0.35 + 0.4 * glow((x0 + x1) / 2), speed: 700, rim: 0.1, rest: 0.05, taper: K.taperBoth }),
   ];
 }
 
@@ -128,7 +133,7 @@ function drawShip(stage, { P, local, deckAt, masts, at, k }) {
       const bw = i === 0 ? hw * 1.04 : m.yards[i - 1] * 0.96;
       const tall = yBot - yTop;
       const belly = tall * 0.13;
-      const bulge = tall * 0.06;
+      const bulge = tall * 0.03;
       const outline = [
         ...spline([[m.x - hw, yTop], [m.x + hw, yTop]], 1),
         ...spline([[m.x + hw, yTop], [m.x + (hw + bw) / 2 + bulge, yTop + tall * 0.5], [m.x + bw, yBot]], 6).slice(1),
@@ -139,9 +144,9 @@ function drawShip(stage, { P, local, deckAt, masts, at, k }) {
         const [lx, ly] = local(X / s, Y / s);
         const v = clamp((ly - yTop) / (tall + belly), 0, 1);
         const u = clamp((lx - m.x) / (hw + (bw - hw) * v + bulge), -1, 1);
-        return 0.04 + 0.34 * u * u + 0.26 * (1 - smoothstep(0, 0.13, v)) + 0.1 * v - 0.05 * u;
+        return 0.04 + 0.3 * u * u + 0.2 * (1 - smoothstep(0, 0.1, v)) + 0.1 * v - 0.05 * u;
       };
-      acts.push(K.reveal((st) => st.mask(poly(outline), { feather: 0.7, rough: 0.08, roughScale: 0.2 }), { op: 'set', level, order: 'down', duration: 1.1 + 0.2 * (3 - i), jitter: 0.03, rest: 0.08 }));
+      acts.push(K.reveal((st) => st.mask(poly(outline), { feather: 0.7, rough: 0.08, roughScale: 0.2 }), { op: 'set', level, order: 'down', duration: 1.5 + 0.3 * (3 - i), jitter: 0.03, rest: 0.1 }));
     }
   }
   // Head sails from the foremast out to the jib-boom.
@@ -155,7 +160,7 @@ function drawShip(stage, { P, local, deckAt, masts, at, k }) {
     const leech = spline([head, [head[0] + (clew[0] - head[0]) * 0.5 - 18, head[1] + (clew[1] - head[1]) * 0.5], clew], 8);
     const foot = spline([clew, [(clew[0] + tack[0]) / 2, (clew[1] + tack[1]) / 2 + 8], tack], 4).slice(1);
     const level = (X, Y) => 0.08 + 0.42 * smoothstep(clew[0] - 20, tack[0], local(X / s, Y / s)[0]);
-    acts.push(K.reveal((st) => st.mask(poly([...leech, ...foot]), { feather: 0.7 }), { op: 'set', level, order: 'down', duration: 1.2, rest: 0.08 }));
+    acts.push(K.reveal((st) => st.mask(poly([...leech, ...foot]), { feather: 0.7 }), { op: 'set', level, order: 'down', duration: 1.6, rest: 0.1 }));
   }
 
   // Hull: dark, with a lit wale and its row of gunports.
@@ -174,10 +179,10 @@ function drawShip(stage, { P, local, deckAt, masts, at, k }) {
 
   // Masts, yards, bowsprit.
   for (const m of masts) {
-    acts.push(K.pour([P(...at(m, 0)), P(...at(m, 1))], { width: 8 * k, amount: 2.4, speed: 360, taper: (u) => 1 - 0.6 * u, scatter: 0.05 }));
+    acts.push(K.pour([P(...at(m, 0)), P(...at(m, 1))], { width: 8 * k, amount: 2.4, speed: 520, taper: (u) => 1 - 0.6 * u, scatter: 0.05 }));
     for (let i = 0; i < 4; i++) {
       const [, y] = at(m, YARDS[i]);
-      acts.push(K.pour([P(m.x - m.yards[i] - 10, y), P(m.x + m.yards[i] + 10, y)], { width: 4.5 * k, amount: 2.1, speed: 440, rest: 0.04, taper: (u) => 0.55 + 0.45 * Math.sin(u * Math.PI), scatter: 0.05 }));
+      acts.push(K.pour([P(m.x - m.yards[i] - 10, y), P(m.x + m.yards[i] + 10, y)], { width: 4.5 * k, amount: 2.1, speed: 700, rest: 0.03, taper: (u) => 0.55 + 0.45 * Math.sin(u * Math.PI), scatter: 0.05 }));
     }
   }
   acts.push(K.pour([P(320, deckAt(320) - 2), P(534, -152)], { width: 7 * k, amount: 2.4, speed: 300, taper: (u) => 1 - 0.6 * u }));
@@ -198,7 +203,7 @@ function drawShip(stage, { P, local, deckAt, masts, at, k }) {
   for (const m of masts) {
     for (const f of [0.3, 0.55]) lines.push([at(m, f), [m.x - 30, deckAt(m.x) + 4]], [at(m, f), [m.x - 58, deckAt(m.x) + 4]]);
   }
-  for (const [a, b] of lines) acts.push(K.pour([P(...a), P(...b)], { width: 1.6, amount: 1.3, speed: 760, rest: 0.02, scatter: 0, taper: K.even }));
+  for (const [a, b] of lines) acts.push(K.pour([P(...a), P(...b)], { width: 1.6, amount: 1.3, speed: 1500, rest: 0.01, scatter: 0, taper: K.even }));
 
   // Pennant streaming forward from the main truck, small flags on the others.
   const [mx, my] = at(main, 1);
@@ -211,7 +216,7 @@ function drawShip(stage, { P, local, deckAt, masts, at, k }) {
 }
 
 // A rolling swell: a sharp bright crest over a rounded trough (trochoid), its face in shadow.
-function swell(stage, rng, { y, amp, lambda, x0, span, strength = 0.7, width = 3, shade = 0.8 }) {
+function swell(stage, rng, { y, amp, lambda, x0, span, strength = 0.7, width = 3, shade = 0.8, speed = 700 }) {
   const ph = rng.float(0, 1);
   const crestY = (x) => y - amp * (1 - Math.abs(Math.sin(Math.PI * (x / lambda + ph))));
   const pts = [];
@@ -227,14 +232,14 @@ function swell(stage, rng, { y, amp, lambda, x0, span, strength = 0.7, width = 3
   };
   if (rng.chance(0.5)) pts.reverse();
   return [
-    K.reveal((st) => st.mask(face, { feather: 1 }), { op: 'add', amount: shadeAt, order: pts[0][0] < pts[1][0] ? 'left' : 'right', duration: 0.5, rest: 0.02 }),
-    K.carve(pts, { width, strength, speed: 560, rim: 0.3, rest: 0.05, taper: K.taperBoth }),
+    K.reveal((st) => st.mask(face, { feather: 1 }), { op: 'add', amount: shadeAt, order: pts[0][0] < pts[1][0] ? 'left' : 'right', duration: 0.25, rest: 0.01 }),
+    K.carve(pts, { width, strength, speed, rim: 0.3, rest: 0.03, taper: K.taperBoth }),
   ];
 }
 
 // The sea in front of the hull: the swell she rides, her bow wave and spray, the wake, the sails'
 // glow on the water, and big rolling swells toward the viewer.
-function foreground(stage, rng, { ship, H0 }) {
+function foreground(stage, rng, { ship, H0, sunX }) {
   const { P } = ship;
   const acts = [];
   const s = stage.s;
@@ -251,7 +256,7 @@ function foreground(stage, rng, { ship, H0 }) {
   acts.push(
     K.reveal((st) => st.mask(band, { feather: 1, rough: 0.2, roughScale: 0.2 }), {
       op: 'set',
-      level: (x, y) => sea(x, y) * (0.95 + 1.0 * smoothstep(H0, 1650, y / s)) * (1 - 0.4 * Math.exp(-(((x / s - 120) / 220) ** 2))),
+      level: (x, y) => sea(x, y) * (0.95 + 1.0 * smoothstep(H0, 1650, y / s)) * (1 - 0.4 * Math.exp(-(((x / s - sunX) / 220) ** 2))),
       order: 'left',
       duration: 5,
     }),
@@ -275,12 +280,12 @@ function foreground(stage, rng, { ship, H0 }) {
     acts.push(K.carve(spline([[sternX - 10, wl + 4], [sternX + 90, wl + 8 + spread * 0.4], [sternX + 220, wl + 12 + spread]], 10), { width: 3.5, strength: 0.45, speed: 420, rest: 0.05 }));
   }
   // Big swells rolling toward the viewer, in overlapping trains of varied length.
-  for (let r = 0; r < 7; r++) {
+  for (let r = 0; r < 6; r++) {
     const y = 1262 + 95 * r + 7 * r * r;
     const amp = 12 + r * 4.5;
     for (let j = 0, x = rng.float(-300, -100); x < 1080; j++) {
       const span = rng.float(420, 760) + r * 40;
-      acts.push(...swell(stage, rng, { y: y + rng.float(-14, 14), amp: amp * rng.float(0.8, 1.2), lambda: 170 + r * 50, x0: x, span, width: 4 + r * 0.9, strength: 0.72 }));
+      acts.push(...swell(stage, rng, { y: y + rng.float(-14, 14), amp: amp * rng.float(0.8, 1.2), lambda: 170 + r * 50, x0: x, span, width: 4 + r * 0.9, strength: 0.72, speed: 1300 }));
       x += span * rng.float(0.55, 0.85);
     }
   }
@@ -294,7 +299,7 @@ function bowWave(rng, x, y) {
     K.carve(spline([[x + 170, y + 4], [x + 70, y - 2], [x + 14, y - 16], [x - 14, y - 36], [x - 52, y - 30], [x - 104, y - 8], [x - 170, y + 18]], 8), { width: 16, strength: 0.86, speed: 330, rim: 0.3, taper: K.taperBoth }),
     K.carve(spline([[x + 60, y + 14], [x - 10, y + 6], [x - 80, y + 18], [x - 170, y + 42]], 8), { width: 8, strength: 0.62, speed: 330, rim: 0.3, taper: K.taperBoth }),
   ];
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < 10; i++) {
     const a = -Math.PI * rng.float(0.55, 0.95);
     const d0 = rng.float(18, 70);
     const len = rng.float(10, 24) * (1 - d0 / 150);
@@ -302,12 +307,12 @@ function bowWave(rng, x, y) {
     const sy = y - 40 + Math.sin(a) * d0 * 0.7;
     acts.push(K.carve([[sx, sy], [sx + Math.cos(a) * len, sy + Math.sin(a) * len * 0.7]], { width: rng.float(3, 5), strength: 0.8, speed: 200, rest: 0.02, taper: K.taperBoth }));
   }
-  for (let i = 0; i < 36; i++) {
+  for (let i = 0; i < 26; i++) {
     const a = -Math.PI * rng.float(0.5, 1.02);
     const d = 16 + Math.abs(rng.gauss(0, 56));
     const px = x - 34 + Math.cos(a) * d;
     const py = y - 40 + Math.sin(a) * d * 0.7;
-    acts.push(K.carve([[px, py], [px + 0.5, py + 0.5]], { width: rng.float(2.5, 5.5) * Math.max(0.4, 1 - d / 240), strength: 0.8, speed: 100, rest: 0.01, taper: K.even }));
+    acts.push(K.carve([[px, py], [px + 0.5, py + 0.5]], { width: rng.float(2.5, 5.5) * Math.max(0.4, 1 - d / 240), strength: 0.8, speed: 100, rest: 0.005, taper: K.even }));
   }
   return acts;
 }
