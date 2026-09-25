@@ -55,6 +55,8 @@ docker compose logs -f               # 每分钟一行 t=… speed=1.00x
 
 同一套引擎也能输出 9:16 竖屏短视频，用于 TikTok、小红书、抖音和 YouTube Shorts。每集约 45 秒：开头 1 秒是钩子标题，接着沙画快速成形、题诗、钤印，最后是双语诗句和一句互动提问。首批 8 集，每集一个正能量主题（团圆、坚持、奋斗、松弛、坚韧、友谊、包容）。
 
+![一沙一世界 · 首批 8 集封面](docs/images/shorts.jpg)
+
 ```bash
 node tools/make-shorts.mjs --out shorts        # 全部 8 集：MP4 + 9:16 / 3:4 封面 + 双平台文案
 node tools/make-shorts.mjs --only moon --preview --snap 4   # 低清预览 + 截图
