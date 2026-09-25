@@ -2,6 +2,19 @@ import { ridge, underRidge, spline, ellipse, TAU } from '../../core/geom.js';
 import * as K from '../../core/kit.js';
 import * as L from '../../core/landscape.js';
 
+// Far edge of the stream.
+const WATER = 1184;
+
+// Stones in the stream [x, y, r]; the crane's rock is the large flat one.
+const STONES = [
+  [470, 1228, 26],
+  [566, 1262, 18],
+  [890, 1236, 30],
+  [1010, 1276, 24],
+  [396, 1296, 22],
+];
+const ROCK = [700, 1206, 118, 30];
+
 // 松鹤 · 明月松间照，清泉石上流 — a hanging-scroll night: the moon caught in the arm of an old
 // pine that leans from a cliff, a spring falling between dark rocks and running over stones,
 // and a red-crowned crane resting on one leg by the water. Portrait canvas 1080x1920.
@@ -37,28 +50,15 @@ export default {
     acts.push(L.mistBand(stage, { y: WATER - 44, height: 40, x0: 380, strength: 0.3, duration: 2 }));
     acts.push(...cliff(stage, off));
     acts.push(...banks(stage, near));
-    acts.push(...pine(stage, rng));
+    acts.push(...pine(stage, rng, mx, my));
     acts.push(...spring(stage, rng));
     acts.push(...K.moonPath(stage, rng, { x: mx, horizon: WATER + 30, bottom: 1330, spread: 26, count: 9, strength: 0.7 }));
-    acts.push(...crane(stage, { x: 700, y: 1188, u: 70, dir: -1 }));
+    acts.push(...crane(stage, { x: 700, y: 1188, u: 76, dir: -1 }));
     acts.push(K.inscribe(stage, { columns: this.poem.columns, x: 968, y: 470, size: 64, mode: 'carve', strength: 0.9, perChar: 1.3 }));
     acts.push(...K.seal(stage, this.seal, 885, 885, { size: 62, seed: rng.int(1, 999) }));
     return acts;
   },
 };
-
-// Far edge of the stream.
-const WATER = 1184;
-
-// Stones in the stream [x, y, r]; the crane's rock is the large flat one.
-const STONES = [
-  [470, 1228, 26],
-  [566, 1262, 18],
-  [890, 1236, 30],
-  [1010, 1276, 24],
-  [396, 1296, 22],
-];
-const ROCK = [700, 1206, 118, 30];
 
 function cliff(stage, off) {
   const acts = [];
@@ -100,7 +100,7 @@ function banks(stage, near) {
 
 // Old pine rooted on the cliff edge: the trunk twists up and throws a long arm toward the moon,
 // so the needle clouds frame the moon and cross its rim (明月松间照).
-function pine(stage, rng) {
+function pine(stage, rng, mx, my) {
   const acts = [];
   for (const r of [[[196, 846], [150, 830], [104, 836]], [[214, 852], [252, 880], [270, 912]]]) {
     acts.push(K.pour(spline(r, 8), { width: 14, amount: 2.6, speed: 140, taper: (u) => 1 - 0.7 * u, scatter: 0.2 }));
@@ -114,7 +114,7 @@ function pine(stage, rng) {
     { pts: [[262, 610], [300, 630], [330, 632]], w: 9 },
   ];
   for (const a of arms) acts.push(K.pour(spline(a.pts, 8), { width: a.w, amount: 2.8, speed: 150, taper: (u) => 1 - 0.68 * u, scatter: 0.2, rest: 0.1 }));
-  // Bark: a light rim on the moon side and a few scale marks.
+  // Bark: a light rim on the side facing the moon.
   acts.push(K.carve(spline([[222, 812], [258, 756], [264, 694], [248, 646], [268, 600], [318, 566]], 8).map(([x, y]) => [x + 12, y + 2]), { width: 4, strength: 0.4, speed: 240, rim: 0.1, taper: K.taperBoth }));
   // Bark plates (龟甲纹): short arcs stacked up the trunk.
   for (let i = 0; i < 9; i++) {
@@ -145,6 +145,19 @@ function pine(stage, rng) {
         rest: 0.12,
       }),
     );
+    // Moonlight catching the edges that face the moon.
+    const glow = 1 - Math.hypot(cx - mx, cy - my) / 330;
+    if (glow > 0) {
+      const rim = [];
+      for (let i = 0; i <= 40; i++) {
+        const a = Math.PI + (i / 40) * Math.PI;
+        const [px, py] = needleEdge(cx, cy, w, h, seed, a);
+        const facing = (Math.cos(a) * (mx - px) + Math.sin(a) * (my - py)) / Math.hypot(mx - px, my - py);
+        if (facing > 0.25) rim.push([px - Math.cos(a) * 4, py - Math.sin(a) * 4]);
+        else if (rim.length) break;
+      }
+      if (rim.length > 3) acts.push(K.carve(rim, { width: 3.5, strength: 0.25 + 0.3 * glow, speed: 300, rest: 0.02, taper: K.taperBoth }));
+    }
     // Needle fans scratched into each cloud.
     const fans = Math.max(3, Math.round(w / 40));
     for (let k = 0; k < fans; k++) {
@@ -164,14 +177,14 @@ function pine(stage, rng) {
 // Flat-bottomed pine needle cloud (松针团).
 function needleCloud(cx, cy, w, h, seed) {
   const pts = [];
-  const n = 64;
-  for (let i = 0; i < n; i++) {
-    const a = (i / n) * TAU;
-    const top = Math.sin(a) < 0;
-    const bump = 1 + (top ? 0.16 * Math.abs(Math.sin(a * 4.5 + seed)) + 0.07 * Math.sin(a * 11 + seed * 2) : 0.04 * Math.sin(a * 7 + seed));
-    pts.push([cx + Math.cos(a) * (w / 2) * bump, cy + Math.sin(a) * (h / 2) * bump * (top ? 1 : 0.42)]);
-  }
+  for (let i = 0; i < 64; i++) pts.push(needleEdge(cx, cy, w, h, seed, (i / 64) * TAU));
   return pts;
+}
+
+function needleEdge(cx, cy, w, h, seed, a) {
+  const top = Math.sin(a) < 0;
+  const bump = 1 + (top ? 0.16 * Math.abs(Math.sin(a * 4.5 + seed)) + 0.07 * Math.sin(a * 11 + seed * 2) : 0.04 * Math.sin(a * 7 + seed));
+  return [cx + Math.cos(a) * (w / 2) * bump, cy + Math.sin(a) * (h / 2) * bump * (top ? 1 : 0.42)];
 }
 
 // Irregular stone outline: rounded top, flattened waterline.

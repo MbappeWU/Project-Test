@@ -25,8 +25,9 @@ export default {
     const moon = [rng.float(256, 268), rng.float(636, 648), 104];
     acts.push(...K.moon(stage, moon[0], moon[1], moon[2], { halo: 2.1, glow: 0.32, strength: 0.86, duration: 5 }));
     acts.push(...coping(stage));
-    const tree = plumTree(stage, rng);
+    const tree = plumTree(rng);
     acts.push(...tree.acts);
+    acts.push(...snowOnWall(stage));
     acts.push(...blossoms(rng, tree.spots, moon));
     acts.push(...snowfall(stage, rng, 150));
     acts.push(K.inscribe(stage, { columns: this.poem.columns, x: 968, y: 470, size: 64, mode: 'carve', strength: 0.9, perChar: 1.3 }));
@@ -122,7 +123,7 @@ function snowOnWall(stage) {
 
 // Angular old plum (女字枝): a thick trunk rising from behind the wall, a main branch reaching up
 // across the moon, one rising right and a low spray over the wall, with straight young shoots.
-function plumTree(stage, rng) {
+function plumTree(rng) {
   const acts = [];
   const spots = [];
   const trunk = [[666, 996], [654, 944], [622, 896], [592, 862], [598, 812], [566, 770]];
@@ -166,7 +167,6 @@ function plumTree(stage, rng) {
     spots.push([mid, 1], [tip, 0]);
   }
   for (const br of [A, B, C, D]) for (let i = 2; i < br.length; i++) spots.push([br[i], 2]);
-  acts.push(...snowOnWall(stage));
   // Snow resting on the upper side of the older wood.
   for (const [pts, w, k] of limbs.slice(0, 4)) {
     for (let i = 0; i < pts.length - 1; i++) {
