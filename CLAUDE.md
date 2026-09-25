@@ -20,11 +20,13 @@ Project-Test/
 ├── docs/              # MemoMind architecture and spec
 └── sandscroll/        # SandScroll: 24/7 generative sand-painting livestream (Node.js, ffmpeg)
     ├── src/core/      #   sand simulation, light table, gestures, inscriptions, director
-    ├── src/scenes/    #   one file per painting
+    ├── src/scenes/    #   one file per painting (16:9 livestream)
+    ├── src/shorts/    #   一沙一世界 vertical shorts: 9:16 scenes and posting copy
     ├── src/music/     #   generative guzheng / xiao / guqin music engine
     ├── src/node/      #   broadcaster (render -> ffmpeg -> YouTube RTMPS)
     ├── src/web/       #   browser player (preview, OBS browser source)
-    └── docs/          #   operations playbook (运营手册) and screenshots
+    ├── tools/         #   make-shorts, snapshots, web build, health check
+    └── docs/          #   livestream and shorts playbooks, screenshots
 ```
 
 As the project grows, update this structure diagram to reflect the actual organization.
@@ -141,6 +143,8 @@ Document deployment procedures here when configured.
 | `sandscroll/README.md` | SandScroll overview, commands, how to add a scene |
 | `sandscroll/docs/运营手册.md` | Channel setup and operations playbook |
 | `sandscroll/program.json` | Running order and time-sensitive notes for the stream |
+| `sandscroll/docs/短视频运营手册.md` | Shorts playbook: posting plan, platform rules, AI labelling |
+| `sandscroll/tools/make-shorts.mjs` | Renders the vertical shorts, covers and posting copy |
 
 ## Common Tasks for AI Assistants
 
