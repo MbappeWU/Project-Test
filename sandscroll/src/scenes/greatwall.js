@@ -38,7 +38,7 @@ export default {
     }
 
     const acts = [];
-    acts.push(...K.cover(stage, sky, { rows: 5, y0: -60, y1: 700, rate: 0.9 }));
+    acts.push(...K.cover(stage, sky, { rows: 5, y0: -60, y1: 700 }));
     acts.push(...K.moon(stage, sunX, sunY, 62, { halo: 3.2, glow: 0.5, strength: 0.9, duration: 5 }));
     acts.push(L.range(stage, far, { level: 0.42, mist: 0.85, mistDepth: 150, duration: 8 }));
     acts.push(L.greatWall(stage, far, { x0: 60, x1: 1860, offset: 3, thick: 5, tooth: 4, level: 0.95, towers: towers.filter((_, i) => i % 2).map((x) => x + 40), towerW: 12, towerH: 11, duration: 6, walk: false }));

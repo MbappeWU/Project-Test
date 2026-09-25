@@ -20,7 +20,7 @@ export default {
     const off = rng.float(0, 100);
     const acts = [];
     const R = 700;
-    acts.push(...K.cover(stage, stage.vgrad(0.95, 0.55, 0, R, 0.12, off), { rows: 5, y0: -60, y1: R + 40, rate: 0.9 }));
+    acts.push(...K.cover(stage, stage.vgrad(0.95, 0.55, 0, R, 0.12, off), { rows: 5, y0: -60, y1: R + 40 }));
     // Snow-covered ranges: pale masses edged with dark rock lines.
     const back = ridge(n, -60, 1980, R - 10, 230, { offset: off, freq: 1 / 330, peaks: [[rng.float(500, 900), 120, 200]] });
     const front = ridge(n, 900, 2050, R + 4, 170, { offset: off + 40, freq: 1 / 260, peaks: [[1500, 80, 160]], taper: 0.25 });

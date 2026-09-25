@@ -15,7 +15,7 @@ export default {
   seal: '沙卷',
   build(stage, rng) {
     const acts = [];
-    acts.push(...K.cover(stage, stage.vgrad(1.2, 0.95, 0, 1080, 0.14, rng.float(0, 50)), { rows: 5, y0: -60, y1: 1140, rate: 0.9 }));
+    acts.push(...K.cover(stage, stage.vgrad(1.2, 0.95, 0, 1080, 0.14, rng.float(0, 50)), { rows: 5, y0: -60, y1: 1140 }));
     // A single horizon line and a small rising moon frame the title.
     acts.push(K.carve(spline([[260, 700], [700, 694], [1220, 698], [1660, 692]], 10), { width: 4, strength: 0.65, speed: 520, rim: 0.3 }));
     acts.push(...K.moon(stage, 1510, 250, 40, { halo: 2.6, glow: 0.45, duration: 4 }));

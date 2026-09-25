@@ -22,7 +22,7 @@ export default {
   build(stage, rng) {
     const ground = 905;
     const acts = [];
-    acts.push(...K.cover(stage, stage.vgrad(0.28, 0.1, 0, 1080, 0.12, rng.float(0, 50)), { rows: 5, y0: -60, y1: 1140, rate: 0.85 }));
+    acts.push(...K.cover(stage, stage.vgrad(0.28, 0.1, 0, 1080, 0.12, rng.float(0, 50)), { rows: 5, y0: -60, y1: 1140 }));
     // Ground first, then the two pandas (the heroes), then the bamboo grove framing them.
     acts.push(K.reveal((st) => st.mask(groundPoly(ground), { feather: 2, rough: 0.3, roughScale: 0.1 }), { op: 'set', level: stage.streaky(0.75, 0.25, 0.003, 0.05), order: 'left', duration: 5 }));
     const u = rng.float(73, 78);

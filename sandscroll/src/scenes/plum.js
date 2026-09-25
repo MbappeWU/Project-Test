@@ -16,7 +16,7 @@ export default {
   seal: '暗香',
   build(stage, rng) {
     const acts = [];
-    acts.push(...K.cover(stage, stage.vgrad(1.25, 0.8, 0, 1080, 0.12, rng.float(0, 50)), { rows: 5, y0: -60, y1: 1140, rate: 0.9 }));
+    acts.push(...K.cover(stage, stage.vgrad(1.25, 0.8, 0, 1080, 0.12, rng.float(0, 50)), { rows: 5, y0: -60, y1: 1140 }));
     const mx = rng.float(1080, 1180);
     const my = rng.float(330, 380);
     acts.push(...K.moon(stage, mx, my, 170, { halo: 1.7, glow: 0.4, duration: 9 }));

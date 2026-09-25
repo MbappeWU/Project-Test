@@ -28,7 +28,7 @@ export default {
     const water = stage.streaky(0.95, 0.22, 0.0015, 0.07, off + 9);
 
     const acts = [];
-    acts.push(...K.cover(stage, sky, { rows: 5, y0: -60, y1: W0 + 20, rate: 0.9 }));
+    acts.push(...K.cover(stage, sky, { rows: 5, y0: -60, y1: W0 + 20 }));
     const marin = ridge(n, 1350, 2100, W0 - 4, 150, { offset: off, freq: 1 / 300, peaks: [[1700, 70, 200]], taper: 0.25 });
     const city = ridge(n, -150, 520, W0 - 4, 70, { offset: off + 20, freq: 1 / 200, taper: 0.3 });
     acts.push(L.range(stage, marin, { level: 0.62, mist: 0.6, mistDepth: 90, order: 'right', duration: 6 }));

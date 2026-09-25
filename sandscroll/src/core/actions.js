@@ -44,6 +44,7 @@ export function stroke(kind, pts, opts = {}) {
     target = 0,
     rate = 0.6,
     streak = null,
+    streakMode = 'rate',
     hard = kind === 'pour' ? 0.25 : kind === 'carve' ? 0.45 : 0.15,
     taper = kind === 'relax' ? even : taperBoth,
     scatter = kind === 'pour' ? 0.35 : 0,
@@ -88,7 +89,7 @@ export function stroke(kind, pts, opts = {}) {
           f.carve(x, y, rr, k, rim, hard);
         } else {
           const k = 1 - Math.pow(1 - rate, spacing / (rr * c));
-          f.relax(x, y, rr, target, k, -ty, tx, streak, seed * 13, hard);
+          f.relax(x, y, rr, target, k, -ty, tx, streak, seed * 13, hard, streakMode);
         }
         hand = [x / stage.s, y / stage.s];
         if (m.length === 0) {

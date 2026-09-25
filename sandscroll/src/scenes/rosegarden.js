@@ -19,7 +19,7 @@ export default {
     const acts = [];
     const vx = 900;
     const base = 930;
-    acts.push(...K.cover(stage, stage.vgrad(0.34, 0.14, 0, 1080, 0.1, rng.float(0, 40)), { rows: 5, y0: -60, y1: 1140, rate: 0.85 }));
+    acts.push(...K.cover(stage, stage.vgrad(0.34, 0.14, 0, 1080, 0.1, rng.float(0, 40)), { rows: 5, y0: -60, y1: 1140 }));
     // Table edge and the vase's soft shadow.
     acts.push(K.reveal((st) => st.mask([[-10, base], [1930, base], [1930, 1090], [-10, 1090]], { feather: 2 }), { op: 'set', level: stage.streaky(0.62, 0.2, 0.002, 0.05), order: 'left', duration: 4 }));
     acts.push(K.reveal((st) => st.mask(ellipse(vx + 40, base + 8, 190, 16), { feather: 8 }), { op: 'add', amount: 0.35, order: 'out', duration: 1.5 }));

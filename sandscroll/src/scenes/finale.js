@@ -23,7 +23,7 @@ export default {
     const mx = rng.float(900, 1020);
     const my = rng.float(150, 175);
     const acts = [];
-    acts.push(...K.cover(stage, stage.vgrad(1.9, 0.75, 0, H0, 0.1, off), { rows: 6, y0: -60, y1: H0 + 30, rate: 0.9 }));
+    acts.push(...K.cover(stage, stage.vgrad(1.9, 0.75, 0, H0, 0.1, off), { rows: 6, y0: -60, y1: H0 + 30 }));
     const sea = stage.streaky(1.3, 0.2, 0.0012, 0.08, off + 5);
     acts.push(
       K.reveal((st) => st.mask([[-10, H0], [1930, H0], [1930, 1090], [-10, 1090]], { feather: 1, rough: 0.2, roughScale: 0.2 }), {

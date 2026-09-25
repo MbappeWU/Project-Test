@@ -7,7 +7,7 @@ import { Overlay, captionSprite, sealSprite, textSprite } from './overlay.js';
 // Reusable gestures shared by the scenes. All coordinates are virtual (1920x1080).
 
 // Palm passes across a horizontal band, alternating direction, moving density toward `target`.
-export function cover(stage, target, { rows = 6, y0 = 0, y1 = 1080, x0 = -120, x1 = 2040, width = 320, speed = 1700, rate = 0.8, streak = 1, wave = 16, phase = 0 } = {}) {
+export function cover(stage, target, { rows = 6, y0 = 0, y1 = 1080, x0 = -120, x1 = 2040, width = 320, speed = 1700, rate = 0.97, streak = 1, wave = 16, phase = 0 } = {}) {
   const acts = [];
   // Rows closer than half a palm apart so passes overlap without leaving light bands.
   rows = Math.max(rows, Math.ceil((y1 - y0) / (width * 0.45)));
@@ -16,7 +16,7 @@ export function cover(stage, target, { rows = 6, y0 = 0, y1 = 1080, x0 = -120, x
     const pts = [];
     for (let x = x0; x <= x1; x += 40) pts.push([x, y + wave * Math.sin(x / 270 + i * 1.9 + phase)]);
     if (i % 2) pts.reverse();
-    acts.push(palm(pts, { width, speed, target, rate, streak: stage.streaks[streak], rest: 0.06 }));
+    acts.push(palm(pts, { width, speed, target, rate, streak: stage.streaks[streak], streakMode: 'target', hard: 0.55, rest: 0.06 }));
   }
   return acts;
 }

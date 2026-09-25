@@ -30,7 +30,7 @@ export default {
     const rightShore = ridge(n, 1540, 2100, H0 + 3, 34, { offset: off + 40, peaks: [[1800, 24, 80]], taper: 0.35 });
 
     const acts = [];
-    acts.push(...K.cover(stage, sky, { rows: 6, y0: -60, y1: H0 + 40, rate: 0.9 }));
+    acts.push(...K.cover(stage, sky, { rows: 6, y0: -60, y1: H0 + 40 }));
     acts.push(
       K.reveal((st) => st.mask([[-10, H0], [1930, H0], [1930, 1090], [-10, 1090]], { feather: 1, rough: 0.2, roughScale: 0.2 }), {
         op: 'set',

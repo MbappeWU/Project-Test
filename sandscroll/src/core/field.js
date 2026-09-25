@@ -122,9 +122,11 @@ export class SandField {
   }
 
   // Moves density toward a target (number or fn(x, y)) with rate k. (nx, ny) is the brush
-  // normal; `streak` (Float32Array, 1024 entries) modulates the rate across the palm so
-  // sweeping gestures leave finger streaks along the direction of motion.
-  relax(cx, cy, r, target, k, nx = 0, ny = 1, streak = null, streakPhase = 0, hard = 0.2) {
+  // normal; `streak` (Float32Array, 1024 entries) varies across the palm so sweeping gestures
+  // leave finger streaks along the direction of motion. In 'rate' mode the streaks modulate how
+  // much old sand is moved (a dissolving transition); in 'target' mode they only texture the new
+  // layer, so laying a fresh base leaves no stripes of the previous picture behind.
+  relax(cx, cy, r, target, k, nx = 0, ny = 1, streak = null, streakPhase = 0, hard = 0.2, streakMode = 'rate') {
     const { w, h, d } = this;
     const x0 = Math.max(0, Math.floor(cx - r));
     const x1 = Math.min(w - 1, Math.ceil(cx + r));
@@ -134,6 +136,7 @@ export class SandField {
     const r2 = r * r;
     const inv = 1 / r;
     const fn = typeof target === 'function';
+    const byTarget = streakMode === 'target';
     for (let y = y0; y <= y1; y++) {
       const dy = y + 0.5 - cy;
       const dy2 = dy * dy;
@@ -144,9 +147,13 @@ export class SandField {
         const q = dx * dx + dy2;
         if (q >= r2) continue;
         let a = k * falloff(Math.sqrt(q) * inv, hard);
-        if (streak) a *= streak[((dx * nx + dy * ny + streakPhase) | 0) & 1023];
+        let T = fn ? target(x, y) : target;
+        if (streak) {
+          const m = streak[((dx * nx + dy * ny + streakPhase) | 0) & 1023];
+          if (byTarget) T *= 0.88 + 0.12 * m;
+          else a *= m;
+        }
         const i = row + x;
-        const T = fn ? target(x, y) : target;
         d[i] += (T - d[i]) * a;
       }
     }

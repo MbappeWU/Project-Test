@@ -18,7 +18,7 @@ export default {
   build(stage, rng) {
     const acts = [];
     const ground = 930;
-    acts.push(...K.cover(stage, stage.vgrad(1.6, 1.0, 0, 1080, 0.12, rng.float(0, 60)), { rows: 6, y0: -60, y1: 1140, rate: 0.9 }));
+    acts.push(...K.cover(stage, stage.vgrad(1.6, 1.0, 0, 1080, 0.12, rng.float(0, 60)), { rows: 6, y0: -60, y1: 1140 }));
     const mx = rng.float(820, 1000);
     acts.push(...K.moon(stage, mx, 230, 110, { halo: 2.4, glow: 0.5 }));
     // Distant bamboo carved in light (moonlit), near bamboo poured dark.

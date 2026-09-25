@@ -19,7 +19,7 @@ export default {
     const n = stage.noise;
     const off = rng.float(0, 100);
     const acts = [];
-    acts.push(...K.cover(stage, stage.vgrad(1.75, 1.05, 0, 1080, 0.1, off), { rows: 6, y0: -60, y1: 1140, rate: 0.9 }));
+    acts.push(...K.cover(stage, stage.vgrad(1.75, 1.05, 0, 1080, 0.1, off), { rows: 6, y0: -60, y1: 1140 }));
     const mx = rng.float(1180, 1300);
     acts.push(...K.moon(stage, mx, 250, 92, { halo: 2.6, glow: 0.5 }));
     const far = ridge(n, -60, 1980, 700, 170, { offset: off, freq: 1 / 360, peaks: [[1500, 90, 220]] });

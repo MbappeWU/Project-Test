@@ -28,7 +28,7 @@ export default {
     const oy = 770;
     const acts = [];
 
-    acts.push(...K.cover(stage, sky, { rows: 5, y0: -60, y1: H0 + 30, rate: 0.9 }));
+    acts.push(...K.cover(stage, sky, { rows: 5, y0: -60, y1: H0 + 30 }));
     acts.push(
       K.reveal((st) => st.mask([[-10, H0], [1930, H0], [1930, 1090], [-10, 1090]], { feather: 1, rough: 0.2, roughScale: 0.2 }), {
         op: 'set',
