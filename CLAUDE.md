@@ -15,7 +15,16 @@ This repository is currently in its initial setup phase. As the project develops
 ```
 Project-Test/
 ├── CLAUDE.md          # AI assistant guidelines (this file)
-└── (additional files and directories to be added)
+├── src/memomind/      # MemoMind multimodal memory agent (Python)
+├── tests/             # MemoMind tests (pytest)
+├── docs/              # MemoMind architecture and spec
+└── sandscroll/        # SandScroll: 24/7 generative sand-painting livestream (Node.js, ffmpeg)
+    ├── src/core/      #   sand simulation, light table, gestures, inscriptions, director
+    ├── src/scenes/    #   one file per painting
+    ├── src/music/     #   generative guzheng / xiao / guqin music engine
+    ├── src/node/      #   broadcaster (render -> ffmpeg -> YouTube RTMPS)
+    ├── src/web/       #   browser player (preview, OBS browser source)
+    └── docs/          #   operations playbook (运营手册) and screenshots
 ```
 
 As the project grows, update this structure diagram to reflect the actual organization.
@@ -129,7 +138,9 @@ Document deployment procedures here when configured.
 | Path | Description |
 |------|-------------|
 | `CLAUDE.md` | AI assistant guidelines |
-| (Add more as project develops) | |
+| `sandscroll/README.md` | SandScroll overview, commands, how to add a scene |
+| `sandscroll/docs/运营手册.md` | Channel setup and operations playbook |
+| `sandscroll/program.json` | Running order and time-sensitive notes for the stream |
 
 ## Common Tasks for AI Assistants
 
@@ -184,6 +195,7 @@ Document common issues and solutions here as they arise.
 | Date | Changes |
 |------|---------|
 | 2026-02-05 | Initial CLAUDE.md created |
+| 2026-09-25 | Added `sandscroll/` (Node.js; run `npm test` inside it) |
 
 ---
 
