@@ -44,7 +44,7 @@ export default {
       apron.push([x, table + 176 + 60 * arch]);
     }
     apron.push([1100, 1940], [-20, 1940]);
-    acts.push(K.reveal((st) => st.mask(apron, { feather: 2 }), { op: 'set', level: (x, y) => grain(x, y) * 2.7, order: 'down', duration: 1.2 }));
+    acts.push(K.reveal((st) => st.mask(apron, { feather: 2 }), { op: 'set', level: (x, y) => grain(x, y) * 3, order: 'down', duration: 1.2 }));
     acts.push(K.carve([[-20, table + 106], [1100, table + 106]], { width: 3, strength: 0.4, speed: 1400, taper: K.even, rim: 0.3, rest: 0.03 }));
     acts.push(K.carve(apron.slice(1, -2).map(([x, y]) => [x, y - 10]), { width: 3, strength: 0.4, speed: 1400, taper: K.even, rim: 0.3, rest: 0.03 }));
     acts.push(K.reveal((st) => st.mask(ellipse(vx + 80, table + 4, 250, 22, 0, 48), { feather: 12 }), { op: 'add', amount: 0.5, order: 'out', duration: 0.5 }));
@@ -79,7 +79,7 @@ export default {
       return m.map((a, X, Y) => a * (1 - front.at(X, Y)) * (1 - smoothstep(table - 60, table - 34, Y / s)));
     }, { op: 'add', amount: 0.26, order: 'right', duration: 1.2 }));
     // Petals fallen on the table (落英).
-    for (const [px, py, a, lv, sz] of [[690, 1306, 0.5, 0.1, 54], [800, 1330, -0.3, 0.14, 46], [612, 1334, 2.6, 1.9, 38]]) {
+    for (const [px, py, a, lv, sz] of [[676, 1286, 1.1, 0.08, 66], [808, 1300, 2.1, 0.12, 58], [600, 1312, 1.6, 1.9, 46]]) {
       acts.push(...fallenPetal(stage, px, py, a, sz, lv));
     }
     acts.push(K.inscribe(stage, { columns: this.poem.columns, x: 964, y: 486, size: 52, colGap: 1.25, mode: 'carve', strength: 0.9, perChar: 1.1 }));
@@ -168,7 +168,9 @@ function vase(stage, { x, base, H }) {
     }
   }
   // Glaze highlights.
-  decor.push(K.carve(spline([at(-0.62, 0.14), at(-0.66, 0.26), at(-0.6, 0.42)], 10), { width: 10, strength: 0.55, speed: 500, rim: 0, taper: K.taperBoth, rest: 0.02 }));
+  decor.push(K.carve(spline([at(-0.62, 0.13), at(-0.67, 0.26), at(-0.6, 0.43)], 10), { width: 12, strength: 0.72, speed: 500, rim: 0, taper: K.taperBoth, rest: 0.02 }));
+  decor.push(K.carve(spline([at(-0.45, 0.18), at(-0.49, 0.27), at(-0.45, 0.36)], 10), { width: 4, strength: 0.5, speed: 500, rim: 0, taper: K.taperBoth, rest: 0.02 }));
+  decor.push(K.reveal((st) => st.mask(ellipse(...at(-0.5, 0.53), 9, 5, -0.5, 16), { feather: 2 }), { op: 'carve', strength: 0.8, order: 'out', duration: 0.2, rest: 0.02 }));
   decor.push(K.carve(spline([at(-0.6, 0.7), at(-0.62, 0.82), at(-0.55, 0.93)], 10), { width: 4, strength: 0.45, speed: 500, rim: 0, taper: K.taperBoth, rest: 0.02 }));
   return { body: acts, decor, outline: body };
 }
@@ -330,8 +332,8 @@ function peonyLeaf(stage, x, y, angle, len, rng, level = 2.3) {
     }
     ribs.push(rib);
   }
-  const acts = [K.reveal((st) => st.mask(polys, { feather: 0.8, rough: 0.12, roughScale: 0.4 }), { op: 'set', level: stage.mottle(level, 0.1, 0.03), order: 'out', duration: 1, rest: 0.03 })];
-  for (const r of ribs) acts.push(K.carve(r, { width: 2.2, strength: 0.5, speed: 300, taper: K.taperEnd, rest: 0.02 }));
+  const acts = [K.reveal((st) => st.mask(polys, { feather: 0.8, rough: 0.12, roughScale: 0.4 }), { op: 'set', level: stage.mottle(level, 0.1, 0.03), order: 'out', duration: 0.75, rest: 0.02 })];
+  for (const r of ribs) acts.push(K.carve(r, { width: 2.2, strength: 0.5, speed: 600, taper: K.taperEnd, rest: 0.01 }));
   return acts;
 }
 
@@ -361,30 +363,30 @@ function roseLeaves(stage, x, y, angle, size, rng) {
     polys.push(pts);
     ribs.push([[bx + lc * l * 0.1, by + ls * l * 0.1], [bx + lc * l * 0.8, by + ls * l * 0.8]]);
   }
-  const acts = [K.pour([[x, y], stemEnd], { width: 3, amount: 2.2, speed: 240, scatter: 0, rest: 0.02 })];
-  acts.push(K.reveal((st) => st.mask(polys, { feather: 0.7 }), { op: 'set', level: stage.mottle(2.3, 0.1, 0.03), order: 'out', duration: 0.8, rest: 0.03 }));
-  for (const r of ribs) acts.push(K.carve(r, { width: 1.6, strength: 0.5, speed: 300, taper: K.taperEnd, rest: 0.02 }));
+  const acts = [K.pour([[x, y], stemEnd], { width: 3, amount: 2.2, speed: 400, scatter: 0, rest: 0.01 })];
+  acts.push(K.reveal((st) => st.mask(polys, { feather: 0.7 }), { op: 'set', level: stage.mottle(2.3, 0.1, 0.03), order: 'out', duration: 0.6, rest: 0.02 }));
+  acts.push(K.reveal((st) => st.mask(ribs.map(([[x0, y0], [x1, y1]]) => stalkPoly(x0, y0, x1, y1, 0.8)), { feather: 0.5 }), { op: 'carve', strength: 0.5, order: 'out', duration: 0.3, rest: 0.02 }));
   return acts;
 }
 
-// A petal lying on the table, foreshortened: a narrow base widening to a wavy, notched outer
-// edge, a faint vein, and a soft shadow.
+// A petal lying on the table, foreshortened: a narrow claw fanning out to a wavy, notched margin,
+// deeper toward the base, its far edge curled up to the light, and a soft shadow.
 function fallenPetal(stage, x, y, angle, size, level) {
-  const local = [];
-  for (let i = 0; i <= 40; i++) {
-    const t = i / 40;
-    const a = -Math.PI + TAU * t;
-    const wide = 0.5 + 0.5 * Math.cos(a);
-    const notch = 1 - 0.12 * Math.exp(-Math.pow(a / 0.18, 2));
-    const r = size * (0.3 + 0.7 * Math.pow(wide, 0.7)) * notch * (1 + 0.05 * wide * Math.sin(a * 9));
-    local.push([Math.cos(a) * r * 1.1 + size * 0.35, Math.sin(a) * r * 0.62]);
+  const s = stage.s;
+  const fan = 0.85;
+  const local = [[-size * 0.08, 0]];
+  for (let i = 0; i <= 24; i++) {
+    const th = -fan + (2 * fan * i) / 24;
+    const r = size * (0.78 + 0.22 * Math.cos((th / fan) * Math.PI * 0.5)) * (1 - 0.12 * Math.exp(-Math.pow(th / 0.12, 2))) * (1 + 0.05 * Math.sin(th * 13 + size));
+    local.push([Math.cos(th) * r, Math.sin(th) * r]);
   }
-  const place = ([u, v]) => [x + u * Math.cos(angle) - v * Math.sin(angle), y + (u * Math.sin(angle) + v * Math.cos(angle)) * 0.6];
-  const pts = local.map(place);
-  const vein = [place([-size * 0.2, 0]), place([size * 0.55, size * 0.03]), place([size * 1.2, 0])];
+  const place = ([u, v], k = 1) => [x + (u * Math.cos(angle) - v * Math.sin(angle)) * k, y + (u * Math.sin(angle) + v * Math.cos(angle)) * 0.62 * k];
+  const pts = local.map((p) => place(p));
+  const rim = local.slice(4, 22).map((p) => place(p, 0.94));
+  const depth = (X, Y) => level + (level > 1 ? 0.3 : 0.45) * (1 - Math.min(1, Math.hypot(X / s - x, (Y / s - y) / 0.62) / size));
   return [
-    K.reveal((st) => st.mask(pts.map(([px, py]) => [px + 7, py + 5]), { feather: 5 }), { op: 'add', amount: 0.35, order: 'out', duration: 0.3, rest: 0.02 }),
-    K.reveal((st) => st.mask(pts, { feather: 1 }), { op: 'set', level, order: 'out', duration: 0.5, rest: 0.03 }),
-    level > 1 ? K.carve(spline(vein, 6), { width: 2.4, strength: 0.45, speed: 200, taper: K.taperBoth, rest: 0.03 }) : K.pour(spline(vein, 6), { width: 2.4, amount: 0.35, speed: 200, taper: K.taperBoth, scatter: 0, rest: 0.03 }),
+    K.reveal((st) => st.mask(pts.map(([px, py]) => [px + 8, py + 5]), { feather: 5 }), { op: 'add', amount: 0.35, order: 'out', duration: 0.3, rest: 0.02 }),
+    K.reveal((st) => st.mask(pts, { feather: 1 }), { op: 'set', level: depth, order: 'out', duration: 0.5, rest: 0.03 }),
+    K.carve(rim, { width: 3, strength: level > 1 ? 0.55 : 0.8, speed: 200, taper: K.taperBoth, rest: 0.03 }),
   ];
 }

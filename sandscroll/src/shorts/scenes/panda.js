@@ -373,10 +373,10 @@ function panda(stage, rng, { x, y, u }) {
   head.push(K.reveal((st) => st.mask(ellipse(gx, gy, 7, 4, -0.2, 12), { feather: 1 }), { op: 'carve', strength: 0.6, order: 'out', duration: 0.2, rest: 0.02 }));
   head.push(K.pour(C([R(0, 0.44), R(0, 0.52)], 4, false), { width: 4, amount: 1.8, speed: 60, taper: K.even, scatter: 0, rest: 0.02 }));
   head.push(K.pour(C([R(-0.16, 0.52), R(-0.08, 0.57), R(0, 0.52), R(0.08, 0.57), R(0.16, 0.52)], 6, false), { width: 4, amount: 1.8, speed: 90, taper: K.taperBoth, scatter: 0, rest: 0.03 }));
-  // Bamboo leaves clenched at the mouth corner, hanging over the white chest.
-  const [mx, my] = P(...R(-0.14, 0.54));
-  twig.push(K.pour(spline([[mx + 14, my - 2], [mx - 12, my + 6], [mx - 40, my + 20]], 4), { width: 5, amount: 2.4, speed: 120, taper: K.taperEnd, scatter: 0, rest: 0.03 }));
-  const leaves = [[1.5, 132, 0.28], [1.95, 150, -0.22], [2.45, 128, -0.3]].map(([a, len, b]) => bladePoly(mx - 36, my + 18, a, len, len * 0.125, b));
+  // A leafy twig clenched in the mouth, its leaves hanging over the white chest.
+  const [mx, my] = P(...R(-0.02, 0.54));
+  twig.push(K.pour(spline([[mx + 30, my - 6], [mx - 10, my + 2], [mx - 60, my + 20], [mx - 84, my + 34]], 5), { width: 5, amount: 2.4, speed: 140, taper: (t) => 1 - 0.5 * t, scatter: 0, rest: 0.03 }));
+  const leaves = [[-84, 34, 1.3, 150, 0.3], [-80, 32, 1.78, 168, -0.22], [-70, 26, 2.3, 142, -0.35], [22, -4, 0.55, 96, 0.3]].map(([dx, dy, a, len, b]) => bladePoly(mx + dx, my + dy, a, len, len * 0.1, b));
   twig.push(K.reveal((st) => st.mask(leaves, { feather: 0.7 }), { op: 'set', level: 2.5, order: 'down', duration: 0.8, rest: 0.05 }));
   // The paw closes over the stalk once it has grown past.
   grip.push(fur(T([[3.2, -3.5], [3.56, -3.96]], [0.48, 0.46]), black, 'right', 0.5));
@@ -388,7 +388,7 @@ function panda(stage, rng, { x, y, u }) {
   for (const sd of [-1, 1]) {
     const [ex, ey] = P(...R(sd * 0.3, -0.06));
     eyes.push(K.reveal((st) => st.mask(ellipse(ex, ey, 12, 13, 0, 24), { feather: 1.5 }), { op: 'carve', strength: 0.32, order: 'out', duration: 0.4, rest: 0.05 }));
-    eyes.push(K.reveal((st) => st.mask(ellipse(ex - 3, ey - 4, 4.5, 4.5, 0, 12), { feather: 0.5 }), { op: 'carve', strength: 0.97, order: 'out', duration: 0.25, rest: 0.15 }));
+    eyes.push(K.reveal((st) => st.mask(ellipse(ex - 3, ey - 4, 5.5, 5.5, 0, 12), { feather: 0.5 }), { op: 'carve', strength: 0.97, order: 'out', duration: 0.25, rest: 0.15 }));
   }
   return { body, head, twig, grip, eyes, ears };
 }

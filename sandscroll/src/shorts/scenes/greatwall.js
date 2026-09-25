@@ -34,7 +34,7 @@ export default {
     // Far ranges, lightest first; the wall runs on into the distance along the right one.
     const farR1 = ridge(n, 640, 1160, 900, 120, { offset: off + 11, freq: 1 / 300, peaks: [[rng.float(920, 960), 70, 110]], taper: 0.2 });
     const farR2 = ridge(n, 760, 1160, 1070, 90, { offset: off + 17, freq: 1 / 240, peaks: [[1060, 50, 90]], taper: 0.2 });
-    acts.push(L.range(stage, farR1, { level: 0.46, mist: 0.9, mistDepth: 130, order: 'right', duration: 2.2 }));
+    acts.push(L.range(stage, farR1, { level: 0.58, mist: 0.9, mistDepth: 130, order: 'right', duration: 2.2 }));
     acts.push(...L.greatWall(stage, farR1, { x0: 850, x1: 1100, offset: 3, thick: 5, tooth: 4, level: 1.05, towers: [peakOf(farR1, 900, 1060)], towerW: 12, towerH: 11, duration: 1.2, walk: false }));
     acts.push(L.range(stage, farR2, { level: 0.74, mist: 0.9, mistDepth: 120, order: 'right', duration: 2 }));
     const far1 = ridge(n, -80, 720, 1010, 130, { offset: off + 23, freq: 1 / 320, peaks: [[rng.float(120, 220), 90, 130]] });
@@ -96,7 +96,7 @@ export default {
     // A sea of cloud drifts through the valleys.
     acts.push(L.mistBand(stage, { y: 1165, height: 120, x0: 380, x1: 1080, strength: 0.5, duration: 2 }));
     acts.push(L.mistBand(stage, { y: 1300, height: 80, x0: -40, x1: 1080, strength: 0.42, duration: 2 }));
-    acts.push(...L.flock(stage, rng, { x: rng.float(480, 505), y: rng.float(500, 520), count: 7, size: 19, dx: 46, dy: 18, level: 1.5 }));
+    acts.push(...L.flock(stage, rng, { x: rng.float(480, 505), y: rng.float(500, 520), count: 7, size: 22, dx: 50, dy: 19, level: 1.8 }));
     acts.push(K.inscribe(stage, { columns: this.poem.columns, x: 214, y: 486, size: 66, mode: 'pour', amount: 1.5, perChar: 1.35 }));
     acts.push(...K.seal(stage, this.seal, 128, 968, { size: 62, seed: rng.int(1, 999) }));
     return acts;
