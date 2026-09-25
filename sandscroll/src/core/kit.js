@@ -2,12 +2,12 @@ import { palm, pour, carve, reveal, call, wait } from './actions.js';
 import { Mask } from './mask.js';
 import { arc, ellipse, clamp, TAU } from './geom.js';
 import { inscription } from './text.js';
-import { Overlay, captionSprite, sealSprite, textSprite } from './overlay.js';
+import { Overlay, captionSprite, sealSprite, textBlockSprite } from './overlay.js';
 
-// Reusable gestures shared by the scenes. All coordinates are virtual (1920x1080).
+// Reusable gestures shared by the scenes. All coordinates are virtual (stage.VW x stage.VH).
 
 // Palm passes across a horizontal band, alternating direction, moving density toward `target`.
-export function cover(stage, target, { rows = 6, y0 = 0, y1 = 1080, x0 = -120, x1 = 2040, width = 320, speed = 1700, rate = 0.97, streak = 1, wave = 16, phase = 0 } = {}) {
+export function cover(stage, target, { rows = 6, y0 = 0, y1 = stage.VH, x0 = -120, x1 = stage.VW + 120, width = 320, speed = 1700, rate = 0.97, streak = 1, wave = 16, phase = 0 } = {}) {
   const acts = [];
   // Rows closer than half a palm apart so passes overlap without leaving light bands.
   rows = Math.max(rows, Math.ceil((y1 - y0) / (width * 0.45)));
@@ -29,9 +29,9 @@ export function wash(stage, rng, { level = 0.55, rate = 0.8, arcs = 5, width = 3
   for (let i = 0; i < arcs; i++) {
     const fromLeft = i % 2 === 1;
     const r = rng.float(1000, 1500);
-    const cy = ((i + 0.5) / arcs) * 1080 + rng.float(-120, 120);
+    const cy = ((i + 0.5) / arcs) * stage.VH + rng.float(-120, 120);
     const reach = rng.float(0.45, 0.8);
-    const cx = fromLeft ? 1920 * reach - r : 1920 * (1 - reach) + r;
+    const cx = fromLeft ? stage.VW * reach - r : stage.VW * (1 - reach) + r;
     const base = fromLeft ? 0 : Math.PI;
     const pts = arc(cx, cy, r, base - 0.85, base + 0.85, 48);
     if (rng.chance(0.5)) pts.reverse();
@@ -76,7 +76,7 @@ export function moon(stage, cx, cy, r, { duration = 7, halo = 2.1, glow = 0.38, 
 }
 
 // Horizontal wave strokes on a sea between horizon and bottom, denser near the horizon.
-export function waves(stage, rng, { horizon = 640, bottom = 1080, x0 = 0, x1 = 1920, count = 18, strength = 0.62, avoid = null } = {}) {
+export function waves(stage, rng, { horizon = 640, bottom = stage.VH, x0 = 0, x1 = stage.VW, count = 18, strength = 0.62, avoid = null } = {}) {
   const acts = [];
   for (let i = 0; i < count; i++) {
     const t = Math.pow((i + rng.float(0.1, 0.9)) / count, 1.6);
@@ -96,7 +96,7 @@ export function waves(stage, rng, { horizon = 640, bottom = 1080, x0 = 0, x1 = 1
 }
 
 // Shimmering column of moonlight on water: short bright dashes widening toward the viewer.
-export function moonPath(stage, rng, { x, horizon = 640, bottom = 1080, spread = 60, count = 34, strength = 0.8 } = {}) {
+export function moonPath(stage, rng, { x, horizon = 640, bottom = stage.VH, spread = 60, count = 34, strength = 0.8 } = {}) {
   const acts = [];
   for (let i = 0; i < count; i++) {
     const t = (i + rng.float(0, 1)) / count;
@@ -132,6 +132,7 @@ export function inscribe(stage, { columns, x, y, size = 58, mode = 'carve', stre
       rest: 0.8,
     },
   );
+  act.tag = 'inscription';
   return act;
 }
 
@@ -148,10 +149,10 @@ export function seal(stage, text, x, y, { size = 70, seed = 5 } = {}) {
   ];
 }
 
-export function caption(stage, { cn, en, by }, { hold = 22, delay = 0 } = {}) {
+export function caption(stage, { cn, en, by }, { hold = 22, delay = 0, bottom = 26 } = {}) {
   return call((st) => {
     const sprite = captionSprite(st, { cn, en, by });
-    const o = new Overlay(sprite, (st.width - sprite.w) / 2, st.height - sprite.h - 26 * st.s, { delay, fadeIn: 2.2, hold, fadeOut: 2.5 });
+    const o = new Overlay(sprite, (st.width - sprite.w) / 2, st.height - sprite.h - bottom * st.s, { delay, fadeIn: 2.2, hold, fadeOut: 2.5 });
     st.addOverlay(o);
     st.captionOverlay = o;
   });
@@ -160,11 +161,15 @@ export function caption(stage, { cn, en, by }, { hold = 22, delay = 0 } = {}) {
 // Small museum-plaque note at the top centre (historical or news context for the picture).
 export function note(stage, { cn, en }, { hold = 22, delay = 0 } = {}) {
   return call((st) => {
-    const lines = [];
-    if (cn) lines.push({ text: cn, size: 26, y: 40, color: 'rgba(255, 243, 222, 0.92)' });
-    if (en) lines.push({ text: en, size: 23, y: 76, italic: true, color: 'rgba(255, 238, 212, 0.88)' });
-    const sprite = textSprite(st, lines, { width: 1500, height: 96 });
-    const o = new Overlay(sprite, (st.width - sprite.w) / 2, 18 * st.s, { delay, fadeIn: 2.2, hold, fadeOut: 2.5 });
+    const sprite = textBlockSprite(
+      st,
+      [
+        { text: cn, size: 26, face: 'kai', color: 'rgba(255, 243, 222, 0.92)' },
+        { text: en, size: 22, face: 'kai', italic: true, gap: 2, color: 'rgba(255, 238, 212, 0.88)' },
+      ],
+      { maxWidth: Math.min(1500, st.VW - 60), pad: 10 },
+    );
+    const o = new Overlay(sprite, (st.width - sprite.w) / 2, 14 * st.s, { delay, fadeIn: 2.2, hold, fadeOut: 2.5 });
     st.addOverlay(o);
     st.noteOverlay = o;
   });

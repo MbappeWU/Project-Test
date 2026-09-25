@@ -5,16 +5,19 @@ import { Rng } from './rng.js';
 import { polygonMask, feather, roughen } from './mask.js';
 import { clamp } from './geom.js';
 
-// Scenes are authored on a virtual 1920x1080 canvas; the stage maps them to its real resolution.
+// Scenes are authored on a virtual canvas (1920x1080 for the landscape stream, 1080x1920 for
+// vertical shorts); the stage maps it to its real resolution.
 export const VW = 1920;
 
 const HAND_ACTIVITY = { relax: 1, fill: 0.6, pour: 0.4, carve: 0.35 };
 
 export class Stage {
-  constructor({ width = 1280, height = 720, seed = 1, palette = 'amber', canvas = null } = {}) {
+  constructor({ width = 1280, height = 720, seed = 1, palette = 'amber', canvas = null, virtual = null } = {}) {
     this.width = width;
     this.height = height;
-    this.s = width / VW;
+    this.VW = virtual ? virtual[0] : VW;
+    this.VH = virtual ? virtual[1] : (height * VW) / width;
+    this.s = width / this.VW;
     this.seed = seed;
     this.canvas = canvas;
     this.field = new SandField(width, height);
@@ -78,7 +81,8 @@ export class Stage {
     this.handKind = kind;
   }
 
-  advance(dt) {
+  // `overlayDt` lets a time-warped performance (fast-drawn shorts) keep captions on real time.
+  advance(dt, overlayDt = dt) {
     this.time += dt;
     this.hand = null;
     let budget = dt;
@@ -108,7 +112,7 @@ export class Stage {
     }
     const target = this.hand ? HAND_ACTIVITY[this.handKind] || 0.3 : 0;
     this.activity += (target - this.activity) * Math.min(1, dt * 6);
-    for (const o of this.overlays) o.tick(dt);
+    for (const o of this.overlays) o.tick(overlayDt);
     const alive = this.overlays.filter((o) => !o.finished);
     for (const o of this.overlays) if (o.finished) this.field.touch(...o.rect());
     this.overlays = alive;

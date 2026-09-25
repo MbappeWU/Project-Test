@@ -97,8 +97,9 @@ function isCJK(ch) {
   return (c >= 0x2e80 && c <= 0x9fff) || (c >= 0xf900 && c <= 0xfaff) || (c >= 0xfe30 && c <= 0xfe4f) || (c >= 0xff00 && c <= 0xffef) || (c >= 0x2018 && c <= 0x201d);
 }
 
-// Draws a line mixing Chinese and Latin text, each run in its own typeface, centred on x.
-function drawMixed(ctx, text, x, y, cjkFont, latinFont) {
+const NO_LINE_START = new Set([...'，。、；：？！”’）》」』…·,.;:?!)']);
+
+function runsOf(text) {
   const runs = [];
   for (const ch of text) {
     const cjk = isCJK(ch);
@@ -106,6 +107,21 @@ function drawMixed(ctx, text, x, y, cjkFont, latinFont) {
     if (last && last.cjk === cjk) last.text += ch;
     else runs.push({ text: ch, cjk });
   }
+  return runs;
+}
+
+function measureMixed(ctx, text, cjkFont, latinFont) {
+  let w = 0;
+  for (const r of runsOf(text)) {
+    ctx.font = r.cjk ? cjkFont : latinFont;
+    w += ctx.measureText(r.text).width;
+  }
+  return w;
+}
+
+// Draws a line mixing Chinese and Latin text, each run in its own typeface, centred on x.
+function drawMixed(ctx, text, x, y, cjkFont, latinFont) {
+  const runs = runsOf(text);
   let total = 0;
   for (const r of runs) {
     ctx.font = r.cjk ? cjkFont : latinFont;
@@ -123,33 +139,101 @@ function drawMixed(ctx, text, x, y, cjkFont, latinFont) {
   ctx.textAlign = align;
 }
 
-// Museum-label caption: poem line, English rendering and attribution, bottom centre.
-export function captionSprite(stage, { cn, en, by }) {
+// Greedy line breaking: Latin breaks at spaces, Chinese between characters (never before
+// closing punctuation).
+function wrapMixed(ctx, text, maxW, cjkFont, latinFont) {
+  const tokens = [];
+  let word = '';
+  for (const ch of text) {
+    if (isCJK(ch)) {
+      if (word) tokens.push(word);
+      word = '';
+      if (NO_LINE_START.has(ch) && tokens.length) tokens[tokens.length - 1] += ch;
+      else tokens.push(ch);
+    } else if (ch === ' ') {
+      tokens.push(`${word} `);
+      word = '';
+    } else {
+      word += ch;
+    }
+  }
+  if (word) tokens.push(word);
+  const lines = [];
+  let line = '';
+  for (const t of tokens) {
+    const next = line + t;
+    if (line && measureMixed(ctx, next.trimEnd(), cjkFont, latinFont) > maxW) {
+      lines.push(line.trimEnd());
+      line = t.trimStart();
+    } else {
+      line = next;
+    }
+  }
+  if (line.trim()) lines.push(line.trimEnd());
+  return lines;
+}
+
+const FACE = { kai: FONTS.kai, brush: FONTS.brush, serif: FONTS.serif };
+
+// Centred block of wrapped text lines with a soft dark halo, used for captions, notes, hooks.
+// blocks: [{ text, size, face: 'kai'|'brush'|'serif', italic, color, gap }], sizes in virtual px.
+export function textBlockSprite(stage, blocks, { maxWidth = Math.min(1560, stage.VW - 80), pad = 18, halo = 14, band = 0 } = {}) {
   const s = stage.s;
-  const w = Math.round(1560 * s);
-  const h = Math.round(150 * s);
+  const w = Math.round(maxWidth * s);
+  const probe = stage.scratch(8, 8).getContext('2d');
+  const lines = [];
+  let y = pad;
+  for (const b of blocks.filter((x) => x && x.text)) {
+    const px = b.size * s;
+    const cjk = `${px.toFixed(1)}px ${FACE[b.face || 'kai']}`;
+    const latin = `${b.italic ? 'italic ' : ''}${(px * (b.latinScale || 1.05)).toFixed(1)}px ${FONTS.serif}`;
+    y += (b.gap || 0);
+    for (const text of wrapMixed(probe, b.text, w - pad * 2 * s, cjk, latin)) {
+      y += b.size * 1.02;
+      lines.push({ text, cjk, latin, y, color: b.color || 'rgba(255, 242, 220, 0.95)' });
+      y += b.size * (b.leading ?? 0.34);
+    }
+  }
+  const h = Math.max(1, Math.round((y + pad) * s));
   const canvas = stage.scratch(w, h);
   const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, w, h);
+  if (band > 0) {
+    // Soft dark backing so short-video titles stay readable over any part of the table.
+    const g = ctx.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, 'rgba(22, 11, 4, 0)');
+    g.addColorStop(0.18, `rgba(22, 11, 4, ${band})`);
+    g.addColorStop(0.82, `rgba(22, 11, 4, ${band})`);
+    g.addColorStop(1, 'rgba(22, 11, 4, 0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+  }
   ctx.textAlign = 'center';
   ctx.textBaseline = 'alphabetic';
-  const px = (n) => (n * s).toFixed(1);
-  const lines = [];
-  if (cn) lines.push({ text: cn, cjk: `${px(34)}px ${FONTS.kai}`, latin: `${px(30)}px ${FONTS.serif}`, y: 46, color: 'rgba(255, 244, 222, 0.97)' });
-  if (en) lines.push({ text: en, cjk: `${px(26)}px ${FONTS.kai}`, latin: `italic ${px(29)}px ${FONTS.serif}`, y: 88, color: 'rgba(255, 240, 214, 0.93)' });
-  if (by) lines.push({ text: by, cjk: `${px(21)}px ${FONTS.kai}`, latin: `${px(22)}px ${FONTS.serif}`, y: 122, color: 'rgba(250, 228, 196, 0.86)' });
-  paintLines(ctx, lines, w / 2, s);
+  paintLines(ctx, lines, w / 2, s, halo);
   return toSprite(ctx, w, h);
 }
 
-function paintLines(ctx, lines, cx, s) {
+// Museum-label caption: poem line, English rendering and attribution.
+export function captionSprite(stage, { cn, en, by }, { maxWidth, scale = 1 } = {}) {
+  return textBlockSprite(
+    stage,
+    [
+      { text: cn, size: 34 * scale, face: 'kai', latinScale: 0.9, color: 'rgba(255, 244, 222, 0.97)' },
+      { text: en, size: 28 * scale, face: 'kai', italic: true, gap: 4 * scale, color: 'rgba(255, 240, 214, 0.93)' },
+      { text: by, size: 21 * scale, face: 'kai', gap: 4 * scale, color: 'rgba(250, 228, 196, 0.86)' },
+    ],
+    { maxWidth, pad: 12 },
+  );
+}
+
+function paintLines(ctx, lines, cx, s, halo = 14) {
   for (const pass of ['shadow', 'text']) {
     for (const l of lines) {
       if (pass === 'shadow') {
         ctx.save();
         ctx.fillStyle = 'rgba(30, 14, 4, 0.55)';
         ctx.shadowColor = 'rgba(25, 10, 2, 0.9)';
-        ctx.shadowBlur = 14 * s;
+        ctx.shadowBlur = halo * s;
         drawMixed(ctx, l.text, cx, l.y * s, l.cjk, l.latin);
         ctx.restore();
       } else {
@@ -158,31 +242,6 @@ function paintLines(ctx, lines, cx, s) {
       }
     }
   }
-}
-
-// Generic single-block text sprite (programme titles, notes). Lines: { text, size, y, italic, color }.
-export function textSprite(stage, lines, { width = 1400, height = 200 } = {}) {
-  const s = stage.s;
-  const w = Math.round(width * s);
-  const h = Math.round(height * s);
-  const canvas = stage.scratch(w, h);
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, w, h);
-  ctx.textAlign = 'center';
-  const px = (n) => (n * s).toFixed(1);
-  paintLines(
-    ctx,
-    lines.map((l) => ({
-      text: l.text,
-      y: l.y,
-      color: l.color || 'rgba(255, 242, 220, 0.95)',
-      cjk: `${px(l.size)}px ${FONTS.kai}`,
-      latin: `${l.italic ? 'italic ' : ''}${px(l.size * 1.05)}px ${FONTS.serif}`,
-    })),
-    w / 2,
-    s,
-  );
-  return toSprite(ctx, w, h);
 }
 
 // Cinnabar seal with characters cut out (白文印), read right column first, top to bottom.

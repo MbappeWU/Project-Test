@@ -6,7 +6,6 @@
 //   File:    node src/node/stream.mjs --out preview.mp4 --duration 300
 //
 // All options can also be given as environment variables (see deploy/.env.example).
-import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import { parseArgs } from 'node:util';
 import { Show } from '../core/show.js';
@@ -14,6 +13,7 @@ import { SCENES } from '../scenes/index.js';
 import { MusicEngine } from '../music/engine.js';
 import { nodeCanvas } from './canvas.js';
 import { loadConfig } from './config.js';
+import { rawInputArgs, startFfmpeg, write, interleave } from './encoder.js';
 
 const env = process.env;
 const { values: args } = parseArgs({
@@ -115,13 +115,7 @@ function resolveTarget() {
 function ffmpegArgs() {
   const g = String(fps * 2);
   const input = [
-    '-hide_banner', '-loglevel', 'error', '-nostdin',
-    // Raw inputs need no probing; probing would make ffmpeg wait on one pipe while we fill the other.
-    '-probesize', '32', '-analyzeduration', '0', '-thread_queue_size', '1024',
-    '-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', `${width}x${height}`, '-r', String(fps), '-i', 'pipe:0',
-    '-probesize', '32', '-analyzeduration', '0', '-thread_queue_size', '1024',
-    '-f', 'f32le', '-ar', String(sampleRate), '-ac', '2', '-i', 'pipe:3',
-    '-map', '0:v', '-map', '1:a',
+    ...rawInputArgs({ width, height, fps, sampleRate }),
     '-c:v', 'libx264', '-preset', args.preset, '-pix_fmt', 'yuv420p', '-profile:v', 'high',
     '-g', g, '-keyint_min', g, '-sc_threshold', '0',
     '-c:a', 'aac', '-b:a', args['audio-bitrate'], '-ar', String(sampleRate), '-ac', '2',
@@ -132,32 +126,6 @@ function ffmpegArgs() {
     return [...input, '-b:v', rate, '-maxrate', rate, '-bufsize', buf, '-x264-params', 'nal-hrd=cbr', '-flvflags', 'no_duration_filesize', '-f', 'flv', target.url];
   }
   return [...input, '-crf', args.crf, '-movflags', '+faststart', '-y', target.url];
-}
-
-function startEncoder() {
-  const ff = spawn('ffmpeg', ffmpegArgs(), { stdio: ['pipe', 'inherit', 'pipe', 'pipe'] });
-  ff.stderr.on('data', (d) => process.stderr.write(`[ffmpeg] ${d}`));
-  ff.video = ff.stdin;
-  ff.audio = ff.stdio[3];
-  ff.alive = true;
-  for (const s of [ff.video, ff.audio]) s.on('error', () => (ff.alive = false));
-  ff.done = new Promise((resolve) => ff.on('close', (code) => {
-    ff.alive = false;
-    resolve(code);
-  }));
-  return ff;
-}
-
-function write(stream, buf) {
-  if (stream.write(buf)) return Promise.resolve();
-  return new Promise((resolve) => {
-    const onDrain = () => {
-      stream.off('close', onDrain);
-      resolve();
-    };
-    stream.once('drain', onDrain);
-    stream.once('close', onDrain);
-  });
 }
 
 async function runEncoder(ff) {
@@ -173,14 +141,9 @@ async function runEncoder(ff) {
     music.setSandActivity(show.activity);
     music.renderInto(left, right);
     renderMs += performance.now() - t0;
-    const pcm = new Float32Array(samplesPerFrame * 2);
-    for (let i = 0; i < samplesPerFrame; i++) {
-      pcm[2 * i] = left[i];
-      pcm[2 * i + 1] = right[i];
-    }
     // Zero-copy view of the frame: safe because we wait for 'drain' before the next render.
     const frame = Buffer.from(show.frame.buffer, show.frame.byteOffset, show.frame.byteLength);
-    await Promise.all([write(ff.video, frame), write(ff.audio, Buffer.from(pcm.buffer))]);
+    await Promise.all([write(ff.video, frame), write(ff.audio, interleave(left, right))]);
     frames++;
     if (realtime) {
       const due = start + (frames - startFrame) * frameMs;
@@ -215,7 +178,7 @@ async function main() {
   let backoff = 2000;
   for (;;) {
     const began = Date.now();
-    const ff = startEncoder();
+    const ff = startFfmpeg(ffmpegArgs());
     const code = await runEncoder(ff);
     if (Date.now() - began > 300000) backoff = 2000;
     if (stopping || frames >= maxFrames || !target.live) {

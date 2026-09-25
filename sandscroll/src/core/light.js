@@ -43,13 +43,15 @@ export class LightTable {
     this.setPalette(palette);
   }
 
+  // The lamp's pool of light is an ellipse stretched along the table's long side.
   buildFalloff() {
     const { w, h, noise } = this;
-    const aspect = w / h;
+    const half = Math.max(w, h) / 2;
+    const [kx, ky] = w >= h ? [1, 1.25] : [1.25, 1];
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
-        const nx = (x / w - 0.5) * 2;
-        const ny = ((y / h - 0.47) * 2) / aspect * 1.25;
+        const nx = ((x - w / 2) / half) * kx;
+        const ny = ((y - h * 0.47) / half) * ky;
         const r = Math.sqrt(nx * nx + ny * ny);
         const lamp = 1 - this.vignette * Math.pow(Math.min(1.4, r) / 1.12, 2.3);
         const uneven = 0.025 * noise.fbm2(x / w * 3.1, y / h * 3.1, 3);

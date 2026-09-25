@@ -51,6 +51,17 @@ docker compose logs -f               # 每分钟一行 t=… speed=1.00x
 
 在 OBS 中添加「浏览器」来源，指向 `dist/sandscroll.html?ui=0&autoplay=1&hd=1`，勾选「通过 OBS 控制音频」，即可用 OBS 推流。
 
+## 竖屏短视频：「一沙一世界」
+
+同一套引擎也能输出 9:16 竖屏短视频，用于 TikTok、小红书、抖音和 YouTube Shorts。每集约 45 秒：开头 1 秒是钩子标题，接着沙画快速成形、题诗、钤印，最后是双语诗句和一句互动提问。首批 8 集，每集一个正能量主题（团圆、坚持、奋斗、松弛、坚韧、友谊、包容）。
+
+```bash
+node tools/make-shorts.mjs --out shorts        # 全部 8 集：MP4 + 9:16 / 3:4 封面 + 双平台文案
+node tools/make-shorts.mjs --only moon --preview --snap 4   # 低清预览 + 截图
+```
+
+竖屏场景在 `src/shorts/scenes/`（虚拟画布 1080×1920），文案在 `src/shorts/copy.js`，运营方法见 **[docs/短视频运营手册.md](docs/短视频运营手册.md)**。
+
 ## 配置
 
 | 位置 | 作用 |
@@ -64,13 +75,14 @@ docker compose logs -f               # 每分钟一行 t=… speed=1.00x
 ```
 sandscroll/
 ├── src/core/        渲染引擎：沙层 field、光台 light、动作 actions、蒙版 mask、题诗 text、印章与题签 overlay、导演 show
-├── src/scenes/      12 幅场景（每个文件一幅画：构图、动作序列、题诗、印章、配乐情绪）
+├── src/scenes/      12 幅横屏场景（每个文件一幅画：构图、动作序列、题诗、印章、配乐情绪）
+├── src/shorts/      竖屏短视频系列「一沙一世界」：场景、文案
 ├── src/music/       音乐引擎：乐器建模、混响、五声调式作曲
 ├── src/node/        推流程序 stream.mjs、Node 画布与字体、配置读取
 ├── src/web/         浏览器播放器（预览 / OBS 浏览器来源）
-├── tools/           截图、网页打包、音乐演示、健康检查、字体下载
+├── tools/           短视频生成、截图、网页打包、音乐演示、健康检查、字体下载
 ├── deploy/          环境变量模板
-├── docs/            运营手册、截图
+├── docs/            直播运营手册、短视频运营手册、截图
 └── tests/           node:test 测试
 ```
 

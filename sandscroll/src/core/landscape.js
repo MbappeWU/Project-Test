@@ -169,7 +169,7 @@ export function flock(stage, rng, { x, y, count = 7, size = 14, dx = 44, dy = 16
   return acts;
 }
 
-export function mistBand(stage, { y, height = 60, x0 = 0, x1 = 1920, strength = 0.5, duration = 3 } = {}) {
+export function mistBand(stage, { y, height = 60, x0 = 0, x1 = stage.VW, strength = 0.5, duration = 3 } = {}) {
   const s = stage.s;
   return reveal(
     (st) => {
@@ -179,7 +179,7 @@ export function mistBand(stage, { y, height = 60, x0 = 0, x1 = 1920, strength = 
       return m.map((a, X, Y) => {
         const t = 1 - Math.abs(Y / s - y) / height;
         const vx = X / s;
-        const ends = (x0 <= 0 ? 1 : smoothstep(x0, x0 + edge, vx)) * (x1 >= 1920 ? 1 : smoothstep(x1, x1 - edge, vx));
+        const ends = (x0 <= 0 ? 1 : smoothstep(x0, x0 + edge, vx)) * (x1 >= stage.VW ? 1 : smoothstep(x1, x1 - edge, vx));
         return a * ends * clamp(t * t * (1.1 + 0.6 * n.fbm2(vx * 0.006, (Y / s) * 0.03, 3)), 0, 1);
       });
     },
