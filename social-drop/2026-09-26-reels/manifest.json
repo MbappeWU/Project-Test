@@ -1,0 +1,506 @@
+{
+  "marker": "沙画-social-drop",
+  "drop_date": "2026-09-26",
+  "batch": "第二批：沙画变身 · Sand Twist（TikTok 循环短片）",
+  "platform": "TikTok",
+  "series": {
+    "cn": "沙画变身",
+    "en": "Sand Twist"
+  },
+  "count": 6,
+  "source": {
+    "repository": "MbappeWU/Project-Test",
+    "code_branch": "claude/chinese-sand-painting-livestream-3mnvjo",
+    "code_commit": "33fc59f2f26070e4a8e8f4f6e0eb9a82b1858471",
+    "generator": "sandscroll/tools/make-reels.mjs --seed 2026"
+  },
+  "format": {
+    "structure": "约 18.8 秒：第 1 帧即深色沙面上的亮线、英文钩子标题和一声古筝刮奏 → 约 5 秒画出第一幅画 → 中段手掌抹开、变身成第二幅画 → 题字、钤印 → 停留 2.2 秒并显示结尾一句 → 0.9 秒一掌扫回开场画面，TikTok 重播时首尾无缝。",
+    "why": "依据 2026 年 9 月调研：3 秒留存决定分发，约 15 秒的视频完播率最高，重播计为额外观看时长（详见 sandscroll/docs/短视频运营手册.md 第 8 节）。",
+    "encoding": "libx264 -preset slow -crf 20 -g 900 -pix_fmt yuv420p -profile:v high; aac -b:a 128k; -movflags +faststart",
+    "size_limit": "每个文件不超过 9 MB（实际 2.3–3.0 MB）。",
+    "cover": "cover_time_sec：画作、题字和印章都已完成，结尾一句已显示。",
+    "git_lfs": "未使用"
+  },
+  "caption_note": "caption_en 不含话题标签，150 个字符以内，写明 “Digital sand art, made with code.”；话题标签见 hashtags。",
+  "ai_disclosure": "全部 6 条都是 AI 生成内容，TikTok 发布时需要打开 AI-generated content 标识。",
+  "rights": {
+    "music": "原创，由程序生成，不含第三方素材；正式许可证写 null（仓库没有声明）。",
+    "text": "题字为成语、吉语或古诗句（韩愈、陶渊明、陆游，均为公有领域）。",
+    "fonts": "Zhi Mang Xing、Ma Shan Zheng、Cormorant Garamond，均为 SIL Open Font License 开源字体。"
+  },
+  "live_url": null,
+  "schedule_note": "与第一批（2026-09-26 目录，每天一条到 10 月 3 日）有三天同日，可自行错开时段。",
+  "content_boundaries": "不涉及政治，不使用领导人姓名或肖像；中国文化以温暖、自豪的方式呈现，不做刻板印象。",
+  "items": [
+    {
+      "id": "R01-hotwater",
+      "file": "R01-hotwater.mp4",
+      "duration_seconds": 18.8,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "aspect": "9:16",
+        "fps": 30,
+        "container": "mp4",
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 2308971,
+        "size_mb": 2.31
+      },
+      "cover_time_sec": 16.5,
+      "title": {
+        "cn": "多喝热水",
+        "en": "Hot Water Dragon"
+      },
+      "theme": "松弛 · 养生（Chinamaxxing 热点）",
+      "description": "深色沙面上先画出一杯冒热气的水（杯里漂着枸杞），蒸汽盘旋成一条衔珠的龙，最后点睛。",
+      "hook": {
+        "en": "In my very Chinese era",
+        "cn": "多喝热水"
+      },
+      "twist": "一杯热水升起的蒸汽盘旋成一条龙",
+      "on_screen_text": {
+        "hook": {
+          "en": "In my very Chinese era",
+          "cn": "多喝热水"
+        },
+        "payoff": {
+          "en": "Stay hydrated. Stay legendary.",
+          "cn": "多喝热水，龙马精神"
+        },
+        "inscription": {
+          "columns": [
+            "龙马精神"
+          ],
+          "note": "成语"
+        },
+        "seal": "如意"
+      },
+      "caption_en": "In my very Chinese era: hot water, then a dragon 🐉 Stay hydrated, stay legendary. Digital sand art, made with code.",
+      "caption_en_chars": 115,
+      "caption_zh": "我的\"很中国\"时期：先是一杯热水，然后变出一条龙🐉 多喝热水，龙马精神。数字沙画，由代码生成。",
+      "hashtags": [
+        "chinamaxxing",
+        "becomingchinese",
+        "hotwater",
+        "dragon",
+        "sandart",
+        "satisfying",
+        "chineseart",
+        "digitalart"
+      ],
+      "ai_generated": true,
+      "ai": {
+        "label": "AI生成",
+        "tiktok": "发布前在「更多选项」里打开 AI-generated content 标识。",
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: bamboo）程序合成，主奏洞箫、古筝，开头一声古筝刮奏；没有使用任何录音、采样或他人作品。",
+        "lead_instrument": [
+          "洞箫",
+          "古筝"
+        ],
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，所以写 null；音乐不含第三方素材，不涉及第三方授权。",
+        "tiktok_sound": "建议保留视频原声上传。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "tiktok_north_america": "2026-09-27 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": "Chinamaxxing 热度正高，越早越好。"
+      }
+    },
+    {
+      "id": "R02-lantern",
+      "file": "R02-lantern.mp4",
+      "duration_seconds": 18.8,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "aspect": "9:16",
+        "fps": 30,
+        "container": "mp4",
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 2879033,
+        "size_mb": 2.88
+      },
+      "cover_time_sec": 16.5,
+      "title": {
+        "cn": "灯火可亲",
+        "en": "Jack-o’-Lantern to Chinese Lantern"
+      },
+      "theme": "节日 · 万圣节 × 中国风",
+      "description": "发光的南瓜灯笑脸被手掌抹开，按原来的瓣纹重画成挂流苏的中国灯笼，月下有蝙蝠（蝠＝福）。",
+      "hook": {
+        "en": "Halloween, but make it Chinese",
+        "cn": "万圣节，中国风"
+      },
+      "twist": "发光的南瓜灯被掌心一抹，变成挂着流苏的红灯笼",
+      "on_screen_text": {
+        "hook": {
+          "en": "Halloween, but make it Chinese",
+          "cn": "万圣节，中国风"
+        },
+        "payoff": {
+          "en": "Same glow. Different story.",
+          "cn": "同一盏灯火，不同的故事"
+        },
+        "inscription": {
+          "columns": [
+            "灯火可亲"
+          ],
+          "note": "化用唐 · 韩愈《符读书城南》“灯火稍可亲”"
+        },
+        "seal": "灯"
+      },
+      "caption_en": "Halloween, but make it Chinese 🎃➡️🏮 Watch the jack-o’-lantern turn into a red lantern. Digital sand art, made with code.",
+      "caption_en_chars": 120,
+      "caption_zh": "中国风万圣节🎃➡️🏮 看南瓜灯变成红灯笼。数字沙画，由代码生成。",
+      "hashtags": [
+        "halloween",
+        "spookyseason",
+        "halloween2026",
+        "jackolantern",
+        "chineselantern",
+        "sandart",
+        "satisfying",
+        "digitalart"
+      ],
+      "ai_generated": true,
+      "ai": {
+        "label": "AI生成",
+        "tiktok": "发布前在「更多选项」里打开 AI-generated content 标识。",
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: garden）程序合成，主奏古筝，开头一声古筝刮奏；没有使用任何录音、采样或他人作品。",
+        "lead_instrument": [
+          "古筝"
+        ],
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，所以写 null；音乐不含第三方素材，不涉及第三方授权。",
+        "tiktok_sound": "建议保留视频原声上传。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "tiktok_north_america": "2026-10-24 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": "Halloween（10 月 31 日）前一周。"
+      }
+    },
+    {
+      "id": "R03-koi",
+      "file": "R03-koi.mp4",
+      "duration_seconds": 18.8,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "aspect": "9:16",
+        "fps": 30,
+        "container": "mp4",
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 2655950,
+        "size_mb": 2.66
+      },
+      "cover_time_sec": 16.5,
+      "title": {
+        "cn": "年年有余",
+        "en": "Two Koi"
+      },
+      "theme": "和谐 · 好运",
+      "description": "一亮一暗两条锦鲤绕圈追逐，被搅成一团后，合成一个干净的太极圆，鱼眼变成两个圆点。",
+      "hook": {
+        "en": "Wait for the circle to close",
+        "cn": "两条锦鲤，一个圆"
+      },
+      "twist": "两条追逐的锦鲤首尾相接，合成一个太极圆",
+      "on_screen_text": {
+        "hook": {
+          "en": "Wait for the circle to close",
+          "cn": "两条锦鲤，一个圆"
+        },
+        "payoff": {
+          "en": "Two koi. One balance.",
+          "cn": "年年有余"
+        },
+        "inscription": {
+          "columns": [
+            "年年有余"
+          ],
+          "note": "吉语"
+        },
+        "seal": "有余"
+      },
+      "caption_en": "Wait for the circle to close 🐟 Two koi, one balance, and a wish for plenty every year. Digital sand art, made with code.",
+      "caption_en_chars": 120,
+      "caption_zh": "等这个圆合上🐟 两条锦鲤，一份平衡，祝你年年有余。数字沙画，由代码生成。",
+      "hashtags": [
+        "koi",
+        "yinyang",
+        "oddlysatisfying",
+        "satisfying",
+        "sandart",
+        "chineseart",
+        "goodluck",
+        "digitalart"
+      ],
+      "ai_generated": true,
+      "ai": {
+        "label": "AI生成",
+        "tiktok": "发布前在「更多选项」里打开 AI-generated content 标识。",
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: river）程序合成，主奏古筝，开头一声古筝刮奏；没有使用任何录音、采样或他人作品。",
+        "lead_instrument": [
+          "古筝"
+        ],
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，所以写 null；音乐不含第三方素材，不涉及第三方授权。",
+        "tiktok_sound": "建议保留视频原声上传。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "tiktok_north_america": "2026-10-01 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": null
+      }
+    },
+    {
+      "id": "R04-autumn",
+      "file": "R04-autumn.mp4",
+      "duration_seconds": 18.8,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "aspect": "9:16",
+        "fps": 30,
+        "container": "mp4",
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 2945390,
+        "size_mb": 2.95
+      },
+      "cover_time_sec": 16.5,
+      "title": {
+        "cn": "一叶知秋",
+        "en": "Autumn in One Leaf"
+      },
+      "theme": "季节 · 秋天（#FallVibes）",
+      "description": "一片大枫叶被搅成月亮，飘落的小叶子逐片化作大雁，在月下排成南飞的雁阵。",
+      "hook": {
+        "en": "Autumn, in one leaf",
+        "cn": "一叶知秋"
+      },
+      "twist": "飘落的枫叶化作一行南飞的大雁",
+      "on_screen_text": {
+        "hook": {
+          "en": "Autumn, in one leaf",
+          "cn": "一叶知秋"
+        },
+        "payoff": {
+          "en": "Let it fall. Watch it fly.",
+          "cn": "叶落，雁南飞"
+        },
+        "inscription": {
+          "columns": [
+            "一叶知秋"
+          ],
+          "note": "出自《淮南子》“见一叶落而知岁之将暮”"
+        },
+        "seal": "秋"
+      },
+      "caption_en": "Autumn, in one leaf 🍂 Let it fall, then watch it fly south. Digital sand art, made with code.",
+      "caption_en_chars": 93,
+      "caption_zh": "一叶知秋🍂 让它落下，再看它向南飞去。数字沙画，由代码生成。",
+      "hashtags": [
+        "fallvibes",
+        "autumncore",
+        "autumn",
+        "fall",
+        "sandart",
+        "satisfying",
+        "relaxing",
+        "digitalart"
+      ],
+      "ai_generated": true,
+      "ai": {
+        "label": "AI生成",
+        "tiktok": "发布前在「更多选项」里打开 AI-generated content 标识。",
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: plum）程序合成，主奏洞箫，开头一声古筝刮奏；没有使用任何录音、采样或他人作品。",
+        "lead_instrument": [
+          "洞箫"
+        ],
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，所以写 null；音乐不含第三方素材，不涉及第三方授权。",
+        "tiktok_sound": "建议保留视频原声上传。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "tiktok_north_america": "2026-10-04 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": null
+      }
+    },
+    {
+      "id": "R05-chrysanthemum",
+      "file": "R05-chrysanthemum.mp4",
+      "duration_seconds": 18.8,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "aspect": "9:16",
+        "fps": 30,
+        "container": "mp4",
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 2260607,
+        "size_mb": 2.26
+      },
+      "cover_time_sec": 16.4,
+      "title": {
+        "cn": "采菊",
+        "en": "Chrysanthemum Bloom"
+      },
+      "theme": "节日 · 重阳（10 月 18 日）",
+      "description": "一朵菊花从中心层层绽放，手掌一抹，原来它漂在一碗冒热气的菊花茶里。",
+      "hook": {
+        "en": "Watch a flower bloom in sand",
+        "cn": "一朵菊花，慢慢开"
+      },
+      "twist": "层层绽放的菊花原来漂在一杯菊花茶里",
+      "on_screen_text": {
+        "hook": {
+          "en": "Watch a flower bloom in sand",
+          "cn": "一朵菊花，慢慢开"
+        },
+        "payoff": {
+          "en": "…and now it’s tea.",
+          "cn": "重阳节，喝一杯菊花茶"
+        },
+        "inscription": {
+          "columns": [
+            "采菊东篱下"
+          ],
+          "note": "晋 · 陶渊明《饮酒·其五》"
+        },
+        "seal": "重阳"
+      },
+      "caption_en": "Watch a chrysanthemum bloom in sand 🌼 …and now it’s tea. Happy Double Ninth Festival (Oct 18)! Digital sand art, made with code.",
+      "caption_en_chars": 128,
+      "caption_zh": "看一朵菊花在沙里绽放🌼……然后它变成了一杯茶。重阳节（10 月 18 日）快乐！数字沙画，由代码生成。",
+      "hashtags": [
+        "doubleninthfestival",
+        "chrysanthemumtea",
+        "tea",
+        "chinamaxxing",
+        "sandart",
+        "satisfying",
+        "chineseart",
+        "digitalart"
+      ],
+      "ai_generated": true,
+      "ai": {
+        "label": "AI生成",
+        "tiktok": "发布前在「更多选项」里打开 AI-generated content 标识。",
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: pine）程序合成，主奏古琴，开头一声古筝刮奏；没有使用任何录音、采样或他人作品。",
+        "lead_instrument": [
+          "古琴"
+        ],
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，所以写 null；音乐不含第三方素材，不涉及第三方授权。",
+        "tiktok_sound": "建议保留视频原声上传。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "tiktok_north_america": "2026-10-16 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": "重阳节是 10 月 18 日，提前两天发。"
+      }
+    },
+    {
+      "id": "R06-cat",
+      "file": "R06-cat.mp4",
+      "duration_seconds": 18.8,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "aspect": "9:16",
+        "fps": 30,
+        "container": "mp4",
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 2308514,
+        "size_mb": 2.31
+      },
+      "cover_time_sec": 16.5,
+      "title": {
+        "cn": "狸奴",
+        "en": "Guess the Cat"
+      },
+      "theme": "互动 · 猜画",
+      "description": "看似月下小桥流水的几道弧线，最后变成屋脊上蜷着睡觉的虎斑猫，耳朵和脸最后出现。",
+      "hook": {
+        "en": "Guess what this becomes",
+        "cn": "猜猜我在画什么"
+      },
+      "twist": "看似抽象的几道弧线，最后变成屋脊上蜷着睡觉的猫",
+      "on_screen_text": {
+        "hook": {
+          "en": "Guess what this becomes",
+          "cn": "猜猜我在画什么"
+        },
+        "payoff": {
+          "en": "Did you guess the cat?",
+          "cn": "你猜对了吗？"
+        },
+        "inscription": {
+          "columns": [
+            "我与狸奴不出门"
+          ],
+          "note": "宋 · 陆游《十一月四日风雨大作》"
+        },
+        "seal": "狸奴"
+      },
+      "caption_en": "Guess what this becomes before the end 👀 Comment your guess! Digital sand art, made with code.",
+      "caption_en_chars": 94,
+      "caption_zh": "看到最后之前，猜猜它会变成什么👀 把答案写在评论区！数字沙画，由代码生成。",
+      "hashtags": [
+        "catsoftiktok",
+        "cat",
+        "guessthedrawing",
+        "satisfying",
+        "sandart",
+        "chineseart",
+        "relaxing",
+        "digitalart"
+      ],
+      "ai_generated": true,
+      "ai": {
+        "label": "AI生成",
+        "tiktok": "发布前在「更多选项」里打开 AI-generated content 标识。",
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: panda）程序合成，主奏古筝，开头一声古筝刮奏；没有使用任何录音、采样或他人作品。",
+        "lead_instrument": [
+          "古筝"
+        ],
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，所以写 null；音乐不含第三方素材，不涉及第三方授权。",
+        "tiktok_sound": "建议保留视频原声上传。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "tiktok_north_america": "2026-09-29 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": "猜画互动；发布后引导评论区猜答案。"
+      }
+    }
+  ]
+}
