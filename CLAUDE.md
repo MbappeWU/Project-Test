@@ -22,10 +22,11 @@ Project-Test/
     ├── src/core/      #   sand simulation, light table, gestures, inscriptions, director
     ├── src/scenes/    #   one file per painting (16:9 livestream)
     ├── src/shorts/    #   一沙一世界 vertical shorts: 9:16 scenes and posting copy
+    ├── src/reels/     #   沙画变身 loopable TikTok reels (director in src/core/reel.js)
     ├── src/music/     #   generative guzheng / xiao / guqin music engine
     ├── src/node/      #   broadcaster (render -> ffmpeg -> YouTube RTMPS)
     ├── src/web/       #   browser player (preview, OBS browser source)
-    ├── tools/         #   make-shorts, snapshots, web build, health check
+    ├── tools/         #   make-shorts, make-reels, snapshots, web build, health check
     └── docs/          #   livestream and shorts playbooks, screenshots
 ```
 

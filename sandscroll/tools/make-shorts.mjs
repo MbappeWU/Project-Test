@@ -2,6 +2,8 @@
 // Renders the vertical "一沙一世界" shorts: MP4 (1080x1920, H.264 + AAC), a 9:16 cover for
 // TikTok, a 3:4 cover for 小红书 and a text file with the posting copy for each episode.
 //   node tools/make-shorts.mjs [--only moon,panda] [--out shorts] [--seed 2026] [--preview] [--snap 5]
+// Defaults keep each 45 s file around 5-6 MB (under the 10 MB browser-upload limit): the sand
+// grain is static, so a long keyframe interval (--gop) saves far more than a higher CRF.
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
@@ -21,7 +23,9 @@ const { values: args } = parseArgs({
     seed: { type: 'string', default: '2026' },
     fps: { type: 'string', default: '30' },
     draw: { type: 'string', default: '30' },
-    crf: { type: 'string', default: '23' },
+    crf: { type: 'string', default: '20' },
+    gop: { type: 'string', default: '900' },
+    ab: { type: 'string', default: '128k' },
     preview: { type: 'boolean' },
     snap: { type: 'string' },
   },
@@ -57,7 +61,7 @@ async function renderShort(scene, ep, base) {
   const ff = startFfmpeg([
     ...rawInputArgs({ width, height, fps, sampleRate }),
     '-c:v', 'libx264', '-preset', args.preview ? 'veryfast' : 'slow', '-crf', args.crf, '-pix_fmt', 'yuv420p',
-    '-profile:v', 'high', '-g', String(fps * 2), '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-y', `${base}.mp4`,
+    '-profile:v', 'high', '-g', args.gop, '-c:a', 'aac', '-b:a', args.ab, '-movflags', '+faststart', '-y', `${base}.mp4`,
   ]);
   const left = new Float32Array(spf);
   const right = new Float32Array(spf);

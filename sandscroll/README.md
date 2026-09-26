@@ -64,6 +64,14 @@ node tools/make-shorts.mjs --only moon --preview --snap 4   # 低清预览 + 截
 
 竖屏场景在 `src/shorts/scenes/`（虚拟画布 1080×1920），文案在 `src/shorts/copy.js`，运营方法见 **[docs/短视频运营手册.md](docs/短视频运营手册.md)**。
 
+### 第二批：沙画变身 · Sand Twist（TikTok 循环短片）
+
+每条约 19 秒：第 1 帧就在深色沙面上疾划出一道亮线，同时出现英文钩子标题；约 5 秒画出第一幅画，接着手掌一抹变成另一幅，题字、钤印后，再一掌扫回开场画面，TikTok 重播时首尾无缝衔接。导演在 `src/core/reel.js`，场景在 `src/reels/`。
+
+```bash
+node tools/make-reels.mjs --out reels        # 6 条 MP4 + reels.json（封面秒数、英文文案、话题标签）
+```
+
 ## 配置
 
 | 位置 | 作用 |
@@ -79,6 +87,7 @@ sandscroll/
 ├── src/core/        渲染引擎：沙层 field、光台 light、动作 actions、蒙版 mask、题诗 text、印章与题签 overlay、导演 show
 ├── src/scenes/      12 幅横屏场景（每个文件一幅画：构图、动作序列、题诗、印章、配乐情绪）
 ├── src/shorts/      竖屏短视频系列「一沙一世界」：场景、文案
+├── src/reels/       TikTok 循环短片「沙画变身」：场景、文案
 ├── src/music/       音乐引擎：乐器建模、混响、五声调式作曲
 ├── src/node/        推流程序 stream.mjs、Node 画布与字体、配置读取
 ├── src/web/         浏览器播放器（预览 / OBS 浏览器来源）
