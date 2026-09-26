@@ -10,7 +10,7 @@ import { MusicEngine } from '../src/music/engine.js';
 import { REELS, REEL_SERIES } from '../src/reels/index.js';
 import { REEL_COPY } from '../src/reels/copy.js';
 import { nodeCanvas, savePng } from '../src/node/canvas.js';
-import { rawInputArgs, startFfmpeg, write, interleave } from '../src/node/encoder.js';
+import { rawInputArgs, startFfmpeg, write, interleave, capArgs } from '../src/node/encoder.js';
 
 const { values: args } = parseArgs({
   options: {
@@ -21,6 +21,7 @@ const { values: args } = parseArgs({
     crf: { type: 'string', default: '20' },
     gop: { type: 'string', default: '900' },
     ab: { type: 'string', default: '128k' },
+    'max-mb': { type: 'string', default: '9' },
     preview: { type: 'boolean' },
     snap: { type: 'string' },
   },
@@ -35,7 +36,7 @@ const seed = Number(args.seed);
 const wanted = args.only ? args.only.split(',') : null;
 // A long keyframe interval is what keeps the files small: the sand grain is static, so
 // repeated keyframes would re-encode the whole grain texture every couple of seconds.
-const encoding = `libx264 -preset slow -crf ${args.crf} -g ${args.gop} -pix_fmt yuv420p -profile:v high; aac -b:a ${args.ab}; -movflags +faststart`;
+const encoding = `libx264 -preset slow -crf ${args.crf} (rate capped to stay under ${args['max-mb']} MB) -g ${args.gop} -pix_fmt yuv420p -profile:v high; aac -b:a ${args.ab}; -movflags +faststart`;
 fs.mkdirSync(args.out, { recursive: true });
 const canvas = nodeCanvas();
 
@@ -58,7 +59,7 @@ async function renderReel(scene, base) {
   const fadeFrames = Math.round(0.5 * fps);
   const ff = startFfmpeg([
     ...rawInputArgs({ width, height, fps, sampleRate }),
-    '-c:v', 'libx264', '-preset', args.preview ? 'veryfast' : 'slow', '-crf', args.crf, '-g', args.gop, '-pix_fmt', 'yuv420p',
+    '-c:v', 'libx264', '-preset', args.preview ? 'veryfast' : 'slow', '-crf', args.crf, ...capArgs(Number(args['max-mb']), total / fps, args.ab), '-g', args.gop, '-pix_fmt', 'yuv420p',
     '-profile:v', 'high', '-c:a', 'aac', '-b:a', args.ab, '-movflags', '+faststart', '-y', `${base}.mp4`,
   ]);
   const left = new Float32Array(spf);

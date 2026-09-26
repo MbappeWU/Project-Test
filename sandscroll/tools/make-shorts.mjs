@@ -2,8 +2,9 @@
 // Renders the vertical "一沙一世界" shorts: MP4 (1080x1920, H.264 + AAC), a 9:16 cover for
 // TikTok, a 3:4 cover for 小红书 and a text file with the posting copy for each episode.
 //   node tools/make-shorts.mjs [--only moon,panda] [--out shorts] [--seed 2026] [--preview] [--snap 5]
-// Defaults keep each 45 s file around 5-6 MB (under the 10 MB browser-upload limit): the sand
-// grain is static, so a long keyframe interval (--gop) saves far more than a higher CRF.
+// Files stay under --max-mb (default 9 MB, for a 10 MB browser-upload limit): x264 keeps CRF
+// quality and only caps the peaks, and the sand grain is static, so a long keyframe interval
+// (--gop) saves far more than a higher CRF.
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
@@ -14,7 +15,7 @@ import { MusicEngine } from '../src/music/engine.js';
 import { SHORTS, CTA, SERIES, episodeLabel } from '../src/shorts/index.js';
 import { COPY } from '../src/shorts/copy.js';
 import { nodeCanvas, savePng } from '../src/node/canvas.js';
-import { rawInputArgs, startFfmpeg, write, interleave } from '../src/node/encoder.js';
+import { rawInputArgs, startFfmpeg, write, interleave, capArgs } from '../src/node/encoder.js';
 
 const { values: args } = parseArgs({
   options: {
@@ -26,6 +27,7 @@ const { values: args } = parseArgs({
     crf: { type: 'string', default: '20' },
     gop: { type: 'string', default: '900' },
     ab: { type: 'string', default: '128k' },
+    'max-mb': { type: 'string', default: '9' },
     preview: { type: 'boolean' },
     snap: { type: 'string' },
   },
@@ -60,7 +62,7 @@ async function renderShort(scene, ep, base) {
   const fadeFrames = Math.round(1.6 * fps);
   const ff = startFfmpeg([
     ...rawInputArgs({ width, height, fps, sampleRate }),
-    '-c:v', 'libx264', '-preset', args.preview ? 'veryfast' : 'slow', '-crf', args.crf, '-pix_fmt', 'yuv420p',
+    '-c:v', 'libx264', '-preset', args.preview ? 'veryfast' : 'slow', '-crf', args.crf, ...capArgs(Number(args['max-mb']), total / fps, args.ab), '-pix_fmt', 'yuv420p',
     '-profile:v', 'high', '-g', args.gop, '-c:a', 'aac', '-b:a', args.ab, '-movflags', '+faststart', '-y', `${base}.mp4`,
   ]);
   const left = new Float32Array(spf);

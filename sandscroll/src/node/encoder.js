@@ -48,3 +48,11 @@ export function interleave(left, right) {
   }
   return Buffer.from(pcm.buffer);
 }
+
+// Video rate cap that keeps a file of `seconds` under `maxMB` megabytes (10^6 bytes) with the
+// given audio bitrate: x264 stays at its CRF quality and only limits the peaks (capped CRF).
+export function capArgs(maxMB, seconds, audioBitrate) {
+  const audio = Number(String(audioBitrate).replace(/k$/i, '')) * 1000;
+  const video = Math.floor(((maxMB * 1e6 * 8) / seconds - audio) * 0.92);
+  return ['-maxrate', String(video), '-bufsize', String(video * 2)];
+}
