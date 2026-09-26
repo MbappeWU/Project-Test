@@ -32,6 +32,8 @@ export class ReelDirector {
     st.play(sweep());
     while (st.busy) st.advance(1);
     st.time = 0;
+    st.artist?.reset();
+    st.prevHandRect = null;
 
     seedActions(sceneSeed);
     const acts = scene.build(st, new Rng(sceneSeed)).flat(Infinity).filter(Boolean);

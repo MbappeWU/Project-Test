@@ -10,12 +10,17 @@ const WIDTH = HD ? 1920 : 1280;
 const HEIGHT = HD ? 1080 : 720;
 const AUTOPLAY = params.get('autoplay') === '1';
 const SHOW_UI = params.get('ui') !== '0';
+// The artist's hand: low by default to keep browsers smooth; ?hand=high for OBS captures, ?hand=off.
+const HAND = params.get('hand') || 'low';
 
 const canvasFactory = {
   create(w, h) {
     const c = document.createElement('canvas');
     c.width = w;
     c.height = h;
+    // Sprites (text, seals, the artist's hand) are read back every frame; the first getContext
+    // call fixes the context attributes, so later getContext('2d') calls get this one.
+    c.getContext('2d', { willReadFrequently: true });
     return c;
   },
 };
@@ -112,7 +117,7 @@ function frame(now) {
 function begin(startIndex = 0) {
   const seed = Number(params.get('seed')) || Math.floor(Date.now() / 86400000);
   const program = params.get('program') ? params.get('program').split(',') : PROGRAM;
-  show = new Show({ width: WIDTH, height: HEIGHT, seed, canvas: canvasFactory, program, start: startIndex, hold: 22 });
+  show = new Show({ width: WIDTH, height: HEIGHT, seed, canvas: canvasFactory, program, start: startIndex, hold: 22, hand: HAND });
   image = new ImageData(show.frame, WIDTH, HEIGHT);
   ctx.putImageData(image, 0, 0);
   show.on((event, data) => {

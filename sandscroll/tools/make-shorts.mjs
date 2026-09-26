@@ -70,7 +70,8 @@ async function renderShort(scene, ep, base) {
   for (let f = 0; f < total; f++) {
     director.update(1 / fps);
     director.render();
-    if (!cover && director.finishedAt !== null) cover = Uint8ClampedArray.from(director.frame);
+    // The cover is the finished picture without the artist's hand or captions.
+    if (!cover && director.finishedAt !== null) cover = Uint8ClampedArray.from(director.stage.sand);
     music.setSandActivity(director.activity);
     music.renderInto(left, right);
     const fade = Math.min(1, (total - f) / fadeFrames);

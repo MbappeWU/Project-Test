@@ -10,7 +10,7 @@ const canvas = nodeCanvas();
 const W = 180;
 const H = 320;
 
-// Mean absolute difference of the sand below the hook band, between two RGBA frames.
+// Mean absolute difference of the sand below the hook band, between two RGBA buffers.
 function sandDiff(a, b) {
   let sum = 0;
   let n = 0;
@@ -39,6 +39,7 @@ test('every reel has metadata and TikTok copy', () => {
   }
 });
 
+// The sand buffer (table and seal, without the artist's hand or captions) is what has to loop.
 test('reels open on a moving stroke, finish in 15-22 s and loop back to the first frame', () => {
   for (const scene of REELS) {
     const d = new ReelDirector({ scene, width: W, height: H, seed: 3, canvas });
@@ -51,12 +52,13 @@ test('reels open on a moving stroke, finish in 15-22 s and loop back to the firs
     for (let f = 0; f < frames; f++) {
       d.update(1 / fps);
       d.render();
-      if (f === 0) first = Uint8ClampedArray.from(d.frame);
-      if (f === Math.round(0.5 * fps)) early = Uint8ClampedArray.from(d.frame);
+      if (f === 0) first = Uint8ClampedArray.from(d.stage.sand);
+      if (f === Math.round(0.5 * fps)) early = Uint8ClampedArray.from(d.stage.sand);
+      if (f === 0) assert.ok(d.stage.handVisible, `${scene.id}: the artist's hand should be drawing from the first frame`);
     }
     assert.ok(sandDiff(first, early) > 0.05, `${scene.id}: nothing happens in the first half second`);
     assert.notEqual(d.completeAt, null, `${scene.id}: painting never completed`);
     assert.notEqual(d.finishedAt, null, `${scene.id}: loop sweep never finished`);
-    assert.ok(sandDiff(first, d.frame) < 3, `${scene.id}: last frame does not return to the first (${sandDiff(first, d.frame).toFixed(2)})`);
+    assert.ok(sandDiff(first, d.stage.sand) < 3, `${scene.id}: last frame does not return to the first (${sandDiff(first, d.stage.sand).toFixed(2)})`);
   }
 });

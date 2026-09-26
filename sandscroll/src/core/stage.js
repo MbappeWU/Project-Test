@@ -4,6 +4,7 @@ import { Noise } from './noise.js';
 import { Rng } from './rng.js';
 import { polygonMask, feather, roughen } from './mask.js';
 import { clamp } from './geom.js';
+import { Hand } from './hand.js';
 
 // Scenes are authored on a virtual canvas (1920x1080 for the landscape stream, 1080x1920 for
 // vertical shorts); the stage maps it to its real resolution.
@@ -12,7 +13,7 @@ export const VW = 1920;
 const HAND_ACTIVITY = { relax: 1, fill: 0.6, pour: 0.4, carve: 0.35 };
 
 export class Stage {
-  constructor({ width = 1280, height = 720, seed = 1, palette = 'amber', canvas = null, virtual = null } = {}) {
+  constructor({ width = 1280, height = 720, seed = 1, palette = 'amber', canvas = null, virtual = null, hand = true } = {}) {
     this.width = width;
     this.height = height;
     this.VW = virtual ? virtual[0] : VW;
@@ -22,6 +23,9 @@ export class Stage {
     this.canvas = canvas;
     this.field = new SandField(width, height);
     this.light = new LightTable(width, height, { seed: seed ^ 0x2c1b3c6d, palette });
+    // sand: the light table with everything lying on it (sand, seal); frame: what the camera
+    // sees, i.e. sand plus the artist's hand plus titles and captions.
+    this.sand = new Uint8ClampedArray(width * height * 4);
     this.frame = new Uint8ClampedArray(width * height * 4);
     this.noise = new Noise(seed ^ 0x7f4a7c15);
     this.rng = new Rng(seed);
@@ -33,10 +37,13 @@ export class Stage {
     this.hand = null;
     this.handKind = null;
     this.prevHandRect = null;
+    // hand: 'high' (or true), 'low' for the real-time stream, 'off' (or false) for none.
+    this.artist = hand && hand !== 'off' && canvas ? new Hand(this, { quality: hand === 'low' ? 'low' : 'high' }) : null;
     this.activity = 0;
     this.listeners = [];
     this.canvases = new Map();
-    this.light.render(this.field, this.frame);
+    this.light.render(this.field, this.sand);
+    this.frame.set(this.sand);
   }
 
   // Scratch canvases for text and sprites, reused by size: scenes repeat for days, so creating
@@ -112,6 +119,7 @@ export class Stage {
     }
     const target = this.hand ? HAND_ACTIVITY[this.handKind] || 0.3 : 0;
     this.activity += (target - this.activity) * Math.min(1, dt * 6);
+    this.artist?.update(overlayDt, this.hand, this.handKind);
     for (const o of this.overlays) o.tick(overlayDt);
     const alive = this.overlays.filter((o) => !o.finished);
     for (const o of this.overlays) if (o.finished) this.field.touch(...o.rect());
@@ -125,61 +133,39 @@ export class Stage {
 
   // Composites dirty regions into this.frame and returns the list of updated rectangles.
   render() {
-    const rects = [];
+    const sandRects = [];
     const fd = this.field.takeDirty();
-    if (fd) rects.push(fd);
+    if (fd) sandRects.push(fd);
+    const uiRects = [];
     for (const o of this.overlays) {
       if (o.changed) {
-        rects.push(o.rect());
+        (o.onSand ? sandRects : uiRects).push(o.rect());
         o.changed = false;
       }
     }
-    const handRect = this.hand ? this.handRect() : null;
+    for (const [x0, y0, x1, y1] of mergeRects(sandRects, this.width, this.height)) {
+      this.light.render(this.field, this.sand, x0, y0, x1, y1);
+      for (const o of this.overlays) if (o.onSand) o.composite(this.sand, this.width, x0, y0, x1, y1);
+    }
+    const handRect = this.artist?.rect() ?? null;
+    if (!handRect) this.artist?.hidden();
+    const rects = [...sandRects, ...uiRects];
     if (this.prevHandRect) rects.push(this.prevHandRect);
     if (handRect) rects.push(handRect);
     this.prevHandRect = handRect;
+    if (handRect) this.artist.paint(handRect);
     const merged = mergeRects(rects, this.width, this.height);
+    const W = this.width;
     for (const [x0, y0, x1, y1] of merged) {
-      this.light.render(this.field, this.frame, x0, y0, x1, y1);
-      for (const o of this.overlays) o.composite(this.frame, this.width, x0, y0, x1, y1);
-      if (handRect) this.drawHand(x0, y0, x1, y1);
+      for (let y = y0; y < y1; y++) this.frame.set(this.sand.subarray((y * W + x0) * 4, (y * W + x1) * 4), (y * W + x0) * 4);
+      if (handRect) this.artist.composite(this.frame, W, x0, y0, x1, y1);
+      for (const o of this.overlays) if (!o.onSand) o.composite(this.frame, W, x0, y0, x1, y1);
     }
     return merged;
   }
 
-
-  handRect() {
-    const r = 46 * this.s;
-    const [hx, hy] = this.handPos();
-    return [Math.floor(hx - r), Math.floor(hy - r), Math.ceil(hx + r), Math.ceil(hy + r)];
-  }
-
-  handPos() {
-    // The fingertip's shadow falls slightly down and to the right of the contact point.
-    return [(this.hand[0] + 9) * this.s, (this.hand[1] + 12) * this.s];
-  }
-
-  drawHand(x0, y0, x1, y1) {
-    const [hx, hy] = this.handPos();
-    const r = 46 * this.s;
-    const depth = this.handKind === 'relax' ? 0.26 : 0.16;
-    const bx0 = Math.max(x0, Math.floor(hx - r));
-    const by0 = Math.max(y0, Math.floor(hy - r));
-    const bx1 = Math.min(x1, Math.ceil(hx + r));
-    const by1 = Math.min(y1, Math.ceil(hy + r));
-    const f = this.frame;
-    const W = this.width;
-    for (let y = by0; y < by1; y++) {
-      for (let x = bx0; x < bx1; x++) {
-        const t = Math.hypot(x - hx, y - hy) / r;
-        if (t >= 1) continue;
-        const k = 1 - depth * (1 - t * t) * (1 - t * t);
-        const o = (y * W + x) * 4;
-        f[o] *= k;
-        f[o + 1] *= k;
-        f[o + 2] *= k;
-      }
-    }
+  get handVisible() {
+    return !!this.artist?.visible;
   }
 
   // ---- authoring helpers (virtual coordinates in, field coordinates out) ----

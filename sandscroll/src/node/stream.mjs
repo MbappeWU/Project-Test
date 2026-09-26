@@ -34,6 +34,7 @@ const { values: args } = parseArgs({
     crf: { type: 'string', default: '19' },
     realtime: { type: 'boolean' },
     timelapse: { type: 'string', default: '1' },
+    hand: { type: 'string', default: env.SANDSCROLL_HAND || 'low' },
     heartbeat: { type: 'string', default: env.SANDSCROLL_HEARTBEAT || '/tmp/sandscroll.heartbeat' },
     help: { type: 'boolean', short: 'h' },
   },
@@ -55,7 +56,8 @@ Render a file:     node src/node/stream.mjs --out preview.mp4 --duration 5m
   --config FILE         programme config (default: program.json)
   --video-bitrate 6800k --audio-bitrate 192k --preset veryfast --crf 19
   --realtime            pace to wall-clock even when writing a file
-  --timelapse 8         draw N times faster while the music plays at normal speed (promo reels, Shorts)`);
+  --timelapse 8         draw N times faster while the music plays at normal speed (promo reels, Shorts)
+  --hand low|high|off   the artist's hand over the table (default low: cheaper, keeps 1080p30 real time)`);
   process.exit(0);
 }
 
@@ -74,7 +76,7 @@ const realtime = args.realtime ?? target.live;
 const maxFrames = args.duration ? Math.round(parseDuration(args.duration) * fps) : Infinity;
 const timelapse = Math.max(1, Number(args.timelapse) || 1);
 
-const show = new Show({ width, height, seed, canvas: nodeCanvas(), program, hold: config.hold, notes: config.notes, pace: config.pace, start: Number(args.start) });
+const show = new Show({ width, height, seed, canvas: nodeCanvas(), program, hold: config.hold, notes: config.notes, pace: config.pace, start: Number(args.start), hand: args.hand });
 const firstScene = SCENES[show.program[show.index % show.program.length]];
 const music = new MusicEngine({ sampleRate, seed, mood: firstScene?.music || 'moonrise' });
 show.on((event, data) => {
