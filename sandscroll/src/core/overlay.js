@@ -3,11 +3,8 @@ import { Rng } from './rng.js';
 
 // Sprites composited above the sand: printed captions and the red seal (印).
 export class Overlay {
-  // onSand: part of the picture (seal, red dot), so the artist's hand passes over it; other
-  // overlays are titles and captions laid over the video.
-  constructor(sprite, x, y, { delay = 0, fadeIn = 1.6, hold = 12, fadeOut = 2.2, blend = 'normal', maxOpacity = 1, onSand = false } = {}) {
+  constructor(sprite, x, y, { delay = 0, fadeIn = 1.6, hold = 12, fadeOut = 2.2, blend = 'normal', maxOpacity = 1 } = {}) {
     this.sprite = sprite;
-    this.onSand = onSand;
     this.x = Math.round(x);
     this.y = Math.round(y);
     this.delay = delay;

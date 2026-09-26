@@ -140,7 +140,7 @@ export function seal(stage, text, x, y, { size = 70, seed = 5 } = {}) {
   return [
     call((st) => {
       const sprite = sealSprite(st, text, { size, seed });
-      const o = new Overlay(sprite, x * st.s - sprite.w / 2, y * st.s - sprite.h / 2, { fadeIn: 0.35, hold: 1e9, fadeOut: 1.5, blend: st.sealBlend ?? 'multiply', maxOpacity: 0.92, onSand: true });
+      const o = new Overlay(sprite, x * st.s - sprite.w / 2, y * st.s - sprite.h / 2, { fadeIn: 0.35, hold: 1e9, fadeOut: 1.5, blend: st.sealBlend ?? 'multiply', maxOpacity: 0.92 });
       st.addOverlay(o);
       st.sealOverlay = o;
       st.emit('cue', 'seal');
@@ -187,7 +187,7 @@ export function redDot(stage, x, y, r = 5) {
     ctx.arc(size / 2, size / 2, R, 0, Math.PI * 2);
     ctx.fill();
     const sprite = { w: size, h: size, data: ctx.getImageData(0, 0, size, size).data };
-    const o = new Overlay(sprite, x * st.s - size / 2, y * st.s - size / 2, { fadeIn: 0.6, hold: 1e9, fadeOut: 1.2, blend: 'multiply', maxOpacity: 0.9, onSand: true });
+    const o = new Overlay(sprite, x * st.s - size / 2, y * st.s - size / 2, { fadeIn: 0.6, hold: 1e9, fadeOut: 1.2, blend: 'multiply', maxOpacity: 0.9 });
     st.addOverlay(o);
     (st.accents ||= []).push(o);
   });

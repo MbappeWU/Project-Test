@@ -96,18 +96,14 @@ function writeIndex() {
   for (const [i, scene] of REELS.entries()) {
     const base = baseOf(i, scene);
     if (!fs.existsSync(`${base}.mp4`)) continue;
-    // Cover: the finished picture once the artist's hand has left the frame.
     const director = new ReelDirector({ scene, width: 108, height: 192, seed, canvas });
-    while ((director.completeAt === null || director.stage.handVisible) && director.time < 60) {
-      director.update(1 / fps);
-      director.render();
-    }
+    while (director.completeAt === null && director.time < 60) director.update(1 / fps);
     const copy = REEL_COPY[scene.id];
     items.push({
       file: path.basename(`${base}.mp4`),
       size_bytes: fs.statSync(`${base}.mp4`).size,
       duration_seconds: Math.round(director.duration * 100) / 100,
-      cover_time_sec: Math.ceil((director.time + 0.3) * 10) / 10,
+      cover_time_sec: Math.round((director.completeAt + 0.8) * 10) / 10,
       title: scene.title,
       theme: scene.theme,
       hook: scene.hook,

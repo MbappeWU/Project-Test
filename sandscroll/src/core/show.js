@@ -8,8 +8,8 @@ import { SCENES, PROGRAM } from '../scenes/index.js';
 // dissolves the previous picture, is drawn gesture by gesture, then rests with its poem caption.
 // Seeds change every cycle so no two performances of a scene are identical.
 export class Show {
-  constructor({ width = 1280, height = 720, seed = 2026, canvas, program = PROGRAM, hold = 24, start = 0, notes = {}, pace = 0.85, hand = 'high' } = {}) {
-    this.stage = new Stage({ width, height, seed, canvas, hand });
+  constructor({ width = 1280, height = 720, seed = 2026, canvas, program = PROGRAM, hold = 24, start = 0, notes = {}, pace = 0.85 } = {}) {
+    this.stage = new Stage({ width, height, seed, canvas });
     this.seed = seed;
     this.program = program.filter((id) => SCENES[id]);
     if (!this.program.length) throw new Error('program has no known scenes');
