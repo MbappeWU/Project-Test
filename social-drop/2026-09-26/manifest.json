@@ -1,0 +1,738 @@
+{
+  "marker": "沙画-social-drop",
+  "drop_date": "2026-09-26",
+  "series": {
+    "cn": "一沙一世界",
+    "en": "A World in a Grain of Sand"
+  },
+  "count": 8,
+  "source": {
+    "repository": "MbappeWU/Project-Test",
+    "code_branch": "claude/chinese-sand-painting-livestream-3mnvjo",
+    "code_commit": "be1ab4330f71cefd0f6672eb0e89e38bfc80efd9",
+    "generator": "sandscroll/tools/make-shorts.mjs --seed 2026 --fps 30 --draw 30 --crf 23"
+  },
+  "format": {
+    "structure": "开头 1 秒钩子标题 → 约 30 秒沙画成形 → 题诗、钤印 → 双语诗句，结尾互动提问「下一幅画什么？评论区告诉我」",
+    "encoding": "H.264 High（libx264 preset slow, CRF 23, yuv420p, GOP 60）+ AAC 192 kb/s 48 kHz，+faststart",
+    "git_lfs": "未使用：单个文件都小于 50 MB",
+    "horizontal_note": "暂无现成的横版或方版视频：已有的横版素材分别长 3:15 和 4:30，都超过 X 的 2:20 上限。X 支持直接上传 9:16 竖版视频。"
+  },
+  "files_common": {
+    "copy.md": "8 集的小红书标题、正文、话题和英文文案（与各条 copy 字段相同）"
+  },
+  "ai_disclosure": {
+    "summary": "全部 8 条都是 AI 生成内容，需要标注。",
+    "xiaohongshu": "发布时勾选「内容由AI生成」（《人工智能生成合成内容标识办法》，2025-09-01 起施行）；正文最后一行已写明「代码生成的数字沙画，没有一粒真沙」。",
+    "x": "英文文案已含 “Digital sand art, made with code.”"
+  },
+  "rights": {
+    "music": "原创程序生成，无第三方素材；正式许可证：null（仓库未声明）",
+    "poems": "古诗均为公有领域；EP08 引用费孝通语并署名。",
+    "fonts": "Zhi Mang Xing、Ma Shan Zheng、Cormorant Garamond，均为 SIL Open Font License 开源字体。"
+  },
+  "live_url": null,
+  "live_note": "YouTube 频道尚未开通直播权限，暂无直播间链接。",
+  "posting_basis": "suggested_post_time 按 sandscroll/docs/短视频运营手册.md：每天一条，小红书在午间或晚间发布；面向北美观众的平台在当地晚上发布。",
+  "x_length_note": "X 普通账号单帖上限 280 个加权字符（emoji 计 2 个）；chars_with_tags 是未加权的字符数，超出时请删减话题标签。",
+  "content_boundaries": "标题、封面和话题不使用领导人姓名或肖像，不做政治评论（见运营手册第 5 节）。",
+  "items": [
+    {
+      "id": "EP01-moon",
+      "episode": 1,
+      "label": "一沙一世界 · 数字沙画 EP.01",
+      "title": {
+        "cn": "海上生明月",
+        "en": "Mid-Autumn Moon"
+      },
+      "files": {
+        "vertical_9x16": "EP01-moon.mp4",
+        "horizontal_16x9_or_square_1x1": null,
+        "xhs_cover_3x4": "EP01-moon-cover-3x4.jpg"
+      },
+      "duration_seconds": 45.2,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "fps": 30,
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 27566106
+      },
+      "cover": {
+        "width": 1080,
+        "height": 1440,
+        "size_bytes": 668189
+      },
+      "theme": "团圆 · 思念",
+      "description": "夜海上一轮明月升起，月光铺满海面，礁石上两人并肩赏月。",
+      "hook": {
+        "cn": "画一轮中秋月，送给想念的人",
+        "en": "A Mid-Autumn moon for someone you miss"
+      },
+      "poem": {
+        "cn": "海上生明月，天涯共此时",
+        "en": "Over the sea a bright moon rises; far apart, we share this hour.",
+        "by": "唐 · 张九龄《望月怀远》  ·  Zhang Jiuling, Tang dynasty"
+      },
+      "seal": "明月",
+      "ai": {
+        "label": "AI生成",
+        "ai_generated": true,
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本集配乐情绪（mood: moonrise）程序合成古筝、古琴、洞箫等音色，没有使用录音或采样。",
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，因此不填；音乐不含任何第三方录音、采样或作品。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "xiaohongshu": "2026-09-26 12:00–13:00 或 19:00–22:00（北京时间）",
+        "x_north_america": "2026-09-26 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": "中秋次日（农历八月十六）发布：十五的月亮十六圆，文案无需改动。"
+      },
+      "copy": {
+        "xiaohongshu": {
+          "title": "🌕画一轮中秋月，送给想念的人",
+          "body": "海上生明月，天涯共此时。——张九龄《望月怀远》\n一千多年前的一轮月亮，今晚我们还在一起看。\n中秋快乐，愿你想念的人，也正看着同一轮月亮。\n今年你和谁一起赏月？评论区说说👇\n（代码生成的数字沙画，没有一粒真沙）",
+          "tags": [
+            "中秋节",
+            "海上生明月",
+            "古诗词",
+            "治愈系",
+            "解压视频",
+            "国风",
+            "数字艺术",
+            "AI创作"
+          ]
+        },
+        "english": {
+          "caption": "A Mid-Autumn moon for someone you miss 🌕 \"Over the sea a bright moon rises; far apart, we share this hour.\" (Zhang Jiuling, 8th c.) Digital sand art, made with code.",
+          "tags": [
+            "midautumnfestival",
+            "moon",
+            "chineseart",
+            "calligraphy",
+            "guzheng",
+            "relaxing",
+            "sandart",
+            "satisfying",
+            "digitalart"
+          ],
+          "written_for": "TikTok；可改用于 X",
+          "chars_with_tags": 267
+        }
+      }
+    },
+    {
+      "id": "EP02-panda",
+      "episode": 2,
+      "label": "一沙一世界 · 数字沙画 EP.02",
+      "title": {
+        "cn": "熊猫",
+        "en": "Panda"
+      },
+      "files": {
+        "vertical_9x16": "EP02-panda.mp4",
+        "horizontal_16x9_or_square_1x1": null,
+        "xhs_cover_3x4": "EP02-panda-cover-3x4.jpg"
+      },
+      "duration_seconds": 45.2,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "fps": 30,
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 27037451
+      },
+      "cover": {
+        "width": 1080,
+        "height": 1440,
+        "size_bytes": 670067
+      },
+      "theme": "坚持 · 恒心",
+      "description": "竹林里一只圆滚滚的大熊猫叼着竹叶，手握一根从破岩缝中长出的竹子。",
+      "hook": {
+        "cn": "熊猫教会我的事：咬定青山不放松",
+        "en": "Life advice from a panda: hold on and never let go"
+      },
+      "poem": {
+        "cn": "咬定青山不放松，立根原在破岩中",
+        "en": "Biting firm into the green mountain, never letting go; its roots hold fast in the broken rock.",
+        "by": "清 · 郑燮《竹石》  ·  Zheng Xie, Qing dynasty"
+      },
+      "seal": "恒心",
+      "ai": {
+        "label": "AI生成",
+        "ai_generated": true,
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本集配乐情绪（mood: panda）程序合成古筝、古琴、洞箫等音色，没有使用录音或采样。",
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，因此不填；音乐不含任何第三方录音、采样或作品。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "xiaohongshu": "2026-09-27 12:00–13:00 或 19:00–22:00（北京时间）",
+        "x_north_america": "2026-09-27 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": null
+      },
+      "copy": {
+        "xiaohongshu": {
+          "title": "🐼熊猫教会我的事：咬定青山不放松",
+          "body": "咬定青山不放松，立根原在破岩中。——郑燮《竹石》\n大熊猫一天要花十多个小时吃竹子，认准了就不松口🎋\n想做成一件事，大概也是这样：咬住，别放。\n你最近在“咬定”什么目标？\n（代码生成的数字沙画，没有一粒真沙）",
+          "tags": [
+            "大熊猫",
+            "竹石",
+            "正能量",
+            "治愈系",
+            "解压视频",
+            "国风",
+            "数字艺术",
+            "AI创作"
+          ]
+        },
+        "english": {
+          "caption": "Life advice from a panda: hold on and never let go 🐼🎋 Pandas spend 10+ hours a day eating bamboo. That's commitment. PS: giant pandas Ping Ping and Fu Shuang are coming to Zoo Atlanta! Digital sand art, made with code.",
+          "tags": [
+            "panda",
+            "giantpanda",
+            "zooatlanta",
+            "motivation",
+            "chineseart",
+            "sandart",
+            "satisfying",
+            "digitalart"
+          ],
+          "written_for": "TikTok；可改用于 X",
+          "chars_with_tags": 306
+        }
+      }
+    },
+    {
+      "id": "EP03-greatwall",
+      "episode": 3,
+      "label": "一沙一世界 · 数字沙画 EP.03",
+      "title": {
+        "cn": "长城",
+        "en": "The Great Wall"
+      },
+      "files": {
+        "vertical_9x16": "EP03-greatwall.mp4",
+        "horizontal_16x9_or_square_1x1": null,
+        "xhs_cover_3x4": "EP03-greatwall-cover-3x4.jpg"
+      },
+      "duration_seconds": 45.2,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "fps": 30,
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 26326690
+      },
+      "cover": {
+        "width": 1080,
+        "height": 1440,
+        "size_bytes": 679497
+      },
+      "theme": "坚持 · 同心",
+      "description": "长城沿山脊一段段筑起，登上峰顶的敌楼，背后一轮朝阳，雁阵掠过云海。",
+      "hook": {
+        "cn": "长城不是一天建成的",
+        "en": "The Great Wall wasn't built in a day"
+      },
+      "poem": {
+        "cn": "志合者，不以山海为远",
+        "en": "For those who share a purpose, no mountain and no sea is too far.",
+        "by": "晋 · 葛洪《抱朴子》  ·  Ge Hong, Jin dynasty"
+      },
+      "seal": "山海",
+      "ai": {
+        "label": "AI生成",
+        "ai_generated": true,
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本集配乐情绪（mood: wall）程序合成古筝、古琴、洞箫等音色，没有使用录音或采样。",
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，因此不填；音乐不含任何第三方录音、采样或作品。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "xiaohongshu": "2026-09-28 12:00–13:00 或 19:00–22:00（北京时间）",
+        "x_north_america": "2026-09-28 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": null
+      },
+      "copy": {
+        "xiaohongshu": {
+          "title": "🧱长城不是一天建成的",
+          "body": "志合者，不以山海为远。——葛洪《抱朴子》\n一块砖一块砖，一段一段地连起来，才有了万里长城。\n想走得远，就找到同路的人，一起慢慢来。\n给正在坚持的你，也给一起坚持的朋友💪\n（代码生成的数字沙画，没有一粒真沙）",
+          "tags": [
+            "长城",
+            "正能量",
+            "坚持",
+            "古诗词",
+            "治愈系",
+            "国风",
+            "数字艺术",
+            "AI创作"
+          ]
+        },
+        "english": {
+          "caption": "The Great Wall wasn't built in a day 🧱 \"For those who share a purpose, no mountain and no sea is too far.\" (Ge Hong, 4th c.) Digital sand art, made with code.",
+          "tags": [
+            "greatwall",
+            "motivation",
+            "chineseart",
+            "calligraphy",
+            "history",
+            "sandart",
+            "satisfying",
+            "digitalart"
+          ],
+          "written_for": "TikTok；可改用于 X",
+          "chars_with_tags": 248
+        }
+      }
+    },
+    {
+      "id": "EP04-voyage",
+      "episode": 4,
+      "label": "一沙一世界 · 数字沙画 EP.04",
+      "title": {
+        "cn": "远航",
+        "en": "Setting Sail"
+      },
+      "files": {
+        "vertical_9x16": "EP04-voyage.mp4",
+        "horizontal_16x9_or_square_1x1": null,
+        "xhs_cover_3x4": "EP04-voyage-cover-3x4.jpg"
+      },
+      "duration_seconds": 45.2,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "fps": 30,
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 25902643
+      },
+      "cover": {
+        "width": 1080,
+        "height": 1440,
+        "size_bytes": 667156
+      },
+      "theme": "奋斗 · 梦想",
+      "description": "一艘三桅帆船鼓满风帆驶向晨光，长风掠过天空，船头破浪。",
+      "hook": {
+        "cn": "给正在努力的你：长风破浪会有时",
+        "en": "For everyone working toward a dream"
+      },
+      "poem": {
+        "cn": "长风破浪会有时，直挂云帆济沧海",
+        "en": "A day will come to ride the wind and cleave the waves, to hoist my sail and cross the boundless sea.",
+        "by": "唐 · 李白《行路难》  ·  Li Bai, Tang dynasty"
+      },
+      "seal": "远航",
+      "ai": {
+        "label": "AI生成",
+        "ai_generated": true,
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本集配乐情绪（mood: voyage）程序合成古筝、古琴、洞箫等音色，没有使用录音或采样。",
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，因此不填；音乐不含任何第三方录音、采样或作品。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "xiaohongshu": "2026-09-29 12:00–13:00 或 19:00–22:00（北京时间）",
+        "x_north_america": "2026-09-29 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": "运营手册建议励志向内容在周一早上发，也可与 EP03 对调到 2026-09-28（周一）08:00–09:00（北京时间）。"
+      },
+      "copy": {
+        "xiaohongshu": {
+          "title": "⛵给正在努力的你：长风破浪会有时",
+          "body": "长风破浪会有时，直挂云帆济沧海。——李白《行路难》\n写下这句诗时，李白正仕途失意，可他依然相信：总有乘风破浪的一天。\n把这张帆，送给正在熬夜、正在准备、正在努力的你⛵\n你在为什么梦想努力？评论区给自己打个气！\n（代码生成的数字沙画，没有一粒真沙）",
+          "tags": [
+            "正能量",
+            "李白",
+            "励志",
+            "古诗词",
+            "行路难",
+            "国风",
+            "数字艺术",
+            "AI创作"
+          ]
+        },
+        "english": {
+          "caption": "For everyone working toward a dream ⛵ \"A day will come to ride the wind and cleave the waves.\" Li Bai wrote this in the 8th century, right after a big setback. Digital sand art, made with code.",
+          "tags": [
+            "motivation",
+            "dreams",
+            "sailing",
+            "chinesepoetry",
+            "libai",
+            "sandart",
+            "satisfying",
+            "digitalart"
+          ],
+          "written_for": "TikTok；可改用于 X",
+          "chars_with_tags": 277
+        }
+      }
+    },
+    {
+      "id": "EP05-pinecrane",
+      "episode": 5,
+      "label": "一沙一世界 · 数字沙画 EP.05",
+      "title": {
+        "cn": "松鹤",
+        "en": "Pine and Crane"
+      },
+      "files": {
+        "vertical_9x16": "EP05-pinecrane.mp4",
+        "horizontal_16x9_or_square_1x1": null,
+        "xhs_cover_3x4": "EP05-pinecrane-cover-3x4.jpg"
+      },
+      "duration_seconds": 45.23,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "fps": 30,
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 26768748
+      },
+      "cover": {
+        "width": 1080,
+        "height": 1440,
+        "size_bytes": 638689
+      },
+      "theme": "宁静 · 松弛",
+      "description": "明月下古松探枝，瀑布汇入溪流，一只丹顶鹤单足立在溪石上。",
+      "hook": {
+        "cn": "三十秒，给心放个假",
+        "en": "Thirty seconds of calm"
+      },
+      "poem": {
+        "cn": "明月松间照，清泉石上流",
+        "en": "The bright moon shines between the pines; a clear spring flows over the stones.",
+        "by": "唐 · 王维《山居秋暝》  ·  Wang Wei, Tang dynasty"
+      },
+      "seal": "松风",
+      "ai": {
+        "label": "AI生成",
+        "ai_generated": true,
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本集配乐情绪（mood: pine）程序合成古筝、古琴、洞箫等音色，没有使用录音或采样。",
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，因此不填；音乐不含任何第三方录音、采样或作品。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "xiaohongshu": "2026-09-30 19:00–22:00（北京时间）",
+        "x_north_america": "2026-09-30 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": "放松向内容，适合晚上发布。"
+      },
+      "copy": {
+        "xiaohongshu": {
+          "title": "🌙三十秒，给心放个假",
+          "body": "明月松间照，清泉石上流。——王维《山居秋暝》\n听一会儿古琴，看月光落在松树上，泉水从石头上流过。\n累了就停一停，深呼吸，再出发。\n（代码生成的数字沙画，没有一粒真沙）",
+          "tags": [
+            "治愈系",
+            "解压视频",
+            "助眠",
+            "王维",
+            "古琴",
+            "国风",
+            "数字艺术",
+            "AI创作"
+          ]
+        },
+        "english": {
+          "caption": "Thirty seconds of calm 🌙 \"The bright moon shines between the pines; a clear spring flows over the stones.\" (Wang Wei, 8th c.) Guqin and guzheng. Digital sand art, made with code.",
+          "tags": [
+            "relaxing",
+            "calm",
+            "asmr",
+            "guqin",
+            "chineseart",
+            "sandart",
+            "satisfying",
+            "digitalart"
+          ],
+          "written_for": "TikTok；可改用于 X",
+          "chars_with_tags": 252
+        }
+      }
+    },
+    {
+      "id": "EP06-plum",
+      "episode": 6,
+      "label": "一沙一世界 · 数字沙画 EP.06",
+      "title": {
+        "cn": "梅",
+        "en": "Plum Blossom"
+      },
+      "files": {
+        "vertical_9x16": "EP06-plum.mp4",
+        "horizontal_16x9_or_square_1x1": null,
+        "xhs_cover_3x4": "EP06-plum-cover-3x4.jpg"
+      },
+      "duration_seconds": 45.2,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "fps": 30,
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 27425577
+      },
+      "cover": {
+        "width": 1080,
+        "height": 1440,
+        "size_bytes": 729236
+      },
+      "theme": "坚韧 · 希望",
+      "description": "雪夜的墙角，梅枝越过覆雪的瓦檐，映着月亮一朵朵开放。",
+      "hook": {
+        "cn": "凌寒独自开，送给熬过冬天的你",
+        "en": "For anyone getting through a hard winter"
+      },
+      "poem": {
+        "cn": "墙角数枝梅，凌寒独自开",
+        "en": "A few sprays of plum by the corner of the wall bloom alone, braving the cold.",
+        "by": "宋 · 王安石《梅花》  ·  Wang Anshi, Song dynasty"
+      },
+      "seal": "暗香",
+      "ai": {
+        "label": "AI生成",
+        "ai_generated": true,
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本集配乐情绪（mood: plum）程序合成古筝、古琴、洞箫等音色，没有使用录音或采样。",
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，因此不填；音乐不含任何第三方录音、采样或作品。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "xiaohongshu": "2026-10-01 12:00–13:00 或 19:00–22:00（北京时间）",
+        "x_north_america": "2026-10-01 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": null
+      },
+      "copy": {
+        "xiaohongshu": {
+          "title": "❄️凌寒独自开，送给熬过冬天的你",
+          "body": "墙角数枝梅，凌寒独自开。——王安石《梅花》\n没有人看见的时候，梅花也照样开。\n如果你正在经历一个很冷的冬天，请相信：花会开，春天会来🌸\n（代码生成的数字沙画，没有一粒真沙）",
+          "tags": [
+            "正能量",
+            "梅花",
+            "王安石",
+            "治愈系",
+            "古诗词",
+            "国风",
+            "数字艺术",
+            "AI创作"
+          ]
+        },
+        "english": {
+          "caption": "For anyone getting through a hard winter ❄️🌸 \"A few sprays of plum by the corner of the wall bloom alone, braving the cold.\" (Wang Anshi, 11th c.) Digital sand art, made with code.",
+          "tags": [
+            "hope",
+            "resilience",
+            "plumblossom",
+            "chinesepoetry",
+            "motivation",
+            "sandart",
+            "satisfying",
+            "digitalart"
+          ],
+          "written_for": "TikTok；可改用于 X",
+          "chars_with_tags": 271
+        }
+      }
+    },
+    {
+      "id": "EP07-cranes",
+      "episode": 7,
+      "label": "一沙一世界 · 数字沙画 EP.07",
+      "title": {
+        "cn": "天涯若比邻",
+        "en": "Neighbours across the Ocean"
+      },
+      "files": {
+        "vertical_9x16": "EP07-cranes.mp4",
+        "horizontal_16x9_or_square_1x1": null,
+        "xhs_cover_3x4": "EP07-cranes-cover-3x4.jpg"
+      },
+      "duration_seconds": 45.2,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "fps": 30,
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 27199146
+      },
+      "cover": {
+        "width": 1080,
+        "height": 1440,
+        "size_bytes": 670473
+      },
+      "theme": "友谊",
+      "description": "七只丹顶鹤从长城起飞，在明月下连成一座拱桥，飞向金门大桥。",
+      "hook": {
+        "cn": "朋友不怕远：天涯若比邻",
+        "en": "True friends are never far apart"
+      },
+      "poem": {
+        "cn": "海内存知己，天涯若比邻",
+        "en": "A true friend within the four seas makes the ends of the earth feel next door.",
+        "by": "唐 · 王勃《送杜少府之任蜀州》  ·  Wang Bo, Tang dynasty"
+      },
+      "seal": "和合",
+      "ai": {
+        "label": "AI生成",
+        "ai_generated": true,
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本集配乐情绪（mood: finale）程序合成古筝、古琴、洞箫等音色，没有使用录音或采样。",
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，因此不填；音乐不含任何第三方录音、采样或作品。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "xiaohongshu": "2026-10-02 12:00–13:00 或 19:00–22:00（北京时间）",
+        "x_north_america": "2026-10-02 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": "适合周末，可在评论区引导 @ 远方的朋友。"
+      },
+      "copy": {
+        "xiaohongshu": {
+          "title": "🌉朋友不怕远：天涯若比邻",
+          "body": "海内存知己，天涯若比邻。——王勃《送杜少府之任蜀州》\n真正的朋友，隔着山海也像住在隔壁。\n一群仙鹤搭成一座桥，一边是长城，一边是金门大桥。\n@那个离你很远、却一直在你身边的朋友👇\n（代码生成的数字沙画，没有一粒真沙）",
+          "tags": [
+            "友谊",
+            "王勃",
+            "天涯若比邻",
+            "古诗词",
+            "治愈系",
+            "国风",
+            "数字艺术",
+            "AI创作"
+          ]
+        },
+        "english": {
+          "caption": "True friends are never far apart 🌉 Cranes build a bridge from the Great Wall to the Golden Gate. \"A true friend within the four seas makes the ends of the earth feel next door.\" (Wang Bo, 7th c.) Tag a friend who lives far away 💛 Digital sand art, made with code.",
+          "tags": [
+            "friendship",
+            "longdistance",
+            "greatwall",
+            "goldengate",
+            "chinesepoetry",
+            "sandart",
+            "satisfying",
+            "digitalart"
+          ],
+          "written_for": "TikTok；可改用于 X",
+          "chars_with_tags": 360
+        }
+      }
+    },
+    {
+      "id": "EP08-vase",
+      "episode": 8,
+      "label": "一沙一世界 · 数字沙画 EP.08",
+      "title": {
+        "cn": "美美与共",
+        "en": "Peony and Rose"
+      },
+      "files": {
+        "vertical_9x16": "EP08-vase.mp4",
+        "horizontal_16x9_or_square_1x1": null,
+        "xhs_cover_3x4": "EP08-vase-cover-3x4.jpg"
+      },
+      "duration_seconds": 45.2,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "fps": 30,
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 26529177
+      },
+      "cover": {
+        "width": 1080,
+        "height": 1440,
+        "size_bytes": 680189
+      },
+      "theme": "和谐 · 包容",
+      "description": "牡丹与玫瑰同插在一只青花玉壶春瓶里，几片花瓣落在明式案几上。",
+      "hook": {
+        "cn": "牡丹遇见玫瑰：美美与共",
+        "en": "When a peony meets a rose"
+      },
+      "poem": {
+        "cn": "各美其美，美人之美，美美与共，天下大同",
+        "en": "Cherish your own beauty, admire the beauty of others; beauty shared makes the world one.",
+        "by": "费孝通 · Fei Xiaotong"
+      },
+      "seal": "美美与共",
+      "ai": {
+        "label": "AI生成",
+        "ai_generated": true,
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本集配乐情绪（mood: garden）程序合成古筝、古琴、洞箫等音色，没有使用录音或采样。",
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，因此不填；音乐不含任何第三方录音、采样或作品。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "xiaohongshu": "2026-10-03 12:00–13:00 或 19:00–22:00（北京时间）",
+        "x_north_america": "2026-10-03 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": null
+      },
+      "copy": {
+        "xiaohongshu": {
+          "title": "🌸牡丹遇见玫瑰：美美与共",
+          "body": "各美其美，美人之美，美美与共，天下大同。——费孝通\n牡丹有牡丹的雍容，玫瑰有玫瑰的热烈，插在同一只瓶里，一样好看。\n欣赏自己，也欣赏别人💐\n（代码生成的数字沙画，没有一粒真沙）",
+          "tags": [
+            "美美与共",
+            "费孝通",
+            "牡丹",
+            "玫瑰",
+            "治愈系",
+            "国风",
+            "数字艺术",
+            "AI创作"
+          ]
+        },
+        "english": {
+          "caption": "When a peony meets a rose 🌸🌹 The peony, beloved in China for centuries, and the rose, national flower of the United States, in one vase. \"Cherish your own beauty, admire the beauty of others.\" (Fei Xiaotong) Digital sand art, made with code.",
+          "tags": [
+            "peony",
+            "rose",
+            "harmony",
+            "flowers",
+            "chineseart",
+            "sandart",
+            "satisfying",
+            "digitalart"
+          ],
+          "written_for": "TikTok；可改用于 X",
+          "chars_with_tags": 317
+        }
+      }
+    }
+  ]
+}
