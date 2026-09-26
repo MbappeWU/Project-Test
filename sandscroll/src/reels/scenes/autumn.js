@@ -33,11 +33,8 @@ export default {
     // The sky the palm restores is the opening table itself, so smudged patches never show.
     const sky = stage.mottle(2.6, 0.1, 0.01, 3);
     const lune = moonLevel(stage);
-    const bg = (x, y) => {
-      const d = Math.hypot(x / s - MOON[0], y / s - MOON[1]) - MOON[2];
-      if (d < 0) return lune(x, y);
-      return sky(x, y) * (1 - 0.5 * Math.exp(-d / 110));
-    };
+    // (The opening's palm streaks leave it about 6 % lighter than the bare mottle.)
+    const bg = (x, y) => (Math.hypot(x / s - MOON[0], y / s - MOON[1]) < MOON[2] ? lune(x, y) : 0.94 * sky(x, y));
 
     // Picture A: the branch in one bright stroke, the great leaf, leaves on the branch and falling.
     const branch = spline([[-40, 408], [110, 432], [250, 472], [360, 520], [440, 574]], 10);
@@ -51,7 +48,7 @@ export default {
     ];
     for (const t of twigs) acts.push(K.carve(spline(t, 6), { width: 12, strength: 0.9, speed: 500, rim: 0.25, taper: (u) => 1 - 0.65 * u, rest: 0.02 }));
 
-    const hero = maple(MOON[0], MOON[1], 460, 0.14, 0.95);
+    const hero = maple(MOON[0], MOON[1], 460, 0.14, 0.95, 0.2);
     acts.push(...leaf(hero, { strength: 0.82, duration: 1.8, veins: true }));
     const read = K.wait(0.01);
     read.mark = 'A';
@@ -69,17 +66,17 @@ export default {
     for (let i = 0; i <= 160; i++) {
       const t = i / 160;
       const a = -Math.PI / 2 + t * TAU * 2.2;
-      const r = 400 - 330 * t;
+      const r = 280 - 220 * t;
       spiral.push([mx + r * Math.cos(a), my + r * Math.sin(a)]);
     }
-    const stir = K.palm(spiral, { width: 230, speed: 1300, target: bg, rate: 0.85, streak: stage.streaks[1], hard: 0.3, rest: 0.05 });
+    const stir = K.palm(spiral, { width: 200, speed: 1300, target: bg, rate: 0.85, streak: stage.streaks[1], hard: 0.3, rest: 0.05 });
     stir.mark = 'twist';
     acts.push(stir);
-    for (const [dr, w] of [[70, 180], [165, 190]]) {
-      acts.push(K.palm(arc(mx, my, mr + dr, -Math.PI / 2, Math.PI * 1.55, 90), { width: w, speed: 1700, target: bg, rate: 0.95, streak: stage.streaks[0], hard: 0.35, rest: 0.03 }));
-    }
+    // The lobes beyond the moon are drawn in from their tips, the stalk brushed away.
+    acts.push(K.reveal((st) => st.mask(hero.outline, { feather: 6 }).map((v) => Math.min(1, v * 3)), { op: 'set', level: bg, order: (X, Y) => -Math.hypot(X / s - mx, Y / s - my) / 400, duration: 1.3, jitter: 0.03, rest: 0.03 }));
+    acts.push(K.palm(hero.stalk, { width: 36, speed: 600, target: bg, rate: 0.95, hard: 0.4, rest: 0.03 }));
     acts.push(K.reveal((st) => st.mask(ellipse(mx, my, mr, mr, 0, 120), { feather: 1.2, rough: 0.06, roughScale: 0.12 }), { op: 'set', level: lune, order: 'spiral', duration: 1.8, jitter: 0.04, rest: 0.05 }));
-    acts.push(K.reveal((st) => K.radialMask(st, mx, my, mr * 0.99, mr * 1.9, 2.2), { op: 'carve', strength: 0.3, order: 'out', duration: 0.9, jitter: 0.06, rest: 0.05 }));
+    acts.push(K.reveal((st) => K.radialMask(st, mx, my, mr * 0.99, mr * 2.1, 2.2), { op: 'carve', strength: 0.42, order: 'out', duration: 0.9, jitter: 0.06, rest: 0.05 }));
 
     // ...and each falling leaf, smudged where it hangs, flies off as a goose.
     FLOCK.forEach(([x, y, size, pose], i) => {
@@ -137,7 +134,7 @@ function horizonGlow(st, y0, y1, y2) {
 
 // A five-lobed maple leaf whose blade is centred on (x, y): lobe length `size`, turned by `rot`
 // and foreshortened across by `squash` as it spins. Returns outline, veins and stalk.
-function maple(x, y, size, rot, squash = 1) {
+function maple(x, y, size, rot, squash = 1, stalkLen = 0.3) {
   const c = Math.cos(rot);
   const s = Math.sin(rot);
   const T = ([a, b]) => {
@@ -179,7 +176,7 @@ function maple(x, y, size, rot, squash = 1) {
       veins.push({ main: false, pts: [L(th, len, 0.6, 0), L(th, len, 0.76, sg * 0.14)] });
     }
   });
-  const stalk = [[0, 0.02], [0.04, 0.16], [0.1, 0.3]];
+  const stalk = [[0, 0.02], [0.13 * stalkLen, 0.53 * stalkLen], [stalkLen / 3, stalkLen]];
   return {
     outline: roundCorners(pts).map(T),
     veins: veins.map((v) => ({ main: v.main, pts: spline(v.pts.map(T), 4) })),
