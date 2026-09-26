@@ -2,6 +2,7 @@
   "marker": "沙画-social-drop",
   "drop_date": "2026-09-26",
   "batch": "第二批：沙画变身 · Sand Twist（TikTok 循环短片）",
+  "revision": "第 2 版：画面里加入一只写实的手在光台上作画（程序生成），第一帧手就在笔尖上；封面秒数改为手离开画面之后。",
   "platform": "TikTok",
   "series": {
     "cn": "沙画变身",
@@ -11,19 +12,19 @@
   "source": {
     "repository": "MbappeWU/Project-Test",
     "code_branch": "claude/chinese-sand-painting-livestream-3mnvjo",
-    "code_commit": "33fc59f2f26070e4a8e8f4f6e0eb9a82b1858471",
+    "code_commit": "c3fb130bb1a94dba89c68af49cb0e4540695d419",
     "generator": "sandscroll/tools/make-reels.mjs --seed 2026"
   },
   "format": {
-    "structure": "约 18.8 秒：第 1 帧即深色沙面上的亮线、英文钩子标题和一声古筝刮奏 → 约 5 秒画出第一幅画 → 中段手掌抹开、变身成第二幅画 → 题字、钤印 → 停留 2.2 秒并显示结尾一句 → 0.9 秒一掌扫回开场画面，TikTok 重播时首尾无缝。",
+    "structure": "约 18.8 秒：第 1 帧即一只手按在深色沙面上落下第一笔，配英文钩子标题和一声古筝刮奏 → 约 5 秒画出第一幅画 → 中段手掌抹开、变身成第二幅画 → 题字、钤印 → 手离开画面，停留 2.2 秒并显示结尾一句 → 一掌扫回开场画面，TikTok 重播时沙面首尾衔接。",
     "why": "依据 2026 年 9 月调研：3 秒留存决定分发，约 15 秒的视频完播率最高，重播计为额外观看时长（详见 sandscroll/docs/短视频运营手册.md 第 8 节）。",
     "encoding": "libx264 -preset slow -crf 20 -g 900 -pix_fmt yuv420p -profile:v high; aac -b:a 128k; -movflags +faststart",
-    "size_limit": "每个文件不超过 9 MB（实际 2.3–3.0 MB）。",
-    "cover": "cover_time_sec：画作、题字和印章都已完成，结尾一句已显示。",
+    "size_limit": "每个文件不超过 9 MB（实际 4.0–5.2 MB）。",
+    "cover": "cover_time_sec：画作、题字和印章都已完成，作画的手已离开画面，结尾一句已显示。",
     "git_lfs": "未使用"
   },
   "caption_note": "caption_en 不含话题标签，150 个字符以内，写明 “Digital sand art, made with code.”；话题标签见 hashtags。",
-  "ai_disclosure": "全部 6 条都是 AI 生成内容，TikTok 发布时需要打开 AI-generated content 标识。",
+  "ai_disclosure": "全部 6 条都是 AI 生成内容，TikTok 发布时需要打开 AI-generated content 标识。画面中的手很逼真，更要保留 AI 标识和 “made with code” 说明，避免观众误以为是真人手绘。",
   "rights": {
     "music": "原创，由程序生成，不含第三方素材；正式许可证写 null（仓库没有声明）。",
     "text": "题字为成语、吉语或古诗句（韩愈、陶渊明、陆游，均为公有领域）。",
@@ -44,10 +45,10 @@
         "fps": 30,
         "container": "mp4",
         "codec": "h264 + aac 48 kHz",
-        "size_bytes": 2308971,
-        "size_mb": 2.31
+        "size_bytes": 4543286,
+        "size_mb": 4.54
       },
-      "cover_time_sec": 16.5,
+      "cover_time_sec": 16,
       "title": {
         "cn": "多喝热水",
         "en": "Hot Water Dragon"
@@ -93,7 +94,7 @@
       "ai": {
         "label": "AI生成",
         "tiktok": "发布前在「更多选项」里打开 AI-generated content 标识。",
-        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+        "detail": "画面、手、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；画中那只作画的手也是程序绘制的，不是真人拍摄，也没有真沙。"
       },
       "music": {
         "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: bamboo）程序合成，主奏洞箫、古筝，开头一声古筝刮奏；没有使用任何录音、采样或他人作品。",
@@ -123,10 +124,10 @@
         "fps": 30,
         "container": "mp4",
         "codec": "h264 + aac 48 kHz",
-        "size_bytes": 2879033,
-        "size_mb": 2.88
+        "size_bytes": 5028283,
+        "size_mb": 5.03
       },
-      "cover_time_sec": 16.5,
+      "cover_time_sec": 16,
       "title": {
         "cn": "灯火可亲",
         "en": "Jack-o’-Lantern to Chinese Lantern"
@@ -172,7 +173,7 @@
       "ai": {
         "label": "AI生成",
         "tiktok": "发布前在「更多选项」里打开 AI-generated content 标识。",
-        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+        "detail": "画面、手、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；画中那只作画的手也是程序绘制的，不是真人拍摄，也没有真沙。"
       },
       "music": {
         "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: garden）程序合成，主奏古筝，开头一声古筝刮奏；没有使用任何录音、采样或他人作品。",
@@ -201,10 +202,10 @@
         "fps": 30,
         "container": "mp4",
         "codec": "h264 + aac 48 kHz",
-        "size_bytes": 2655950,
-        "size_mb": 2.66
+        "size_bytes": 4839319,
+        "size_mb": 4.84
       },
-      "cover_time_sec": 16.5,
+      "cover_time_sec": 16,
       "title": {
         "cn": "年年有余",
         "en": "Two Koi"
@@ -250,7 +251,7 @@
       "ai": {
         "label": "AI生成",
         "tiktok": "发布前在「更多选项」里打开 AI-generated content 标识。",
-        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+        "detail": "画面、手、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；画中那只作画的手也是程序绘制的，不是真人拍摄，也没有真沙。"
       },
       "music": {
         "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: river）程序合成，主奏古筝，开头一声古筝刮奏；没有使用任何录音、采样或他人作品。",
@@ -279,10 +280,10 @@
         "fps": 30,
         "container": "mp4",
         "codec": "h264 + aac 48 kHz",
-        "size_bytes": 2945390,
-        "size_mb": 2.95
+        "size_bytes": 5128466,
+        "size_mb": 5.13
       },
-      "cover_time_sec": 16.5,
+      "cover_time_sec": 16,
       "title": {
         "cn": "一叶知秋",
         "en": "Autumn in One Leaf"
@@ -328,7 +329,7 @@
       "ai": {
         "label": "AI生成",
         "tiktok": "发布前在「更多选项」里打开 AI-generated content 标识。",
-        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+        "detail": "画面、手、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；画中那只作画的手也是程序绘制的，不是真人拍摄，也没有真沙。"
       },
       "music": {
         "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: plum）程序合成，主奏洞箫，开头一声古筝刮奏；没有使用任何录音、采样或他人作品。",
@@ -357,10 +358,10 @@
         "fps": 30,
         "container": "mp4",
         "codec": "h264 + aac 48 kHz",
-        "size_bytes": 2260607,
-        "size_mb": 2.26
+        "size_bytes": 4000490,
+        "size_mb": 4
       },
-      "cover_time_sec": 16.4,
+      "cover_time_sec": 16,
       "title": {
         "cn": "采菊",
         "en": "Chrysanthemum Bloom"
@@ -406,7 +407,7 @@
       "ai": {
         "label": "AI生成",
         "tiktok": "发布前在「更多选项」里打开 AI-generated content 标识。",
-        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+        "detail": "画面、手、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；画中那只作画的手也是程序绘制的，不是真人拍摄，也没有真沙。"
       },
       "music": {
         "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: pine）程序合成，主奏古琴，开头一声古筝刮奏；没有使用任何录音、采样或他人作品。",
@@ -435,10 +436,10 @@
         "fps": 30,
         "container": "mp4",
         "codec": "h264 + aac 48 kHz",
-        "size_bytes": 2308514,
-        "size_mb": 2.31
+        "size_bytes": 4312184,
+        "size_mb": 4.31
       },
-      "cover_time_sec": 16.5,
+      "cover_time_sec": 16,
       "title": {
         "cn": "狸奴",
         "en": "Guess the Cat"
@@ -484,7 +485,7 @@
       "ai": {
         "label": "AI生成",
         "tiktok": "发布前在「更多选项」里打开 AI-generated content 标识。",
-        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+        "detail": "画面、手、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；画中那只作画的手也是程序绘制的，不是真人拍摄，也没有真沙。"
       },
       "music": {
         "source": "原创：由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: panda）程序合成，主奏古筝，开头一声古筝刮奏；没有使用任何录音、采样或他人作品。",
