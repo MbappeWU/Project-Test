@@ -2,7 +2,7 @@
   "marker": "沙画-social-drop",
   "drop_date": "2026-09-26",
   "platform": "TikTok",
-  "revision": "第 2 版：按新要求改为只发 TikTok。删除了 3:4 封面、横版视频字段和小红书文案；封面改用 cover_time_sec；新增 caption_en 和 caption_zh。",
+  "revision": "第 3 版：视频重新编码，每个文件都在 9 MB 以内，画面、音乐和时长与第 2 版相同。第 2 版的改动：只发 TikTok，删除 3:4 封面、横版视频字段和小红书文案；封面改用 cover_time_sec；新增 caption_en 和 caption_zh。",
   "series": {
     "cn": "一沙一世界",
     "en": "A World in a Grain of Sand"
@@ -12,12 +12,14 @@
     "repository": "MbappeWU/Project-Test",
     "code_branch": "claude/chinese-sand-painting-livestream-3mnvjo",
     "code_commit": "be1ab4330f71cefd0f6672eb0e89e38bfc80efd9",
-    "generator": "sandscroll/tools/make-shorts.mjs --seed 2026 --fps 30 --draw 30 --crf 23"
+    "generator": "用 sandscroll/tools/make-shorts.mjs 从引擎直接渲染（seed 2026，30 fps，draw 30），只改了编码参数（见 format.encoding）；仓库里的脚本还没有这几个编码选项。"
   },
   "format": {
     "structure": "开头 1 秒钩子标题 → 约 30 秒沙画成形 → 题诗、钤印 → 双语诗句，结尾互动提问「下一幅画什么？评论区告诉我」",
-    "encoding": "H.264 High（libx264 preset slow，CRF 23，yuv420p，GOP 60）+ AAC 192 kb/s 48 kHz，+faststart",
-    "git_lfs": "未使用：单个文件都小于 50 MB",
+    "encoding": "libx264 -preset slow -crf 20 -g 900 -pix_fmt yuv420p -profile:v high；aac -b:a 128k；-movflags +faststart",
+    "encoding_note": "H.264 High，CRF 20，关键帧间隔 900 帧（30 秒）；AAC 128 kb/s、48 kHz。直接从渲染引擎编码，不是二次压缩。沙粒纹理是静止的，关键帧拉长后体积降到原来的约四分之一，画质比第 2 版（CRF 23）更清晰。",
+    "size_limit": "每个文件不超过 9 MB（9,000,000 字节），适配 10 MB 的上传上限。",
+    "git_lfs": "未使用",
     "cover": "cover_time_sec = 37.7：画、题诗、印章都已完成，结尾字幕还没出现。"
   },
   "caption_note": "caption_en 不含话题标签，控制在 150 个字符以内（按 Unicode 字符计，emoji 算 1 个）；话题标签另见 hashtags。",
@@ -49,7 +51,9 @@
         "fps": 30,
         "container": "mp4",
         "codec": "h264 + aac 48 kHz",
-        "size_bytes": 27566106
+        "size_bytes": 5885966,
+        "size_mb": 5.89,
+        "encoding": "libx264 -preset slow -crf 20 -g 900 -pix_fmt yuv420p -profile:v high；aac -b:a 128k；-movflags +faststart"
       },
       "cover_time_sec": 37.7,
       "theme": "团圆 · 思念",
@@ -123,7 +127,9 @@
         "fps": 30,
         "container": "mp4",
         "codec": "h264 + aac 48 kHz",
-        "size_bytes": 27037451
+        "size_bytes": 5579089,
+        "size_mb": 5.58,
+        "encoding": "libx264 -preset slow -crf 20 -g 900 -pix_fmt yuv420p -profile:v high；aac -b:a 128k；-movflags +faststart"
       },
       "cover_time_sec": 37.7,
       "theme": "坚持 · 恒心",
@@ -195,7 +201,9 @@
         "fps": 30,
         "container": "mp4",
         "codec": "h264 + aac 48 kHz",
-        "size_bytes": 26326690
+        "size_bytes": 5827831,
+        "size_mb": 5.83,
+        "encoding": "libx264 -preset slow -crf 20 -g 900 -pix_fmt yuv420p -profile:v high；aac -b:a 128k；-movflags +faststart"
       },
       "cover_time_sec": 37.7,
       "theme": "坚持 · 同心",
@@ -268,7 +276,9 @@
         "fps": 30,
         "container": "mp4",
         "codec": "h264 + aac 48 kHz",
-        "size_bytes": 25902643
+        "size_bytes": 5817853,
+        "size_mb": 5.82,
+        "encoding": "libx264 -preset slow -crf 20 -g 900 -pix_fmt yuv420p -profile:v high；aac -b:a 128k；-movflags +faststart"
       },
       "cover_time_sec": 37.7,
       "theme": "奋斗 · 梦想",
@@ -341,7 +351,9 @@
         "fps": 30,
         "container": "mp4",
         "codec": "h264 + aac 48 kHz",
-        "size_bytes": 26768748
+        "size_bytes": 5110556,
+        "size_mb": 5.11,
+        "encoding": "libx264 -preset slow -crf 20 -g 900 -pix_fmt yuv420p -profile:v high；aac -b:a 128k；-movflags +faststart"
       },
       "cover_time_sec": 37.7,
       "theme": "宁静 · 松弛",
@@ -414,7 +426,9 @@
         "fps": 30,
         "container": "mp4",
         "codec": "h264 + aac 48 kHz",
-        "size_bytes": 27425577
+        "size_bytes": 4854532,
+        "size_mb": 4.85,
+        "encoding": "libx264 -preset slow -crf 20 -g 900 -pix_fmt yuv420p -profile:v high；aac -b:a 128k；-movflags +faststart"
       },
       "cover_time_sec": 37.7,
       "theme": "坚韧 · 希望",
@@ -487,7 +501,9 @@
         "fps": 30,
         "container": "mp4",
         "codec": "h264 + aac 48 kHz",
-        "size_bytes": 27199146
+        "size_bytes": 5261479,
+        "size_mb": 5.26,
+        "encoding": "libx264 -preset slow -crf 20 -g 900 -pix_fmt yuv420p -profile:v high；aac -b:a 128k；-movflags +faststart"
       },
       "cover_time_sec": 37.7,
       "theme": "友谊",
@@ -560,7 +576,9 @@
         "fps": 30,
         "container": "mp4",
         "codec": "h264 + aac 48 kHz",
-        "size_bytes": 26529177
+        "size_bytes": 5234487,
+        "size_mb": 5.23,
+        "encoding": "libx264 -preset slow -crf 20 -g 900 -pix_fmt yuv420p -profile:v high；aac -b:a 128k；-movflags +faststart"
       },
       "cover_time_sec": 37.7,
       "theme": "和谐 · 包容",
