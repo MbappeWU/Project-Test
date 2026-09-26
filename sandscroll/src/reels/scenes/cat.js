@@ -65,7 +65,7 @@ export default {
     acts.push(K.reveal((st) => K.radialMask(st, MOON[0], MOON[1], MOON[2] * 0.9, MOON[2] * 2.6, 2.2), { op: 'carve', strength: 0.45, order: 'out', duration: 1.4, jitter: 0.05 }));
     const stars = [[110, 420, 4], [520, 470, 3.5], [700, 560, 4.5], [640, 760, 3], [150, 800, 3.5], [820, 900, 3], [420, 700, 3]];
     acts.push(K.reveal((st) => st.mask(stars.map(([x, y, r]) => ellipse(x, y, r, r, 0, 10)), { feather: 0.6 }), { op: 'carve', strength: 0.95, order: 'left', duration: 1.2, jitter: 0.2 }));
-    acts.push(K.wait(3.4));
+    acts.push(K.wait(4.4));
 
     // The twist: the palm smears the river into a dark tiled roof...
     for (const [y, dir] of [[1188, 1], [1256, -1], [1330, 1], [1400, -1]]) {

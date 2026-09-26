@@ -42,7 +42,7 @@ const CUP = { cx: 540, rimY: 966, rx: 382, ry: 142, footY: 1326 };
 // Lowest point a petal may hang to, so the whole bloom later floats inside the rim.
 const DROP = 186;
 // Overall size of the bloom.
-const SIZE = 1.12;
+const SIZE = 1.27;
 
 // A petal path: leaves the heart at radius r0 in direction phi, runs length L in the flower's
 // plane (bending by `bend`), droops toward the viewer and curls its tip into a hook.
@@ -78,7 +78,8 @@ function bloomPlan(rng) {
     { n: 19, r0: 100, L: [140, 200], w: 26, bend: 0.4, droop: [0.25, 0.6], lift: [0, 0.15], hook: [0.5, 1.4], crease: true },
   ];
   const out = [];
-  const hero = { phi: 2.25, r0: 70, L: 236, bend: 0.3, droop: 0.55, lift: 0.05, hook: 1.0, w: 32, crease: true, ring: 3 };
+  // The hero stands up out of the heart, dead centre, and curls over at the tip.
+  const hero = { phi: -1.62, w: 56, ring: 3, crease: false, pts: spline([[540, 910], [514, 856], [506, 800], [526, 754], [568, 736], [606, 750], [616, 784]], 8) };
   for (const [k, ring] of rings.entries()) {
     const list = [];
     const rot = rng.float(0, TAU);
@@ -86,7 +87,7 @@ function bloomPlan(rng) {
       const phi = rot + ((i + rng.float(-0.3, 0.3)) * TAU) / ring.n;
       const back = Math.sin(phi) < -0.35;
       // The hero petal already hangs at the front left; leave its place free.
-      if (k === 3 && Math.abs(Math.atan2(Math.sin(phi - hero.phi), Math.cos(phi - hero.phi))) < 0.22) continue;
+      if (k > 0 && Math.abs(Math.atan2(Math.sin(phi - hero.phi), Math.cos(phi - hero.phi))) < 0.3) continue;
       const side = rng.chance(0.5) ? 1 : -1;
       const front = Math.max(0, Math.sin(phi) + 0.25);
       list.push({
@@ -109,14 +110,17 @@ function bloomPlan(rng) {
   return { hero, petals: out };
 }
 
+const heroTaper = (u) => 0.4 + 0.6 * smoothstep(0, 0.25, u) * (1 - 0.62 * smoothstep(0.6, 1, u));
 const petalTaper = (u) => 0.3 + 0.7 * smoothstep(0, 0.22, u) * (1 - 0.55 * smoothstep(0.7, 1, u));
 
 function petal(p, first = false) {
-  const pts = petalPath(p);
+  const pts = p.pts || petalPath(p);
   const acts = [];
   // A dark bed first, so a petal lying over another keeps its own edge.
-  if (!first && p.ring > 0) acts.push(K.pour(pts, { width: p.w + 8, amount: 1.8, speed: 1400, taper: petalTaper, scatter: 0, hard: 0.5, rest: 0 }));
-  acts.push(K.carve(pts, { width: p.w, strength: 0.96, speed: first ? 800 : 1300, rim: 0.3, taper: petalTaper, hard: 0.55, rest: first ? 0.15 : 0.01 }));
+  if (!first) acts.push(K.pour(pts, { width: p.w + 8, amount: p.ring > 0 ? 1.8 : 1.2, speed: 1400, taper: petalTaper, scatter: 0, hard: 0.5, rest: 0 }));
+  acts.push(K.carve(pts, { width: p.w, strength: 0.97, speed: first ? 1100 : 1300, rim: 0.3, taper: first ? heroTaper : petalTaper, hard: first ? 0.65 : 0.55, rest: first ? 0.02 : 0.01 }));
+  // The hero is carved twice down its core, so it glows at once.
+  if (first) acts.push(K.carve(pts, { width: p.w * 0.55, strength: 0.95, speed: 1600, rim: 0, taper: heroTaper, hard: 0.5, rest: 0.02 }));
   // Tubular petals: a fine groove down one side.
   if (p.crease) {
     const off = p.w * 0.18;
@@ -135,8 +139,9 @@ function bloom({ hero, petals }) {
   const acts = [];
   // The hook: one long glowing petal swept in a single stroke.
   acts.push(...petal(hero, true));
-  // A dark heart, then the petals open ring by ring from the centre outward.
-  acts.push(K.reveal((st) => st.mask(ellipse(C[0], C[1] - 9, 56, 36, 0, 24), { feather: 1 }), { op: 'set', level: 2.6, order: 'out', duration: 0.2, rest: 0 }));
+  // The heart lights up beside it at once; its incurved petals are then cut into that glow and
+  // the rings open outward from the centre.
+  acts.push(K.reveal((st) => st.mask(ellipse(C[0], C[1] - 10, 66, 42, 0, 32), { feather: 1.5, rough: 0.15, roughScale: 0.3 }), { op: 'carve', strength: 0.9, order: 'out', duration: 0.25, jitter: 0.08, rest: 0 }));
   for (const p of petals) acts.push(...petal(p));
   // A few tiny florets glinting deep in the heart.
   const dots = [];
@@ -277,8 +282,8 @@ function cup(stage, rng) {
   // Tea: a warm glowing surface filling the rim, the floating flower left as it is.
   const teaTex = stage.mottle(1, 0.1, 0.02, 43);
   let leaves = null;
-  const heart = (x, y) => Math.hypot((x - C[0]) / 134, (y - C[1] + 6) / 72);
-  const footprint = (x, y) => Math.hypot((x - C[0]) / 264, (y - C[1] - 30) / 143);
+  const heart = (x, y) => Math.hypot((x - C[0]) / 152, (y - C[1] + 6) / 82);
+  const footprint = (x, y) => Math.hypot((x - C[0]) / 298, (y - C[1] - 30) / 158);
   const tea = (X, Y) => {
     const x = X / s;
     const y = Y / s;
@@ -320,8 +325,8 @@ function cup(stage, rng) {
           const t = i / 24;
           const a = from + (to - from) * t;
           const h = w * Math.sin(Math.PI * t);
-          outer.push([C[0] + (234 * rr + h) * Math.cos(a), C[1] + 16 + dy + (121 * rr + h) * Math.sin(a)]);
-          inner.push([C[0] + (234 * rr - h) * Math.cos(a), C[1] + 16 + dy + (121 * rr - h) * Math.sin(a)]);
+          outer.push([C[0] + (262 * rr + h) * Math.cos(a), C[1] + 16 + dy + (135 * rr + h) * Math.sin(a)]);
+          inner.push([C[0] + (262 * rr - h) * Math.cos(a), C[1] + 16 + dy + (135 * rr - h) * Math.sin(a)]);
         }
         return [...outer, ...inner.reverse()];
       };

@@ -140,7 +140,7 @@ export function seal(stage, text, x, y, { size = 70, seed = 5 } = {}) {
   return [
     call((st) => {
       const sprite = sealSprite(st, text, { size, seed });
-      const o = new Overlay(sprite, x * st.s - sprite.w / 2, y * st.s - sprite.h / 2, { fadeIn: 0.35, hold: 1e9, fadeOut: 1.5, blend: 'multiply', maxOpacity: 0.92 });
+      const o = new Overlay(sprite, x * st.s - sprite.w / 2, y * st.s - sprite.h / 2, { fadeIn: 0.35, hold: 1e9, fadeOut: 1.5, blend: st.sealBlend ?? 'multiply', maxOpacity: 0.92 });
       st.addOverlay(o);
       st.sealOverlay = o;
       st.emit('cue', 'seal');

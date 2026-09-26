@@ -20,6 +20,8 @@ export class ReelDirector {
     const st = (this.stage = new Stage({ width, height, seed, canvas, virtual: SHORT_VIRTUAL }));
     this.listeners = [];
     st.on((event, data) => this.emit(event, data));
+    // On the dark reel table a multiplied seal would vanish, so it is laid on as cinnabar.
+    st.sealBlend = 'normal';
     const sceneSeed = mixSeed(seed, hashString(scene.id));
     const opening = scene.opening ? scene.opening(st, new Rng(sceneSeed ^ 0x5eed)) : st.mottle(2.6, 0.1, 0.01, 3);
     const sweep = () => cover(st, opening, { rows: 5, speed: 2400, rate: 1, width: 440, wave: 22 });
