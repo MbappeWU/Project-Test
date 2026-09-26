@@ -36,8 +36,10 @@ export default {
 // Shared globe: the pumpkin and the lantern sit on the same centre and meridians.
 const CX = 540;
 const CY = 885;
-const P = { rx: 300, ry: 228 };
-const L = { rx: 290, ry: 230, cy: 864 };
+const P = { rx: 330, ry: 250 };
+// Face, stalk and smear strokes were laid out for a smaller pumpkin; this scales them up.
+const S = (pts) => pts.map(([x, y]) => [CX + (x - CX) * 1.1, CY + (y - CY) * 1.1]);
+const L = { rx: 318, ry: 250, cy: 850 };
 // Six grooves divide the visible face into seven lobes.
 const MERIDIANS = [-5, -3, -1, 1, 3, 5].map((k) => Math.sin((k * Math.PI) / 14));
 
@@ -89,7 +91,7 @@ const EYES = [
 const NOSE = [[512, 940], [568, 940], [540, 896]];
 
 function grin() {
-  const g = grinPoly();
+  const g = S(grinPoly());
   // The opening hook: one fast glowing stroke around the grin, then the mouth fills with light.
   return [
     K.carve([...g, g[0], g[1]], { width: 16, strength: 0.96, speed: 1300, rim: 0.35, taper: K.even, rest: 0.05 }),
@@ -99,11 +101,11 @@ function grin() {
 
 function eyesAndNose() {
   const acts = [];
-  for (const e of EYES) {
+  for (const e of EYES.map(S)) {
     acts.push(K.carve([...e, e[0], e[1]], { width: 12, strength: 0.95, speed: 900, rim: 0.3, taper: K.even, rest: 0.02 }));
     acts.push(K.reveal((st) => st.mask(e, { feather: 0.7 }), { op: 'carve', strength: 0.97, order: 'up', duration: 0.45, jitter: 0.05, rest: 0.05 }));
   }
-  acts.push(K.reveal((st) => st.mask(NOSE, { feather: 0.7 }), { op: 'carve', strength: 0.95, order: 'up', duration: 0.4, jitter: 0.05, rest: 0.1 }));
+  acts.push(K.reveal((st) => st.mask(S(NOSE), { feather: 0.7 }), { op: 'carve', strength: 0.95, order: 'up', duration: 0.4, jitter: 0.05, rest: 0.1 }));
   return acts;
 }
 
@@ -129,7 +131,7 @@ function pumpkin(stage) {
     const x = X / s;
     const y = Y / s;
     const { groove, rim, v } = lobeShade(x, y, P.rx, P.ry, CY);
-    const glow = Math.exp(-(((x - CX) / 230) ** 2) - (((y - 930) / 170) ** 2));
+    const glow = Math.exp(-(((x - CX) / 250) ** 2) - (((y - 935) / 185) ** 2));
     const t = (0.78 + 0.8 * groove + 0.7 * rim + 0.2 * v) * (1 - 0.38 * glow) * tex(X, Y);
     const f = face.at(X, Y);
     const d = stage.field.d[Y * stage.field.w + X];
@@ -138,7 +140,7 @@ function pumpkin(stage) {
   const acts = [
     K.reveal(
       (st) => {
-        face = st.mask([grinPoly(), ...EYES, NOSE], { feather: 0.9 });
+        face = st.mask([grinPoly(), ...EYES, NOSE].map(S), { feather: 0.9 });
         return st.mask(outline, { feather: 0.7, rough: 0.05, roughScale: 0.2 });
       },
       { op: 'set', level, order: 'out', duration: 2.6, jitter: 0.05, rest: 0.1 },
@@ -158,7 +160,7 @@ function pumpkin(stage) {
     acts.push(K.carve(g.slice(4, 12), { width: 4, strength: 0.45, speed: 900, rim: 0.15, rest: 0.02 }));
   }
   // Curved stalk with a carved highlight.
-  const stalk = spline([[522, 704], [526, 660], [540, 626], [566, 600], [592, 592]], 8);
+  const stalk = spline(S([[522, 700], [526, 660], [540, 626], [566, 600], [592, 592]]), 8);
   acts.push(K.pour(stalk, { width: 34, amount: 1.4, speed: 500, taper: (u) => 1 - 0.45 * u, scatter: 0.1, hard: 0.5, rest: 0.03 }));
   acts.push(K.carve(stalk.slice(2, -8).map(([x, y]) => [x - 7, y - 2]), { width: 4, strength: 0.55, speed: 500, rim: 0.1, rest: 0.05 }));
   return acts;
@@ -179,8 +181,7 @@ function bat(x, y, w, lift = 0, tilt = 0) {
 const MOON = [206, 520, 104];
 const BATS = [
   [226, 516, 84, 0.05, -0.12],
-  [352, 452, 48, 0.3, 0.22],
-  [104, 654, 38, -0.12, -0.3],
+  [334, 446, 62, 0.3, 0.22],
 ];
 
 function moonAndBats(stage) {
@@ -219,7 +220,7 @@ function smear(stage) {
     [[780, 760], [660, 720], [520, 730], [380, 750], [300, 790]],
   ];
   for (const [i, pts] of strokes.entries()) {
-    acts.push(K.palm(spline(pts, 8), { width: 200, speed: 900, target, rate: 0.85, streak: stage.streaks[i % 3], hard: 0.35, rest: 0.05 }));
+    acts.push(K.palm(spline(S(pts), 8), { width: 220, speed: 900, target, rate: 0.85, streak: stage.streaks[i % 3], hard: 0.35, rest: 0.05 }));
   }
   // One round pass wipes the old contour back into the night.
   const ring = [];
@@ -262,14 +263,15 @@ function lantern(stage, rng) {
     acts.push(K.pour(groove(a, L.rx, L.ry, L.cy, 0), { width: 5, amount: 1.1, speed: 1300, taper: K.taperBoth, scatter: 0, rest: 0.02 }));
   }
   acts.push(K.pour(lanternOutline(), { width: 8, amount: 1.5, speed: 1600, taper: K.even, scatter: 0, rest: 0.05 }));
-  // Gold caps top and bottom: dark lacquer bands with bright rims.
+  // Gold caps top and bottom: bronze bands with bright rims.
   for (const dir of [-1, 1]) {
     const edge = dir < 0 ? top + 12 : bottom - 12;
     const outer = edge + dir * 40;
-    const cap = [[CX - 132, edge], [CX - 118, edge + dir * 22], [CX - 104, outer], [CX + 104, outer], [CX + 118, edge + dir * 22], [CX + 132, edge]];
-    acts.push(K.reveal((st) => st.mask(cap, { feather: 0.6 }), { op: 'set', level: 2.6, order: 'left', duration: 0.5, jitter: 0.02, rest: 0.03 }));
-    acts.push(K.carve([[CX - 124, edge + dir * 20], [CX + 124, edge + dir * 20]], { width: 5, strength: 0.88, speed: 900, rim: 0.2, taper: K.even, rest: 0.02 }));
-    acts.push(K.carve([[CX + 100, outer - dir * 6], [CX - 100, outer - dir * 6]], { width: 4, strength: 0.8, speed: 900, rim: 0.2, taper: K.even, rest: 0.02 }));
+    const cap = [[CX - 142, edge], [CX - 128, edge + dir * 22], [CX - 112, outer], [CX + 112, outer], [CX + 128, edge + dir * 22], [CX + 142, edge]];
+    acts.push(K.reveal((st) => st.mask(cap, { feather: 0.6 }), { op: 'set', level: stage.streaky(0.8, 0.25, 0.004, 0.08, 7), order: 'left', duration: 0.5, jitter: 0.02, rest: 0.03 }));
+    acts.push(K.pour([...cap, cap[0]], { width: 4, amount: 1.5, speed: 1400, taper: K.even, scatter: 0, rest: 0.02 }));
+    acts.push(K.carve([[CX - 132, edge + dir * 20], [CX + 132, edge + dir * 20]], { width: 5, strength: 0.9, speed: 900, rim: 0.2, taper: K.even, rest: 0.02 }));
+    acts.push(K.carve([[CX + 106, outer - dir * 7], [CX - 106, outer - dir * 7]], { width: 4, strength: 0.85, speed: 900, rim: 0.2, taper: K.even, rest: 0.02 }));
   }
   const capTop = top + 12 - 40;
   const capBottom = bottom - 12 + 40;
@@ -288,7 +290,7 @@ function lantern(stage, rng) {
   for (let i = 0; i < threads; i++) {
     const u = (i / (threads - 1)) * 2 - 1;
     const x0 = CX + u * 18;
-    const len = 128 + rng.float(-8, 8) - 16 * u * u;
+    const len = 124 + rng.float(-8, 8) - 16 * u * u;
     const sway = rng.float(-4, 4);
     acts.push(K.carve([[x0, tb + 22], [x0 + u * 8 + sway * 0.5, tb + 22 + len * 0.5], [x0 + u * 16 + sway, tb + 22 + len]], { width: 3.4, strength: 0.84, speed: 900, rim: 0.1, taper: K.taperEnd, rest: 0.01 }));
   }

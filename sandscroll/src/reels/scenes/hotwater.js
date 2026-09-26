@@ -8,8 +8,8 @@ const GX = 540;
 const RIM = 975;
 const BASE = 1296;
 const WATER = 1046;
-const RIM_RX = 172;
-const BASE_RX = 144;
+const RIM_RX = 196;
+const BASE_RX = 164;
 
 export default {
   id: 'hotwater',
@@ -23,18 +23,18 @@ export default {
   twist: '一杯热水升起的蒸汽盘旋成一条龙',
   build(stage, rng) {
     const acts = [];
-    const dark = stage.mottle(1.8, 0.1, 0.01, 3);
+    const dark = stage.mottle(2.6, 0.1, 0.01, 3);
     // Picture A: the steam first (the opening stroke), then the glass and the water in it.
     const wisps = [
       [[544, 990], [560, 930], [526, 862], [512, 790], [548, 718], [560, 640], [526, 560]],
-      [[462, 986], [440, 930], [470, 866], [436, 800], [402, 744], [420, 668]],
-      [[626, 986], [648, 930], [620, 872], [652, 812], [694, 760], [680, 684]],
+      [[450, 986], [426, 930], [458, 866], [424, 800], [390, 744], [408, 668]],
+      [[638, 986], [662, 930], [634, 872], [666, 812], [706, 760], [692, 684]],
     ];
     acts.push(K.carve(spline(wisps[0], 10), { width: 44, strength: 0.96, speed: 560, rim: 0.25, hard: 0.35, taper: (u) => 1 - 0.72 * u, rest: 0.05 }));
     acts.push(...glass(stage, rng));
     for (const w of wisps.slice(1)) acts.push(K.carve(spline(w, 10), { width: 32, strength: 0.93, speed: 460, rim: 0.2, hard: 0.3, taper: (u) => 1 - 0.78 * u, rest: 0.05 }));
     // Soft glow around the steam, then finer curls: the glass steams while it holds.
-    for (const w of wisps) acts.push(K.carve(spline(w, 10).slice(4), { width: 80, strength: 0.32, speed: 420, rim: 0, hard: 0.05, taper: (u) => 1 - 0.7 * u, rest: 0.05 }));
+    for (const w of wisps) acts.push(K.carve(spline(w, 10).slice(4), { width: 80, strength: 0.5, speed: 420, rim: 0, hard: 0.05, taper: (u) => 1 - 0.7 * u, rest: 0.05 }));
     const curls = [[488, 690, 1], [604, 616, -1], [456, 590, -1], [640, 700, 1]].map(([x, y, dir]) => spline([[x, y], [x + dir * 24, y - 48], [x + dir * 8, y - 96], [x - dir * 22, y - 120]], 8));
     for (const curl of curls) {
       acts.push(K.carve(curl, { width: 10, strength: 0.8, speed: 220, rim: 0.12, taper: K.taperBoth, rest: 0.08 }));
@@ -146,7 +146,7 @@ function glass(stage, rng) {
   acts.push(
     K.reveal((st) => st.mask(body, { feather: 1.5 }).map((a, X, Y) => a * (0.82 + 0.16 * smoothstep(BASE, WATER, Y / s) - 0.12 * Math.pow(Math.abs(X / s - GX) / waterRx, 4))), {
       op: 'carve',
-      strength: 0.9,
+      strength: 0.97,
       order: 'up',
       duration: 2.2,
       jitter: 0.02,
@@ -157,17 +157,17 @@ function glass(stage, rng) {
   acts.push(K.carve(ellipse(GX, BASE, baseRx, 18, 0, 64).slice(0, 34), { width: 7, strength: 0.95, speed: 900, rim: 0.3, taper: K.even, rest: 0.03 }));
   acts.push(K.pour(spline([[GX - baseRx + 8, BASE - 22], [GX, BASE - 8], [GX + baseRx - 8, BASE - 22]], 8), { width: 5, amount: 1.1, speed: 700, taper: K.taperBoth, scatter: 0, rest: 0.03 }));
   // Highlights down the glass: a broad one on the left, a thin one on the right.
-  acts.push(K.pour(spline([[GX - 112, WATER + 30], [GX - 108, 1180], [GX - 100, BASE - 40]], 6), { width: 16, amount: 0.25, speed: 600, taper: K.taperBoth, scatter: 0, rest: 0.02 }));
-  acts.push(K.carve(spline([[GX - 124, RIM + 22], [GX - 122, WATER - 10]], 4), { width: 9, strength: 0.9, speed: 500, rim: 0.2, taper: K.taperBoth, rest: 0.02 }));
-  acts.push(K.carve(spline([[GX + 110, RIM + 30], [GX + 104, 1180], [GX + 98, BASE - 44]], 6), { width: 4, strength: 0.6, speed: 700, rim: 0.2, taper: K.taperBoth, rest: 0.02 }));
+  acts.push(K.pour(spline([[GX - 128, WATER + 30], [GX - 123, 1180], [GX - 114, BASE - 40]], 6), { width: 16, amount: 0.25, speed: 600, taper: K.taperBoth, scatter: 0, rest: 0.02 }));
+  acts.push(K.carve(spline([[GX - 141, RIM + 22], [GX - 139, WATER - 10]], 4), { width: 9, strength: 0.9, speed: 500, rim: 0.2, taper: K.taperBoth, rest: 0.02 }));
+  acts.push(K.carve(spline([[GX + 125, RIM + 30], [GX + 119, 1180], [GX + 112, BASE - 44]], 6), { width: 4, strength: 0.6, speed: 700, rim: 0.2, taper: K.taperBoth, rest: 0.02 }));
   // Goji berries: a few floating at the surface, a couple sunk to the bottom.
   const berries = [];
-  for (const [x, y, a, r] of [[486, 1080, 0.4, 13], [566, 1086, -0.3, 12], [612, 1076, 0.9, 11], [520, 1160, 1.2, 12], [590, 1236, -0.6, 13], [470, 1244, 0.2, 12]]) {
-    berries.push(ellipse(x, y, r * 1.5, r * 0.8, a, 20));
+  for (const [x, y, a, r] of [[478, 1080, 0.4, 13], [570, 1086, -0.3, 12], [622, 1076, 0.9, 11], [517, 1160, 1.2, 12], [597, 1236, -0.6, 13], [460, 1244, 0.2, 12]]) {
+    berries.push(ellipse(x, y, r * 1.7, r * 0.9, a, 20));
   }
   acts.push(K.reveal((st) => st.mask(berries, { feather: 1 }), { op: 'set', level: 2.2, order: 'down', duration: 1.2, jitter: 0.1 }));
   const glints = [];
-  for (const [x, y, a] of [[480, 1075, 0.4], [561, 1081, -0.3], [514, 1154, 1.2], [584, 1231, -0.6], [465, 1239, 0.2]]) glints.push(ellipse(x, y, 4, 2.2, a, 10));
+  for (const [x, y, a] of [[472, 1075, 0.4], [564, 1081, -0.3], [510, 1154, 1.2], [590, 1231, -0.6], [455, 1239, 0.2]]) glints.push(ellipse(x, y, 4, 2.2, a, 10));
   acts.push(K.reveal((st) => st.mask(glints, { feather: 0.5 }), { op: 'carve', strength: 0.8, order: 'left', duration: 0.4 }));
   return acts;
 }
@@ -180,7 +180,7 @@ function swirl(stage, spine, wisps, dark) {
     const pts = w.filter(([, y]) => y < 945);
     acts.push(K.palm(pts, { width: 110, speed: 1100, target: dark, rate: 0.8, streak: stage.streaks[0], hard: 0.35, rest: 0.02 }));
   }
-  acts.push(K.carve(spine.pts, { width: 170, strength: 0.42, speed: 900, rim: 0, hard: 0.05, taper: (u) => 0.3 + 0.7 * smoothstep(0, 0.3, u), rest: 0.05 }));
+  acts.push(K.carve(spine.pts, { width: 170, strength: 0.6, speed: 900, rim: 0, hard: 0.05, taper: (u) => 0.3 + 0.7 * smoothstep(0, 0.3, u), rest: 0.05 }));
   return acts;
 }
 
@@ -282,7 +282,7 @@ const PEARL = [646, 452, 40];
 function pearl(stage, x, y, r) {
   return [
     K.reveal((st) => st.mask(ellipse(x, y, r, r, 0, 48), { feather: 1 }), { op: 'carve', strength: 0.97, order: 'spiral', duration: 0.8, jitter: 0.03 }),
-    K.reveal((st) => K.radialMask(st, x, y, r, r * 2.8, 2.2), { op: 'carve', strength: 0.45, order: 'out', duration: 0.6, jitter: 0.05 }),
+    K.reveal((st) => K.radialMask(st, x, y, r, r * 2.8, 2.2), { op: 'carve', strength: 0.6, order: 'out', duration: 0.6, jitter: 0.05 }),
   ];
 }
 

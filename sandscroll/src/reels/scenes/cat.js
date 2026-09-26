@@ -8,8 +8,8 @@ import * as K from '../../core/kit.js';
 const RIDGE = 1112;
 const EAVE = 1292;
 const MOON = [262, 566, 98];
-// The cat is drawn at 1.14x around the middle of the ridge.
-const SC = 1.14;
+// The cat is drawn at 1.3x around the middle of the ridge.
+const SC = 1.3;
 const Z = (p) => (typeof p[0] === 'number' ? [540 + (p[0] - 540) * SC, RIDGE + (p[1] - RIDGE) * SC] : p.map(Z));
 const eaveY = (x) => EAVE - 118 * Math.pow(smoothstep(300, 560, Math.abs(x - 540)), 1.6);
 const RIDGE_X = [150, 930];
@@ -35,15 +35,15 @@ export default {
   build(stage, rng) {
     const acts = [];
     const s = stage.s;
-    const sky = stage.mottle(1.8, 0.1, 0.01, 3);
-    const roofTone = stage.streaky(2.35, 0.14, 0.004, 0.03, 11);
+    const sky = stage.mottle(2.6, 0.1, 0.01, 3);
+    const roofTone = stage.streaky(1.7, 0.14, 0.004, 0.03, 11);
     const below = (X, Y) => {
       const x = X / s;
       const y = Y / s;
       if (inRoof(x, y)) return roofTone(X, Y);
       if (y < eaveY(x) - 4) return sky(X, Y);
       const t = smoothstep(eaveY(x) + 30, eaveY(x) + 170, y);
-      return roofTone(X, Y) * 1.12 * (1 - t) + sky(X, Y) * t;
+      return 3 * (1 - t) + sky(X, Y) * t;
     };
 
     // Picture A, abstract: a great arc (the cat's back), a long curl under it (the tail), a
@@ -62,7 +62,7 @@ export default {
       acts.push(K.carve(pts, { width: 9, strength: 0.85, speed: 1100, rim: 0.25, taper: K.taperBoth, rest: 0.04 }));
     }
     // It holds while the moon's glow and a few stars come up.
-    acts.push(K.reveal((st) => K.radialMask(st, MOON[0], MOON[1], MOON[2] * 0.9, MOON[2] * 2.6, 2.2), { op: 'carve', strength: 0.3, order: 'out', duration: 1.4, jitter: 0.05 }));
+    acts.push(K.reveal((st) => K.radialMask(st, MOON[0], MOON[1], MOON[2] * 0.9, MOON[2] * 2.6, 2.2), { op: 'carve', strength: 0.45, order: 'out', duration: 1.4, jitter: 0.05 }));
     const stars = [[110, 420, 4], [520, 470, 3.5], [700, 560, 4.5], [640, 760, 3], [150, 800, 3.5], [820, 900, 3], [420, 700, 3]];
     acts.push(K.reveal((st) => st.mask(stars.map(([x, y, r]) => ellipse(x, y, r, r, 0, 10)), { feather: 0.6 }), { op: 'carve', strength: 0.95, order: 'left', duration: 1.2, jitter: 0.2 }));
     acts.push(K.wait(3.4));
@@ -109,15 +109,20 @@ function roof(stage, tone) {
   acts.push(K.reveal((st) => st.mask(face, { feather: 1.2 }), { op: 'set', level: tone, order: 'down', duration: 1.2 }));
   // Tile rows fanning out from the ridge, lit along their rounded tops.
   const rows = [];
+  const gaps = [];
   const ends = [];
   for (let x = RIDGE_X[0] + 22; x <= RIDGE_X[1] - 20; x += 34) {
     const xe = 540 + (x - 540) * 1.32;
     const ye = eaveY(xe) - 10;
     rows.push(ribbon([[x, RIDGE + 40], [xe, ye]], 5, 8));
+    const xg = x + 17;
+    const xge = 540 + (xg - 540) * 1.32;
+    if (xg < RIDGE_X[1] - 10) gaps.push(ribbon([[xg, RIDGE + 40], [xge, eaveY(xge) - 6]], 6, 10));
     ends.push(ellipse(xe, ye + 2, 8, 7, 0, 14));
   }
-  acts.push(K.reveal((st) => st.mask(rows, { feather: 1.5 }), { op: 'carve', strength: 0.42, order: 'left', duration: 1.4, jitter: 0.03 }));
-  acts.push(K.reveal((st) => st.mask(ends, { feather: 0.8 }), { op: 'carve', strength: 0.55, order: 'left', duration: 0.6, jitter: 0.03 }));
+  acts.push(K.reveal((st) => st.mask(gaps, { feather: 1.5 }), { op: 'add', amount: 0.9, order: 'left', duration: 0.8, jitter: 0.03 }));
+  acts.push(K.reveal((st) => st.mask(rows, { feather: 1.5 }), { op: 'carve', strength: 0.55, order: 'left', duration: 1.4, jitter: 0.03 }));
+  acts.push(K.reveal((st) => st.mask(ends, { feather: 0.8 }), { op: 'carve', strength: 0.7, order: 'left', duration: 0.6, jitter: 0.03 }));
   // Eave: a bright lip and its dark shadow, curling up into pointed corners.
   const lip = [];
   for (let x = 30; x <= 1050; x += 15) lip.push([x, eaveY(x)]);
@@ -147,8 +152,9 @@ function roof(stage, tone) {
     top.push([x, mid(x) - thick(x) / 2]);
     bottom.push([x, mid(x) + thick(x) / 2]);
   }
-  acts.push(K.reveal((st) => st.mask([...top, ...bottom.reverse()], { feather: 1 }), { op: 'set', level: 2.75, order: 'left', duration: 1 }));
-  acts.push(K.carve(top.map(([x, y]) => [x, y + 3]), { width: 6, strength: 0.75, speed: 1800, rim: 0.2, taper: K.even, rest: 0.03 }));
+  acts.push(K.reveal((st) => st.mask([...top, ...[...bottom].reverse()], { feather: 1 }), { op: 'set', level: stage.streaky(1.35, 0.12, 0.004, 0.05, 5), order: 'left', duration: 1 }));
+  acts.push(K.pour(bottom.map(([x, y]) => [x, y - 3]), { width: 8, amount: 1.6, speed: 1800, taper: K.even, scatter: 0, rest: 0.02 }));
+  acts.push(K.carve(top.map(([x, y]) => [x, y + 3]), { width: 7, strength: 0.9, speed: 1800, rim: 0.2, taper: K.even, rest: 0.03 }));
   acts.push(K.carve([[flat[0], RIDGE + 38], [flat[1], RIDGE + 38]], { width: 3, strength: 0.35, speed: 1800, rim: 0, taper: K.taperBoth, rest: 0.03 }));
   return acts;
 }
@@ -192,7 +198,7 @@ function cat(stage, rng) {
       level: lit(0.12, 0.9, 600, 1000, 220, 120),
       order: (X, Y) => -Y,
       duration: 1.8,
-      jitter: 0.02,
+      jitter: 0.08,
     }),
   );
   // Soft fur along the back, then the folded haunch.

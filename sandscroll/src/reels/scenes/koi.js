@@ -31,7 +31,7 @@ export default {
     first.mark = 'open';
     acts.push(first);
     acts.push(K.reveal((st) => st.mask(light.body, { feather: 1.2 }), { op: 'carve', strength: 0.93, order: light.order, duration: 1.3, jitter: 0.02, rest: 0.05 }));
-    acts.push(K.reveal((st) => K.radialMask(st, CX, CY, 330, 470, 1.6), { op: 'carve', strength: 0.5, order: 'out', duration: 1.3, jitter: 0.025, rest: 0.05 }));
+    acts.push(K.reveal((st) => K.radialMask(st, CX, CY, 330, 470, 1.6), { op: 'carve', strength: 0.6, order: 'out', duration: 1.3, jitter: 0.025, rest: 0.05 }));
     acts.push(...brightFins(light));
     acts.push(...darkKoi(stage, dark, off));
     const recog = K.wait(0.01);
