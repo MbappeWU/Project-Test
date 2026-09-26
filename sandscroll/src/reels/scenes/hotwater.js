@@ -5,9 +5,11 @@ import * as K from '../../core/kit.js';
 // steam curls up; the palm sweeps the steam into a coil and it becomes a dragon rising from the
 // glass, its tail still the steam. The eye is dotted last (画龙点睛). Portrait 1080x1920.
 const GX = 540;
-const RIM = 1010;
-const BASE = 1282;
-const WATER = 1072;
+const RIM = 975;
+const BASE = 1296;
+const WATER = 1046;
+const RIM_RX = 172;
+const BASE_RX = 144;
 
 export default {
   id: 'hotwater',
@@ -24,23 +26,24 @@ export default {
     const dark = stage.mottle(1.8, 0.1, 0.01, 3);
     // Picture A: the steam first (the opening stroke), then the glass and the water in it.
     const wisps = [
-      [[548, 1000], [560, 940], [528, 880], [516, 812], [548, 748], [556, 680], [526, 610]],
-      [[470, 996], [452, 940], [476, 880], [448, 820], [418, 770], [434, 700]],
-      [[616, 996], [634, 944], [612, 890], [640, 836], [676, 790], [664, 724]],
+      [[544, 990], [560, 930], [526, 862], [512, 790], [548, 718], [560, 640], [526, 560]],
+      [[462, 986], [440, 930], [470, 866], [436, 800], [402, 744], [420, 668]],
+      [[626, 986], [648, 930], [620, 872], [652, 812], [694, 760], [680, 684]],
     ];
-    acts.push(K.carve(spline(wisps[0], 10), { width: 30, strength: 0.95, speed: 520, rim: 0.2, hard: 0.35, taper: (u) => 1 - 0.75 * u, rest: 0.05 }));
+    acts.push(K.carve(spline(wisps[0], 10), { width: 44, strength: 0.96, speed: 560, rim: 0.25, hard: 0.35, taper: (u) => 1 - 0.72 * u, rest: 0.05 }));
     acts.push(...glass(stage, rng));
-    for (const w of wisps.slice(1)) acts.push(K.carve(spline(w, 10), { width: 22, strength: 0.9, speed: 420, rim: 0.15, hard: 0.3, taper: (u) => 1 - 0.8 * u, rest: 0.05 }));
+    for (const w of wisps.slice(1)) acts.push(K.carve(spline(w, 10), { width: 32, strength: 0.93, speed: 460, rim: 0.2, hard: 0.3, taper: (u) => 1 - 0.78 * u, rest: 0.05 }));
     // Soft glow around the steam, then finer curls: the glass steams while it holds.
-    for (const w of wisps) acts.push(K.carve(spline(w, 10).slice(4), { width: 60, strength: 0.35, speed: 380, rim: 0, hard: 0.05, taper: (u) => 1 - 0.7 * u, rest: 0.05 }));
-    for (const [x, y, dir] of [[500, 700, 1], [600, 640, -1], [470, 610, -1]]) {
-      acts.push(K.carve(spline([[x, y], [x + dir * 20, y - 40], [x + dir * 6, y - 80], [x - dir * 18, y - 100]], 8), { width: 8, strength: 0.75, speed: 200, rim: 0.1, taper: K.taperBoth, rest: 0.08 }));
+    for (const w of wisps) acts.push(K.carve(spline(w, 10).slice(4), { width: 80, strength: 0.32, speed: 420, rim: 0, hard: 0.05, taper: (u) => 1 - 0.7 * u, rest: 0.05 }));
+    const curls = [[488, 690, 1], [604, 616, -1], [456, 590, -1], [640, 700, 1]].map(([x, y, dir]) => spline([[x, y], [x + dir * 24, y - 48], [x + dir * 8, y - 96], [x - dir * 22, y - 120]], 8));
+    for (const curl of curls) {
+      acts.push(K.carve(curl, { width: 10, strength: 0.8, speed: 220, rim: 0.12, taper: K.taperBoth, rest: 0.08 }));
     }
-    acts.push(K.wait(1.5));
+    acts.push(K.wait(3.2));
 
     // The twist: the palm drags the steam round into a coil, then the dragon is drawn along it.
-    const spine = track([[548, 1000], [552, 950], [590, 908], [690, 884], [790, 846], [842, 774], [808, 702], [700, 666], [560, 666], [420, 682], [290, 666], [200, 612], [178, 540], [222, 486], [306, 462]]);
-    acts.push(...swirl(stage, spine, dark));
+    const spine = track([[542, 992], [548, 950], [600, 915], [710, 896], [792, 862], [822, 792], [784, 716], [672, 688], [520, 698], [370, 710], [232, 690], [122, 632], [98, 560], [146, 500], [256, 478]]);
+    acts.push(...swirl(stage, spine, [...wisps.map((w) => spline(w, 10)), ...curls], dark));
     acts.push(...dragon(stage, rng, spine));
     acts.push(K.inscribe(stage, { columns: this.inscription.columns, x: 952, y: 468, size: 58, mode: 'carve', strength: 0.9, perChar: 1.3 }));
     acts.push(...K.seal(stage, this.seal, 952, 790, { size: 58, seed: rng.int(1, 999) }));
@@ -120,12 +123,12 @@ function arcPoly(cx, cy, r, a0, a1, w, n = 8) {
 // bottom, a thick glass base, highlights, and goji berries (枸杞) floating in it.
 function glass(stage, rng) {
   const acts = [];
-  const rimRx = 150;
-  const baseRx = 126;
-  const wall = (sd) => [[GX + sd * rimRx, RIM], [GX + sd * (rimRx - 12), RIM + 130], [GX + sd * baseRx, BASE]];
-  acts.push(K.carve(ellipse(GX, RIM, rimRx, 24, 0, 72), { width: 8, strength: 0.95, speed: 1400, rim: 0.25, taper: K.even, rest: 0.05 }));
-  acts.push(K.carve(spline(wall(-1), 8), { width: 7, strength: 0.95, speed: 900, rim: 0.25, taper: K.even, rest: 0.03 }));
-  acts.push(K.carve(spline(wall(1), 8), { width: 7, strength: 0.95, speed: 900, rim: 0.25, taper: K.even, rest: 0.03 }));
+  const rimRx = RIM_RX;
+  const baseRx = BASE_RX;
+  const wall = (sd) => [[GX + sd * rimRx, RIM], [GX + sd * (rimRx - 14), RIM + 150], [GX + sd * baseRx, BASE]];
+  acts.push(K.carve(ellipse(GX, RIM, rimRx, 28, 0, 72), { width: 10, strength: 0.95, speed: 1400, rim: 0.25, taper: K.even, rest: 0.05 }));
+  acts.push(K.carve(spline(wall(-1), 8), { width: 9, strength: 0.95, speed: 900, rim: 0.25, taper: K.even, rest: 0.03 }));
+  acts.push(K.carve(spline(wall(1), 8), { width: 9, strength: 0.95, speed: 900, rim: 0.25, taper: K.even, rest: 0.03 }));
   // Water: fills up from the bottom, brighter toward the surface where the lamp shines through.
   const waterRx = rimRx - 7;
   const body = [];
@@ -169,132 +172,208 @@ function glass(stage, rng) {
   return acts;
 }
 
-// Palm passes that sweep the steam up and round into the dragon's coil, dissolving it.
-function swirl(stage, spine, dark) {
+// Palm passes smear the steam upward, then the hand draws it round into a glowing coil of
+// vapour along the path the dragon will take.
+function swirl(stage, spine, wisps, dark) {
   const acts = [];
-  const sweep = (a, b, width) => {
-    const pts = [];
-    for (let i = 0; i <= 40; i++) pts.push(spine.off(a + ((b - a) * i) / 40, 0));
-    return K.palm(pts, { width, speed: 1100, target: dark, rate: 0.75, streak: stage.streaks[1], hard: 0.3, rest: 0.05 });
-  };
-  acts.push(sweep(0.06, 0.5, 190));
-  acts.push(sweep(0.4, 1.0, 190));
+  for (const w of wisps) {
+    const pts = w.filter(([, y]) => y < 945);
+    acts.push(K.palm(pts, { width: 110, speed: 1100, target: dark, rate: 0.8, streak: stage.streaks[0], hard: 0.35, rest: 0.02 }));
+  }
+  acts.push(K.carve(spine.pts, { width: 170, strength: 0.42, speed: 900, rim: 0, hard: 0.05, taper: (u) => 0.3 + 0.7 * smoothstep(0, 0.3, u), rest: 0.05 }));
   return acts;
+}
+
+// Nearest point on the centre line: (u, v) with v measured toward the back.
+function coords(stage, T, n = 300) {
+  const s = stage.s;
+  const S = [];
+  for (let i = 0; i <= n; i++) {
+    const p = T.at(i / n);
+    S.push([p.x * s, p.y * s, p.nx, p.ny]);
+  }
+  return (X, Y) => {
+    let best = 0;
+    let bd = Infinity;
+    for (let i = 0; i <= n; i++) {
+      const dx = X - S[i][0];
+      const dy = Y - S[i][1];
+      const d = dx * dx + dy * dy;
+      if (d < bd) {
+        bd = d;
+        best = i;
+      }
+    }
+    const [x, y, nx, ny] = S[best];
+    return [best / n, ((X - x) * nx + (Y - y) * ny) / s];
+  };
 }
 
 function dragon(stage, rng, T) {
   const acts = [];
-  const Rmax = 40;
-  const R = (u) => Rmax * (0.08 + 0.92 * smoothstep(0, 0.3, u)) * (1 - 0.22 * smoothstep(0.82, 1, u));
-  const order = (st) => along(st, T);
+  const Rmax = 52;
+  const R = (u) => Rmax * (0.08 + 0.92 * smoothstep(0, 0.3, u)) * (1 - 0.2 * smoothstep(0.82, 1, u));
+  const ord = along(stage, T);
+  const uv = coords(stage, T);
   // The body in one long sweep of the finger, the tail still rising out of the steam.
-  acts.push(K.carve(T.pts, { width: Rmax * 2, strength: 0.93, speed: 330, rim: 0.4, hard: 0.55, taper: (u) => R(u) / Rmax, rest: 0.1 }));
-  // Dorsal fins: flame-shaped spikes along the back, leaning toward the tail.
+  acts.push(K.carve(T.pts, { width: Rmax * 2, strength: 0.94, speed: 330, rim: 0.4, hard: 0.55, taper: (u) => R(u) / Rmax, rest: 0.1 }));
+  // Dorsal fins: flames along the back, tall and short in turn, their tips curling tailward.
   const fins = [];
-  for (let d = 70; d < T.len - 30; d += 26) {
+  let i = 0;
+  for (let d = 150; d < T.len - 50; d += 30, i++) {
     const u = d / T.len;
     const r = R(u);
-    const h = 10 + r * 0.6;
-    fins.push([T.off(u - 11 / T.len, r * 0.8), T.off(u - 4 / T.len, r + h * 0.55), T.off(u - 16 / T.len, r + h), T.off(u + 3 / T.len, r + h * 0.35), T.off(u + 11 / T.len, r * 0.8)]);
+    const h = (10 + r * 0.5) * (i % 2 ? 0.72 : 1);
+    const L = T.len;
+    fins.push(spline([T.off(u - 15 / L, r * 0.75), T.off(u - 12 / L, r + h * 0.5), T.off(u - 22 / L, r + h), T.off(u - 2 / L, r + h * 0.55), T.off(u + 15 / L, r * 0.75)], 5, true));
   }
-  acts.push(K.reveal((st) => st.mask(fins.map((f) => spline(f, 4, true)), { feather: 0.6 }), { op: 'carve', strength: 0.92, order: (X, Y) => order(stage)(X, Y), duration: 2.2, jitter: 0.01 }));
+  acts.push(K.reveal((st) => st.mask(fins, { feather: 0.6 }), { op: 'carve', strength: 0.93, order: ord, duration: 2, jitter: 0.01 }));
+  // Round the body: shade toward the belly and the far edge, so it reads as a tube in the light.
+  const outline = [];
+  for (let k = 0; k <= 120; k++) outline.push(T.off(k / 120, R(k / 120) * 1.02));
+  for (let k = 120; k >= 0; k--) outline.push(T.off(k / 120, -R(k / 120) * 1.02));
+  acts.push(
+    K.reveal((st) => st.mask(outline, { feather: 1 }), {
+      op: 'add',
+      amount: (X, Y) => {
+        const [u, v] = uv(X, Y);
+        const t = v / Math.max(1, R(u));
+        return 0.32 * smoothstep(0.1, -1, t) + 0.2 * smoothstep(0.6, 1, Math.abs(t));
+      },
+      order: ord,
+      duration: 1.2,
+      jitter: 0.01,
+    }),
+  );
   // Scales on the flank, a line along the belly and its plates.
   const scales = [];
   const plates = [];
   let row = 0;
-  for (let d = 90; d < T.len - 20; d += 17, row++) {
+  for (let d = 190; d < T.len - 20; d += 24, row++) {
     const u = d / T.len;
     const r = R(u);
     const p = T.at(u);
     const back = Math.atan2(-p.ty, -p.tx);
-    for (let k = 0; k < 5; k++) {
-      const v = -0.25 * r + (k + (row % 2) * 0.5) * 0.24 * r;
-      if (v > 0.84 * r) continue;
+    for (let k = 0; k < 4; k++) {
+      const v = -0.22 * r + (k + (row % 2) * 0.5) * 0.3 * r;
+      if (v > 0.8 * r) continue;
       const [cx, cy] = T.off(u, v);
-      const rs = Math.max(4, r * 0.24);
-      scales.push(arcPoly(cx, cy, rs, back - 1.2, back + 1.2, 2.6, 6));
+      scales.push(arcPoly(cx, cy, Math.max(5, r * 0.3), back - 1.2, back + 1.2, 4, 8));
     }
-    plates.push(ribbon([T.off(u, -0.42 * r), T.off(u, -0.92 * r)], 2.6, 1.6));
+    plates.push(ribbon([T.off(u, -0.44 * r), T.off(u, -0.9 * r)], 3.6, 2));
   }
   const lineBelly = [];
-  for (let d = 80; d < T.len - 10; d += 8) lineBelly.push(T.off(d / T.len, -0.4 * R(d / T.len)));
-  acts.push(K.reveal((st) => st.mask(scales, { feather: 0.5 }), { op: 'add', amount: 0.55, order: (X, Y) => order(stage)(X, Y), duration: 2.4, jitter: 0.01 }));
-  acts.push(K.pour(lineBelly, { width: 3.5, amount: 0.9, speed: 900, taper: K.taperBoth, scatter: 0, rest: 0.02 }));
-  acts.push(K.reveal((st) => st.mask(plates, { feather: 0.4 }), { op: 'add', amount: 0.5, order: (X, Y) => order(stage)(X, Y), duration: 1.2, jitter: 0.01 }));
-  // Legs with flames at the elbows and four hooked talons.
-  const legs = [
-    { root: T.off(0.9, -20), elbow: [300, 560], wrist: [372, 548], dir: 0.2 },
-    { root: T.off(0.87, 10), elbow: [118, 520], wrist: [110, 452], dir: -1.9 },
-    { root: T.off(0.3, -20), elbow: [770, 948], wrist: [838, 944], dir: 0.4 },
-  ];
-  for (const leg of legs) acts.push(...limb(leg));
+  for (let d = 180; d < T.len - 10; d += 8) lineBelly.push(T.off(d / T.len, -0.4 * R(d / T.len)));
+  acts.push(K.reveal((st) => st.mask(scales, { feather: 0.5 }), { op: 'add', amount: 0.85, order: ord, duration: 2.2, jitter: 0.01 }));
+  acts.push(K.pour(lineBelly, { width: 4, amount: 1, speed: 900, taper: K.taperBoth, scatter: 0, rest: 0.02 }));
+  acts.push(K.reveal((st) => st.mask(plates, { feather: 0.4 }), { op: 'add', amount: 0.7, order: ord, duration: 1, jitter: 0.01 }));
+  // Hind legs: one grips the air beside the glass, one reaches up for the pearl.
+  acts.push(...limb({ root: T.off(0.18, -30), elbow: [806, 952], wrist: [862, 962], dir: 0.35 }));
+  acts.push(...limb({ root: T.off(0.47, -28), elbow: [598, 592], wrist: [622, 540], dir: -1.2 }));
+  // 龙珠: the flaming pearl the dragon chases, glowing between its jaws and its claw.
+  acts.push(...pearl(stage, PEARL[0], PEARL[1], PEARL[2]));
+  acts.push(...limb({ root: T.off(0.95, -30), elbow: [262, 580], wrist: [350, 580], dir: 0.05 }));
   acts.push(...head(stage, T));
   return acts;
+}
+
+const PEARL = [646, 452, 40];
+
+function pearl(stage, x, y, r) {
+  return [
+    K.reveal((st) => st.mask(ellipse(x, y, r, r, 0, 48), { feather: 1 }), { op: 'carve', strength: 0.97, order: 'spiral', duration: 0.8, jitter: 0.03 }),
+    K.reveal((st) => K.radialMask(st, x, y, r, r * 2.8, 2.2), { op: 'carve', strength: 0.45, order: 'out', duration: 0.6, jitter: 0.05 }),
+  ];
 }
 
 function limb({ root, elbow, wrist, dir }) {
   const acts = [];
   const arm = spline([root, elbow, wrist], 10);
-  acts.push(K.carve(arm, { width: 30, strength: 0.93, speed: 300, rim: 0.35, hard: 0.55, taper: (u) => 1 - 0.35 * u, rest: 0.04 }));
+  acts.push(K.carve(arm, { width: 48, strength: 0.94, speed: 300, rim: 0.35, hard: 0.55, taper: (u) => 1 - 0.4 * u, rest: 0.04 }));
   // Flame tufts trailing from the elbow.
   const [ex, ey] = elbow;
   const back = Math.atan2(root[1] - elbow[1], root[0] - elbow[0]) + Math.PI * 0.55;
   const tufts = [];
   for (let k = 0; k < 3; k++) {
     const a = back + (k - 1) * 0.35;
-    tufts.push(ribbon(spline([[ex, ey], [ex + Math.cos(a) * 20, ey + Math.sin(a) * 20], [ex + Math.cos(a + 0.4) * 36, ey + Math.sin(a + 0.4) * 36]], 4), 9, 1));
+    tufts.push(ribbon(spline([[ex, ey], [ex + Math.cos(a) * 24, ey + Math.sin(a) * 24], [ex + Math.cos(a + 0.4) * 44, ey + Math.sin(a + 0.4) * 44]], 4), 11, 1));
   }
   acts.push(K.reveal((st) => st.mask(tufts, { feather: 0.5 }), { op: 'carve', strength: 0.9, order: 'out', duration: 0.4, rest: 0.02 }));
   const [wx, wy] = wrist;
   const talons = [];
   for (let k = 0; k < 4; k++) {
     const a = dir + (k - 1.5) * 0.5;
-    const l = k === 0 ? 26 : 36;
+    const l = k === 0 ? 34 : 46;
     const p1 = [wx + Math.cos(a) * l * 0.6, wy + Math.sin(a) * l * 0.6];
     const p2 = [wx + Math.cos(a) * l, wy + Math.sin(a) * l];
-    const p3 = [p2[0] + Math.cos(a + 1.6) * 12, p2[1] + Math.sin(a + 1.6) * 12];
-    talons.push(ribbon(spline([[wx, wy], p1, p2, p3], 4), 11, 1.2));
+    const p3 = [p2[0] + Math.cos(a + 1.6) * 14, p2[1] + Math.sin(a + 1.6) * 14];
+    talons.push(ribbon(spline([[wx, wy], p1, p2, p3], 4), 14, 1.5));
   }
-  acts.push(K.reveal((st) => st.mask(talons, { feather: 0.5 }), { op: 'carve', strength: 0.94, order: 'out', duration: 0.5, rest: 0.03 }));
+  acts.push(K.reveal((st) => st.mask(talons, { feather: 0.5 }), { op: 'carve', strength: 0.95, order: 'out', duration: 0.5, rest: 0.03 }));
   return acts;
 }
 
-// The head in profile facing right, horns and mane swept back, whiskers streaming; the eye is
-// dotted last.
+// The head in profile facing the pearl: short deep muzzle with an upturned 如意 nose, heavy
+// brow over a big eye, open jaws with fangs and a curling tongue, antler horns and a flaming mane
+// swept back, whiskers streaming. The eye's glint is dotted last (画龙点睛).
 function head(stage, T) {
   const acts = [];
   const p = T.at(1);
-  const ang = Math.atan2(p.ty, p.tx) - 0.12;
+  const ang = Math.atan2(p.ty, p.tx) + 0.02;
   const c = Math.cos(ang);
   const sn = Math.sin(ang);
-  const H = (pts) => pts.map(([a, b]) => [p.x + a * c - b * sn, p.y + a * sn + b * c]);
-  const skull = spline(H([[-6, -26], [26, -40], [62, -44], [92, -34], [132, -30], [166, -38], [190, -24], [192, -6], [150, 0], [112, 6], [150, 18], [180, 24], [176, 38], [140, 44], [96, 48], [52, 46], [16, 38], [-6, 30]]), 6, true);
-  acts.push(K.reveal((st) => st.mask(skull, { feather: 0.8 }), { op: 'carve', strength: 0.94, order: 'left', duration: 1.2 }));
-  acts.push(K.carve(skull, { width: 3, strength: 0.0, speed: 2000, rim: 0, rest: 0 }));
-  // Open mouth, fangs, nostril, brow and cheek lines.
-  acts.push(K.reveal((st) => st.mask(spline(H([[108, 4], [150, 2], [192, -2], [182, 20], [150, 16]]), 6, true), { feather: 0.6 }), { op: 'set', level: 2.4, order: 'left', duration: 0.4, rest: 0.03 }));
-  const fangs = [H([[150, 3], [156, 16], [161, 3]]), H([[170, 1], [175, 12], [179, 0]]), H([[140, 16], [146, 4], [151, 16]])];
-  acts.push(K.reveal((st) => st.mask(fangs, { feather: 0.3 }), { op: 'carve', strength: 0.95, order: 'left', duration: 0.3, rest: 0.02 }));
-  acts.push(K.reveal((st) => st.mask(ellipse(...H([[178, -24]])[0], 5, 3.5, ang, 12), { feather: 0.5 }), { op: 'set', level: 2.2, order: 'out', duration: 0.2, rest: 0.02 }));
-  acts.push(K.pour(spline(H([[48, -30], [76, -40], [104, -30]]), 6), { width: 4, amount: 1.2, speed: 300, taper: K.taperBoth, scatter: 0, rest: 0.02 }));
-  acts.push(K.pour(spline(H([[30, 20], [60, 34], [98, 36]]), 6), { width: 3, amount: 0.8, speed: 300, taper: K.taperBoth, scatter: 0, rest: 0.02 }));
-  // Antler horns sweeping back from the crown, with a tine each.
-  for (const [dx, dy, k] of [[34, -38, 1], [18, -34, 0.8]]) {
-    const main = spline(H([[dx, dy], [dx - 30, dy - 36], [dx - 80, dy - 58], [dx - 118, dy - 54], [dx - 128, dy - 70]]), 8);
-    acts.push(K.carve(main, { width: 14 * k, strength: 0.94, speed: 260, rim: 0.3, taper: (u) => 1 - 0.8 * u, rest: 0.03 }));
-    acts.push(K.carve(spline(H([[dx - 46, dy - 46], [dx - 50, dy - 76], [dx - 40, dy - 96]]), 6), { width: 9 * k, strength: 0.94, speed: 240, rim: 0.3, taper: (u) => 1 - 0.8 * u, rest: 0.03 }));
-  }
-  // Mane: flames streaming back from the jaw and nape.
-  for (const [x0, y0, x1, y1, bend] of [[24, -20, -80, -30, -18], [20, 0, -96, 0, 16], [26, 22, -88, 36, -16], [40, 40, -60, 72, 14], [70, 46, -10, 92, -10]]) {
+  const HS = 1.5;
+  const H = (pts) => pts.map(([a, b]) => [p.x + (a * c - b * sn) * HS, p.y + (a * sn + b * c) * HS]);
+  const local = (X, Y) => {
+    const dx = X / stage.s - p.x;
+    const dy = Y / stage.s - p.y;
+    return [(dx * c + dy * sn) / HS, (-dx * sn + dy * c) / HS];
+  };
+  const line = (pts, width, amount = 1.1, speed = 300) => K.pour(spline(H(pts), 6), { width, amount, speed, taper: K.taperBoth, scatter: 0, rest: 0.02 });
+  const flame = (pts, width, speed = 360) => K.carve(spline(H(pts), 8), { width, strength: 0.94, speed, rim: 0.3, taper: (u) => 1 - 0.85 * u, rest: 0.02 });
+  const skull = spline(H([[-16, -20], [0, -40], [18, -50], [50, -58], [76, -52], [90, -38], [112, -36], [134, -48], [154, -52], [168, -40], [170, -24], [160, -12], [130, -8], [92, 2], [124, 14], [150, 18], [164, 24], [158, 40], [120, 46], [76, 54], [36, 54], [2, 44], [-16, 20]]), 6, true);
+  acts.push(
+    K.reveal((st) => st.mask(skull, { feather: 0.8 }), {
+      op: 'set',
+      level: (X, Y) => {
+        const [a, b] = local(X, Y);
+        return 0.06 + 0.4 * smoothstep(8, 52, b) + 0.25 * smoothstep(30, -10, a);
+      },
+      order: 'left',
+      duration: 1.1,
+    }),
+  );
+  acts.push(K.pour(skull, { width: 3.5, amount: 1, speed: 1600, taper: K.even, scatter: 0, rest: 0.02 }));
+  // The mane flames back from the cheeks and nape, over the join of head and neck.
+  for (const [x0, y0, x1, y1, bend] of [[22, -38, -56, -72, -12], [18, -18, -84, -34, 14], [16, 4, -96, 2, -14], [22, 24, -86, 42, 14], [36, 40, -58, 78, -12], [58, 48, -12, 100, 12]]) {
     const mid = [(x0 + x1) / 2, (y0 + y1) / 2 + bend];
-    acts.push(K.carve(spline(H([[x0, y0], mid, [x1, y1], [x1 - 14, y1 - bend * 0.8]]), 8), { width: 12, strength: 0.9, speed: 380, rim: 0.3, taper: (u) => 1 - 0.85 * u, rest: 0.02 }));
+    acts.push(flame([[x0, y0], mid, [x1, y1], [x1 - 16, y1 - bend * 0.9]], 26));
   }
-  // Whiskers: long tendrils from the upper lip, curling at the ends.
-  acts.push(K.carve(spline(H([[184, -14], [230, -30], [280, -12], [300, 30], [276, 60], [252, 44]]), 10), { width: 6, strength: 0.95, speed: 330, rim: 0.25, taper: (u) => 1 - 0.8 * u, rest: 0.03 }));
-  acts.push(K.carve(spline(H([[168, 8], [200, 50], [190, 100], [150, 126], [120, 112], [130, 92]]), 10), { width: 6, strength: 0.95, speed: 330, rim: 0.25, taper: (u) => 1 - 0.8 * u, rest: 0.03 }));
-  // 画龙点睛: the eye socket, then the glint that brings it alive.
-  const [ex, ey] = H([[98, -20]])[0];
-  acts.push(K.reveal((st) => st.mask(ellipse(ex, ey, 13, 8, ang - 0.15, 20), { feather: 0.6 }), { op: 'set', level: 2.6, order: 'left', duration: 0.3, rest: 0.1 }));
-  acts.push(K.reveal((st) => st.mask(ellipse(ex + 3, ey - 1, 5, 5, 0, 12), { feather: 0.4 }), { op: 'carve', strength: 0.97, order: 'out', duration: 0.25, rest: 0.2 }));
+  // Open mouth, fangs and tongue; nostril, nose scroll, brow, cheek.
+  acts.push(K.reveal((st) => st.mask(spline(H([[92, 2], [130, -7], [162, -11], [160, 22], [124, 13]]), 6, true), { feather: 0.6 }), { op: 'set', level: 2.6, order: 'left', duration: 0.4, rest: 0.03 }));
+  const fangs = [H([[138, -8], [143, 7], [149, -9]]), H([[150, 19], [154, 5], [158, 21]])];
+  acts.push(K.reveal((st) => st.mask(fangs, { feather: 0.3 }), { op: 'carve', strength: 0.97, order: 'left', duration: 0.3, rest: 0.02 }));
+  acts.push(flame([[116, 8], [158, 6], [188, -2], [198, -18], [188, -30]], 13, 260));
+  acts.push(K.reveal((st) => st.mask(ellipse(...H([[154, -34]])[0], 8, 5.5, ang, 12), { feather: 0.5 }), { op: 'set', level: 2.5, order: 'out', duration: 0.2, rest: 0.02 }));
+  acts.push(line([[124, -40], [142, -54], [162, -46]], 4));
+  acts.push(line([[40, -48], [64, -60], [92, -46]], 6, 1.5));
+  acts.push(line([[96, -30], [128, -26]], 3, 0.8));
+  // Eye socket (dark) with a heavy lid.
+  const [ex, ey] = H([[64, -36]])[0];
+  acts.push(K.reveal((st) => st.mask(ellipse(ex, ey, 22, 14, ang - 0.15, 24), { feather: 0.6 }), { op: 'set', level: 2.7, order: 'left', duration: 0.3, rest: 0.03 }));
+  // Bristling brow flames above the eye.
+  acts.push(flame([[56, -56], [34, -76], [2, -80], [-18, -70]], 18));
+  // Antler horns sweeping back from the crown, each with a tine.
+  for (const [dx, dy, k] of [[30, -50, 1], [12, -46, 0.8]]) {
+    acts.push(K.carve(spline(H([[dx, dy], [dx - 28, dy - 38], [dx - 78, dy - 60], [dx - 116, dy - 56], [dx - 128, dy - 74]]), 8), { width: 22 * k, strength: 0.95, speed: 260, rim: 0.3, taper: (u) => 1 - 0.78 * u, rest: 0.03 }));
+    acts.push(K.carve(spline(H([[dx - 46, dy - 50], [dx - 52, dy - 80], [dx - 40, dy - 100]]), 6), { width: 15 * k, strength: 0.95, speed: 240, rim: 0.3, taper: (u) => 1 - 0.8 * u, rest: 0.03 }));
+  }
+  // Beard under the chin, then the whiskers: long tendrils from the upper lip, curling.
+  for (const [x0, y0, x1, y1] of [[150, 42, 132, 78], [128, 46, 104, 82], [104, 50, 80, 84]]) acts.push(flame([[x0, y0], [(x0 + x1) / 2 + 6, (y0 + y1) / 2], [x1, y1], [x1 - 10, y1 - 6]], 14));
+  acts.push(K.carve(spline(H([[164, -30], [192, -62], [172, -98], [122, -106], [90, -88], [100, -72]]), 10), { width: 10, strength: 0.96, speed: 330, rim: 0.25, taper: (u) => 1 - 0.8 * u, rest: 0.03 }));
+  acts.push(K.carve(spline(H([[160, -16], [206, -10], [236, 18], [228, 52], [200, 58], [198, 40]]), 10), { width: 10, strength: 0.96, speed: 330, rim: 0.25, taper: (u) => 1 - 0.8 * u, rest: 0.03 }));
+  // 画龙点睛: the eyeball lit, then the pupil and the glint that bring it alive.
+  acts.push(K.reveal((st) => st.mask(ellipse(ex + 2, ey, 13, 10, 0, 20), { feather: 0.4 }), { op: 'carve', strength: 0.9, order: 'out', duration: 0.25, rest: 0.1 }));
+  acts.push(K.reveal((st) => st.mask(ellipse(ex + 5, ey, 5.5, 7.5, 0, 14), { feather: 0.4 }), { op: 'set', level: 2.8, order: 'out', duration: 0.2, rest: 0.25 }));
   return acts;
 }

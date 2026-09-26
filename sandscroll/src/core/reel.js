@@ -21,7 +21,7 @@ export class ReelDirector {
     this.listeners = [];
     st.on((event, data) => this.emit(event, data));
     const sceneSeed = mixSeed(seed, hashString(scene.id));
-    const opening = scene.opening ? scene.opening(st, new Rng(sceneSeed ^ 0x5eed)) : st.mottle(1.8, 0.1, 0.01, 3);
+    const opening = scene.opening ? scene.opening(st, new Rng(sceneSeed ^ 0x5eed)) : st.mottle(2.6, 0.1, 0.01, 3);
     const sweep = () => cover(st, opening, { rows: 5, speed: 2400, rate: 1, width: 440, wave: 22 });
 
     // The opening table is the loop sweep laid over an empty table, so the closing sweep over

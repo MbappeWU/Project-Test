@@ -15,7 +15,7 @@ export default {
   seal: '灯',
   twist: '发光的南瓜灯被掌心一抹，变成挂着流苏的红灯笼',
   opening(stage) {
-    return stage.mottle(2.3, 0.1, 0.01, 3);
+    return stage.mottle(2.6, 0.1, 0.01, 3);
   },
   build(stage, rng) {
     const acts = [];
@@ -23,7 +23,7 @@ export default {
     acts.push(...grin(stage));
     acts.push(...eyesAndNose());
     acts.push(...pumpkin(stage));
-    acts.push(...moonAndBats(stage, rng));
+    acts.push(...moonAndBats(stage));
     // ---- Twist: palm smears the pumpkin, the globe returns as a lantern ----
     acts.push(...smear(stage));
     acts.push(...lantern(stage, rng));
@@ -130,7 +130,7 @@ function pumpkin(stage) {
     const y = Y / s;
     const { groove, rim, v } = lobeShade(x, y, P.rx, P.ry, CY);
     const glow = Math.exp(-(((x - CX) / 230) ** 2) - (((y - 930) / 170) ** 2));
-    const t = (0.86 + 0.8 * groove + 0.7 * rim + 0.2 * v) * (1 - 0.38 * glow) * tex(X, Y);
+    const t = (0.78 + 0.8 * groove + 0.7 * rim + 0.2 * v) * (1 - 0.38 * glow) * tex(X, Y);
     const f = face.at(X, Y);
     const d = stage.field.d[Y * stage.field.w + X];
     return t + (d - t) * f;
@@ -193,7 +193,7 @@ function moonAndBats(stage) {
       const e = Math.hypot((X / s - CX) / P.rx, (Y / s - CY) / P.ry);
       return a * smoothstep(1.02, 1.14, e);
     });
-  acts.push(K.reveal(haze, { op: 'carve', strength: 0.55, order: 'out', duration: 1, jitter: 0.08, rest: 0.1 }));
+  acts.push(K.reveal(haze, { op: 'carve', strength: 0.68, order: 'out', duration: 1, jitter: 0.08, rest: 0.1 }));
   for (const [x, y, w, lift, tilt] of BATS) {
     acts.push(K.reveal((st) => st.mask(bat(x, y, w, lift, tilt), { feather: 0.5 }), { op: 'set', level: 2.7, order: 'left', duration: 0.45, jitter: 0.03, rest: 0.25 }));
   }
@@ -205,7 +205,7 @@ function moonAndBats(stage) {
 function smear(stage) {
   const s = stage.s;
   const inner = stage.mottle(1.7, 0.12, 0.02, 21);
-  const night = stage.mottle(2.3, 0.1, 0.01, 3);
+  const night = stage.mottle(2.6, 0.1, 0.01, 3);
   const target = (X, Y) => {
     const e = Math.hypot((X / s - CX) / P.rx, (Y / s - CY) / P.ry);
     const k = smoothstep(0.92, 1.06, e);
@@ -227,9 +227,9 @@ function smear(stage) {
     const t = -Math.PI / 2 + (i / 60) * TAU * 1.04;
     ring.push([CX + (P.rx + 8) * Math.cos(t), CY + (P.ry + 8) * Math.sin(t)]);
   }
-  acts.push(K.palm(ring, { width: 70, speed: 1500, target: stage.mottle(2.3, 0.1, 0.01, 3), rate: 0.9, hard: 0.4, rest: 0.05 }));
+  acts.push(K.palm(ring, { width: 70, speed: 1500, target: stage.mottle(2.6, 0.1, 0.01, 3), rate: 0.9, hard: 0.4, rest: 0.05 }));
   // The stalk is swept off the top.
-  acts.push(K.palm([[500, 720], [540, 640], [600, 580], [640, 560]], { width: 110, speed: 700, target: stage.mottle(2.3, 0.1, 0.01, 3), rate: 0.9, rest: 0.1 }));
+  acts.push(K.palm([[500, 720], [540, 640], [600, 580], [640, 560]], { width: 110, speed: 700, target: stage.mottle(2.6, 0.1, 0.01, 3), rate: 0.9, rest: 0.1 }));
   return acts;
 }
 

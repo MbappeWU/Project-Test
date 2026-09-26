@@ -30,16 +30,15 @@ export default {
     const first = K.carve(light.spinePath(0, 1.12), { width: 46, strength: 0.94, speed: 640, rim: 0.35, rest: 0.05 });
     first.mark = 'open';
     acts.push(first);
-    acts.push(K.reveal((st) => st.mask(light.body, { feather: 1.2 }), { op: 'carve', strength: 0.93, order: light.order, duration: 1.6, jitter: 0.02, rest: 0.05 }));
-    acts.push(K.reveal((st) => K.radialMask(st, CX, CY, 330, 470, 1.6), { op: 'carve', strength: 0.5, order: 'out', duration: 1.6, jitter: 0.06, rest: 0.05 }));
+    acts.push(K.reveal((st) => st.mask(light.body, { feather: 1.2 }), { op: 'carve', strength: 0.93, order: light.order, duration: 1.3, jitter: 0.02, rest: 0.05 }));
+    acts.push(K.reveal((st) => K.radialMask(st, CX, CY, 330, 470, 1.6), { op: 'carve', strength: 0.5, order: 'out', duration: 1.3, jitter: 0.025, rest: 0.05 }));
     acts.push(...brightFins(light));
     acts.push(...darkKoi(stage, dark, off));
     const recog = K.wait(0.01);
     recog.mark = 'A';
     acts.push(recog);
     acts.push(...brightDetails(light), ...darkDetails(dark));
-    acts.push(...ripples([[345, 0.2, 1.7], [385, 2.3, 3.9], [430, 3.6, 5.2], [360, 4.4, 5.9]], 0.45));
-    acts.push(K.wait(0.6));
+    acts.push(...ripples([[345, 0.2, 1.7], [392, 2.4, 3.9], [430, 3.8, 5.4]], 0.45, 1800));
 
     // Twist: a stirring palm swirls both koi round the circle, then they settle into the taiji.
     const tgt = taijiTarget(s, stage.mottle(1, 0.1, 0.02, off + 9));
@@ -49,21 +48,21 @@ export default {
       const r = 250 - (i / 200) * 190;
       swirl.push([CX + r * Math.cos(a), CY + r * Math.sin(a)]);
     }
-    const stir = K.palm(swirl, { width: 170, speed: 1100, target: tgt, rate: 0.75, streak: stage.streaks[1], hard: 0.3, rest: 0.1 });
+    const stir = K.palm(swirl, { width: 170, speed: 650, target: tgt, rate: 0.75, streak: stage.streaks[1], hard: 0.3, rest: 0.1 });
     stir.mark = 'twist';
     acts.push(stir);
-    acts.push(K.palm(arc(CX, CY, 262, Math.PI * 1.5, -Math.PI * 0.5, 96), { width: 110, speed: 1500, target: tgt, rate: 0.7, streak: stage.streaks[2], hard: 0.3, rest: 0.1 }));
-    const yang = K.reveal((st) => st.mask(taijiLight(), { feather: 0.7 }), { op: 'carve', strength: 0.95, order: angleOrder(s, Math.PI * 1.5), duration: 2.2, jitter: 0.015, rest: 0.05 });
-    const yin = K.reveal((st) => st.mask(taijiDark(), { feather: 0.7 }), { op: 'set', level: stage.mottle(3.3, 0.06, 0.02, off + 3), order: angleOrder(s, Math.PI * 0.5), duration: 2.2, jitter: 0.015, rest: 0.05 });
+    acts.push(K.palm(arc(CX, CY, 262, Math.PI * 1.5, -Math.PI * 0.5, 96), { width: 110, speed: 1100, target: tgt, rate: 0.7, streak: stage.streaks[2], hard: 0.3, rest: 0.1 }));
+    const yang = K.reveal((st) => st.mask(taijiLight(), { feather: 0.7 }), { op: 'carve', strength: 0.95, order: angleOrder(s, Math.PI * 1.5), duration: 3.5, jitter: 0.015, rest: 0.05 });
+    const yin = K.reveal((st) => st.mask(taijiDark(), { feather: 0.7 }), { op: 'set', level: stage.mottle(3.3, 0.06, 0.02, off + 3), order: angleOrder(s, Math.PI * 0.5), duration: 3.5, jitter: 0.015, rest: 0.05 });
     acts.push(yang, yin);
     // The circle closes: one stroke all the way round.
-    acts.push(K.carve(arc(CX, CY, R + 9, Math.PI * 1.5, Math.PI * 1.5 - TAU * 1.02, 160), { width: 11, strength: 0.93, speed: 1250, rim: 0.4, taper: K.even, rest: 0.1 }));
-    acts.push(K.reveal((st) => st.mask(ellipse(CX, CY - R / 2, R * 0.13, R * 0.13, 0, 40), { feather: 0.6 }), { op: 'carve', strength: 0.96, order: 'out', duration: 0.5, rest: 0.05 }));
-    acts.push(K.reveal((st) => st.mask(ellipse(CX, CY + R / 2, R * 0.13, R * 0.13, 0, 40), { feather: 0.6 }), { op: 'set', level: 3.4, order: 'out', duration: 0.5, rest: 0.1 }));
+    acts.push(K.carve(arc(CX, CY, R + 9, Math.PI * 1.5, Math.PI * 1.5 - TAU * 1.02, 160), { width: 11, strength: 0.93, speed: 900, rim: 0.4, taper: K.even, rest: 0.1 }));
+    acts.push(K.reveal((st) => st.mask(ellipse(CX, CY - R / 2, R * 0.13, R * 0.13, 0, 40), { feather: 0.6 }), { op: 'carve', strength: 0.96, order: 'out', duration: 0.8, rest: 0.05 }));
+    acts.push(K.reveal((st) => st.mask(ellipse(CX, CY + R / 2, R * 0.13, R * 0.13, 0, 40), { feather: 0.6 }), { op: 'set', level: 3.4, order: 'out', duration: 0.8, rest: 0.1 }));
     const fin = K.wait(0.01);
     fin.mark = 'taiji';
     acts.push(fin);
-    acts.push(...ripples([[352, -0.5, 1.9], [395, 2.2, 4.4], [440, 3.7, 5.6], [372, 4.2, 5.4]], 0.5));
+    acts.push(...ripples([[352, -0.5, 1.9], [395, 2.2, 4.4], [440, 3.7, 5.6], [372, 4.2, 5.4]], 0.5, 900));
 
     acts.push(K.inscribe(stage, { columns: this.inscription.columns, x: 950, y: 470, size: 56, mode: 'carve', strength: 0.9, perChar: 1.3 }));
     acts.push(...K.seal(stage, this.seal, 950, 780, { size: 58, seed: rng.int(1, 999) }));
@@ -140,11 +139,11 @@ function fish(aH, s) {
     };
     return { poly: pts, rays: [ray(0), ray(1), ray(2)] };
   };
-  const fins = [fan(0.25, 1, 0.95 * W, 0.42, 0.75), fan(0.25, -1, 0.95 * W, 0.42, 0.75), fan(0.62, 1, 0.5 * W, 0.35, 0.9), fan(0.62, -1, 0.5 * W, 0.35, 0.9)];
+  const fins = [fan(0.25, 1, 1.35 * W, 0.4, 0.95), fan(0.25, -1, 1.35 * W, 0.4, 0.95), fan(0.63, 1, 0.62 * W, 0.32, 1.0), fan(0.63, -1, 0.62 * W, 0.32, 1.0)];
 
   // Head: eyes, gill covers and a pair of barbels.
-  const eyes = [at(0.085, 0.62 * hw(0.085)), at(0.085, -0.62 * hw(0.085))];
-  const gills = [1, -1].map((sg) => spline([at(0.14, sg * hw(0.14) * 0.95), at(0.185, sg * hw(0.185) * 0.55), at(0.2, sg * hw(0.2) * 0.1)], 6));
+  const eyes = [at(0.09, 0.72 * hw(0.09)), at(0.09, -0.72 * hw(0.09))];
+  const gills = [1, -1].map((sg) => spline([at(0.14, sg * hw(0.14) * 0.95), at(0.175, sg * hw(0.175) * 0.7), at(0.2, sg * hw(0.2) * 0.42)], 6));
   const [tx0, ty0] = (() => {
     const [x0, y0] = P(0);
     const [x1, y1] = P(0.01);
@@ -181,7 +180,8 @@ function fish(aH, s) {
     a = ((a % TAU) + TAU) % TAU;
     return a / TAU;
   };
-  return { P, N, at, body, tail, rays, fins, eyes, gills, barbels, scales, spinePath, order };
+  const dorsal = spinePath(0.3, 0.66, 30);
+  return { P, N, at, body, tail, rays, fins, eyes, gills, barbels, scales, dorsal, spinePath, order };
 }
 
 // Thin crescent band (a scale edge) along a circle arc.
@@ -196,7 +196,7 @@ function brightFins(k) {
     K.reveal((st) => st.mask(k.tail, { feather: 1 }), { op: 'carve', strength: 0.6, order: 'out', duration: 0.9, jitter: 0.05, rest: 0.03 }),
   ];
   for (const r of k.rays) acts.push(K.carve(r, { width: 7, strength: 0.55, speed: 1000, rim: 0.15, taper: K.taperEnd, rest: 0.02 }));
-  acts.push(K.reveal((st) => st.mask(k.fins.map((f) => f.poly), { feather: 1 }), { op: 'carve', strength: 0.62, order: 'out', duration: 0.8, jitter: 0.05, rest: 0.03 }));
+  acts.push(K.reveal((st) => st.mask(k.fins.map((f) => f.poly), { feather: 1 }), { op: 'carve', strength: 0.72, order: 'out', duration: 0.8, jitter: 0.05, rest: 0.03 }));
   for (const f of k.fins.slice(0, 2)) for (const r of f.rays) acts.push(K.carve(r, { width: 4, strength: 0.5, speed: 900, rim: 0.1, taper: K.taperEnd, rest: 0.01 }));
   return acts;
 }
@@ -207,7 +207,8 @@ function brightDetails(k) {
   ];
   for (const g of k.gills) acts.push(K.pour(g, { width: 4, amount: 0.9, speed: 500, scatter: 0, rest: 0.02 }));
   for (const b of k.barbels) acts.push(K.carve(b, { width: 3.5, strength: 0.85, speed: 300, rim: 0.1, taper: K.taperEnd, rest: 0.02 }));
-  acts.push(K.reveal((st) => st.mask(k.scales, { feather: 0.4 }), { op: 'add', amount: 0.45, order: k.order, duration: 1.2, jitter: 0.02, rest: 0.05 }));
+  acts.push(K.pour(k.dorsal, { width: 5, amount: 0.35, speed: 900, scatter: 0, rest: 0.02 }));
+  acts.push(K.reveal((st) => st.mask(k.scales, { feather: 0.4 }), { op: 'add', amount: 0.45, order: k.order, duration: 0.5, jitter: 0.02, rest: 0.05 }));
   return acts;
 }
 
@@ -225,20 +226,23 @@ function darkDetails(k) {
   const acts = [];
   acts.push(K.carve([...k.tail, k.tail[0]], { width: 4, strength: 0.7, speed: 1300, rim: 0.1, taper: K.even, rest: 0.02 }));
   for (const r of k.rays) acts.push(K.carve(r, { width: 3, strength: 0.4, speed: 1100, rim: 0.05, taper: K.taperEnd, rest: 0.01 }));
-  for (const f of k.fins) acts.push(K.carve([...f.poly.slice(1, -1)], { width: 3.5, strength: 0.65, speed: 900, rim: 0.05, taper: K.even, rest: 0.01 }));
+  for (const f of k.fins) acts.push(K.carve(f.poly.slice(1, -1), { width: 4, strength: 0.8, speed: 900, rim: 0.05, taper: K.even, rest: 0.01 }));
+  for (const f of k.fins.slice(0, 2)) for (const r of f.rays) acts.push(K.carve(r, { width: 3, strength: 0.45, speed: 900, rim: 0.05, taper: K.taperEnd, rest: 0.01 }));
   acts.push(K.reveal((st) => st.mask(k.eyes.map(([x, y]) => ellipse(x, y, 7.5, 7.5, 0, 14)), { feather: 0.5 }), { op: 'carve', strength: 0.95, order: 'out', duration: 0.3, rest: 0.03 }));
   for (const g of k.gills) acts.push(K.carve(g, { width: 3.5, strength: 0.6, speed: 500, rim: 0.05, rest: 0.02 }));
   for (const b of k.barbels) acts.push(K.carve(b, { width: 3.5, strength: 0.85, speed: 300, rim: 0.1, taper: K.taperEnd, rest: 0.02 }));
-  acts.push(K.reveal((st) => st.mask(k.scales, { feather: 0.4 }), { op: 'carve', strength: 0.45, order: k.order, duration: 1.2, jitter: 0.02, rest: 0.05 }));
+  acts.push(K.carve(k.dorsal, { width: 4, strength: 0.3, speed: 900, rim: 0.05, rest: 0.02 }));
+  acts.push(K.reveal((st) => st.mask(k.scales, { feather: 0.4 }), { op: 'carve', strength: 0.45, order: k.order, duration: 0.5, jitter: 0.02, rest: 0.05 }));
   return acts;
 }
 
 // Broken ripple rings round the pool: [radius, from angle, to angle].
-function ripples(list, strength) {
-  return list.map(([r, a0, a1]) => K.carve(arc(CX, CY, r, a0, a1, Math.ceil((a1 - a0) * 30)), { width: 4, strength, speed: 1400, rim: 0.2, taper: K.taperBoth, rest: 0.03 }));
+function ripples(list, strength, speed) {
+  return list.map(([r, a0, a1]) => K.carve(arc(CX, CY, r, a0, a1, Math.ceil((a1 - a0) * 30)), { width: 4, strength, speed, rim: 0.2, taper: K.taperBoth, rest: 0.03 }));
 }
 
-// The taiji halves. Light: the left half plus the lower small circle, minus the upper one.
+// The taiji halves. Light: the left half plus the lower small circle, minus the upper one;
+// dark: the right half plus the upper small circle, minus the lower one.
 function taijiLight() {
   return [
     ...arc(CX, CY, R, Math.PI * 1.5, Math.PI * 0.5, 96),
@@ -250,8 +254,8 @@ function taijiLight() {
 function taijiDark() {
   return [
     ...arc(CX, CY, R, Math.PI * 0.5, -Math.PI * 0.5, 96),
-    ...arc(CX, CY - R / 2, R / 2, -Math.PI * 0.5, Math.PI * 0.5, 64),
-    ...arc(CX, CY + R / 2, R / 2, Math.PI * 1.5, Math.PI * 0.5, 64),
+    ...arc(CX, CY - R / 2, R / 2, Math.PI * 1.5, Math.PI * 0.5, 64),
+    ...arc(CX, CY + R / 2, R / 2, -Math.PI * 0.5, Math.PI * 0.5, 64),
   ];
 }
 
