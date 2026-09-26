@@ -1,0 +1,25 @@
+{
+  "name": "sandscroll",
+  "version": "0.1.0",
+  "private": true,
+  "description": "24/7 generative Chinese sand-painting livestream with algorithmic guzheng/xiao/guqin music",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "setup": "sh tools/fetch-fonts.sh",
+    "start": "node src/node/stream.mjs",
+    "render": "node src/node/stream.mjs --out preview.mp4 --duration 10m",
+    "snapshot": "node tools/snapshot.mjs --every 30 --out snapshots",
+    "build:web": "node tools/build-web.mjs",
+    "music:demo": "node tools/music-demo.mjs",
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.65"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.12"
+  }
+}

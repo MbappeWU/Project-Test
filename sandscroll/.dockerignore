@@ -1,0 +1,7 @@
+node_modules
+dist
+snapshots
+*.mp4
+*.wav
+deploy/.env
+.git
