@@ -1,0 +1,28 @@
+{
+  "hold": 26,
+  "pace": 0.85,
+  "program": [
+    "title",
+    "moonrise",
+    "greatwall",
+    "voyage1784",
+    "goldengate",
+    "pandas",
+    "rosegarden",
+    "finale",
+    "pinecrane",
+    "plum",
+    "riverboat",
+    "bamboo"
+  ],
+  "notes": {
+    "moonrise": {
+      "cn": "2026年9月25日 · 中秋",
+      "en": "Mid-Autumn Festival · 25 September 2026"
+    },
+    "pandas": {
+      "cn": "大熊猫“平平”“福双”即将落户亚特兰大动物园",
+      "en": "Giant pandas Ping Ping and Fu Shuang are coming to Zoo Atlanta"
+    }
+  }
+}

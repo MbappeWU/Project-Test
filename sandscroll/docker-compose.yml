@@ -1,0 +1,15 @@
+services:
+  sandscroll:
+    build: .
+    image: sandscroll:latest
+    restart: unless-stopped
+    env_file: deploy/.env
+    volumes:
+      # Edit program.json (running order, news notes) without rebuilding; restart to apply.
+      - ./program.json:/app/program.json:ro
+    stop_grace_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
