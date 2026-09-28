@@ -12,6 +12,7 @@ export default {
   hook: { en: 'Pumpkin → RED LANTERN', lines: ['Pumpkin →', 'RED LANTERN'], cn: '万圣节，中国风' },
   trend: 'Halloween (Oct 31) × Chinamaxxing; remake of R02, batch 2’s second most played reel',
   accent: '灯笼 (lantern body and tassel)',
+  description: '发光的南瓜灯笑脸被手掌抹开，按原来的瓣纹重画成挂流苏的红灯笼，月下有蝙蝠（蝠＝福）。',
   remakeOf: 'R02-lantern',
   build(stage, rng) {
     const acts = lantern.build.call(this, stage, rng).flat(Infinity).filter(Boolean);

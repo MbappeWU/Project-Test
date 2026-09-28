@@ -14,6 +14,7 @@ export default {
   hook: { en: 'Hot water → DRAGON', lines: ['Hot water →', 'DRAGON'], cn: '多喝热水' },
   trend: 'Chinamaxxing / “becoming Chinese” (hot water, 养生); remake of R01, batch 2’s most played reel',
   accent: '龙珠 (the dragon’s pearl)',
+  description: '一杯冒热气的热水（杯里漂着枸杞），蒸汽被掌心盘成一条龙，龙追着一颗朱红的龙珠，最后点睛。',
   remakeOf: 'R01-hotwater',
   build(stage, rng) {
     const acts = hotwater.build.call(this, stage, rng).flat(Infinity).filter(Boolean);
