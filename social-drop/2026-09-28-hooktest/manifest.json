@@ -1,0 +1,746 @@
+{
+  "marker": "沙画-social-drop",
+  "drop_date": "2026-09-28",
+  "batch": "第三批：开头改版试验（沙画变身 · Sand Twist，TikTok 循环短片）",
+  "platform": "TikTok",
+  "series": {
+    "cn": "沙画变身",
+    "en": "Sand Twist"
+  },
+  "count": 6,
+  "files_count": 12,
+  "source": {
+    "repository": "MbappeWU/Project-Test",
+    "code_branch": "claude/chinese-sand-painting-livestream-3mnvjo",
+    "code_commit": "e53b9f74bf026ae5fc4b66c1310fb23c3baa2cfa",
+    "generator": "sandscroll/tools/make-hooktest.mjs --seed 2026"
+  },
+  "experiment": {
+    "variable": "只改开头；题材风格、画幅（9:16）、文案结构与第二批相同，结果可以归因到开头。",
+    "variants": {
+      "A": "先闪 0.3 秒成品，0.5 秒倒放回空桌，再从头画（结尾停在成品上，重播时接上开头那一闪）",
+      "B": "直接从变身最惊人的一刻开始（结尾是开头前一帧，重播无缝）"
+    },
+    "split": "A 型 3 条，B 型 3 条。",
+    "remakes": "R07 重做 R01（热水→龙），R08 重做 R02（南瓜灯→灯笼），文案沿用第二批原文，只换开头（R08 的灯笼改成红色）。",
+    "audio_test": "每条两个文件：Rxx-id.mp4 带程序配乐；Rxx-id-nomusic.mp4 是同一条视频流、没有音轨，给运营在 TikTok 里配商用曲库音乐做对照。"
+  },
+  "format": {
+    "structure": "约 10.9 秒，首尾无缝循环。钩子字幕第 0 帧出现，停留 2–2.7 秒；中段变身；题字、钤印；停留 1.8 秒并显示结尾一句。",
+    "hook_caption": "英文不超过 6 个单词，Anton 粗体无衬线，白字加深色描边，放在画面中上部（顶边约在 1920 高画面的 205–250 像素处）；大写字母高度 100–129 像素，占画面高度 5.2–6.7%。中文书法只在沙画题字里出现，不挡主体。",
+    "accent": "朱红 #C8322B 只用在主体关键部位（见各条 accent_parts）和印章，其余保持琥珀色。",
+    "loop_check": "沿用第二批的首尾帧校验：首帧与末帧沙面平均差值小于 3。交付文件实测（解码后、含压缩噪声）为 0.87–1.57，见各条 loop_seam。",
+    "encoding": "libx264 -preset slow -crf 20 (rate capped to stay under 9 MB) -g 900 -pix_fmt yuv420p -profile:v high; aac -b:a 128k (music version only); -movflags +faststart",
+    "size_limit": "每个文件不超过 9 MB（实际 1.82–2.69 MB）。",
+    "git_lfs": "未使用"
+  },
+  "caption_note": "caption_en 不含话题标签，150 个字符以内，写明 “Digital sand art, made with code.”；话题标签见 hashtags。",
+  "ai_disclosure": "全部 6 条（12 个文件）都是 AI 生成内容，TikTok 发布时需要打开 AI-generated content 标识。",
+  "rights": {
+    "music": "配乐版：原创，由程序生成，不含第三方素材；正式许可证写 null（仓库没有声明）。静音版：没有音轨。",
+    "text": "题字为成语、吉语或古诗句，均为公有领域。",
+    "fonts": "Anton、Zhi Mang Xing、Ma Shan Zheng、Cormorant Garamond，均为 SIL Open Font License 开源字体。"
+  },
+  "live_url": null,
+  "schedule_note": "建议 9 月 29 日到 10 月 4 日每天一条，A、B 交替；各条 note 里写了可以挪到节日前后的条目。",
+  "content_boundaries": "不涉及政治，不使用领导人姓名或肖像；中国文化以温暖、自豪的方式呈现，不做刻板印象。",
+  "items": [
+    {
+      "id": "R07-hotwater",
+      "file": "R07-hotwater.mp4",
+      "file_nomusic": "R07-hotwater-nomusic.mp4",
+      "duration_seconds": 10.93,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "aspect": "9:16",
+        "fps": 30,
+        "container": "mp4",
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 2166848,
+        "size_mb": 2.17
+      },
+      "video_nomusic": {
+        "codec": "h264，无音轨",
+        "size_bytes": 1983077,
+        "size_mb": 1.98,
+        "note": "与配乐版是同一条视频流，只是去掉了音轨。"
+      },
+      "hook_variant": "B",
+      "hook_variant_note": "直接从变身最惊人的一刻开始（结尾是开头前一帧，重播无缝）",
+      "hook_text": "Hot water → DRAGON",
+      "hook_caption": {
+        "lines": [
+          "Hot water →",
+          "DRAGON"
+        ],
+        "font": "Anton（粗体无衬线），白字深色描边",
+        "cap_height_px": [
+          100,
+          129
+        ],
+        "cap_height_pct_of_frame": [
+          5.2,
+          6.7
+        ],
+        "top_px": 250,
+        "on_screen": "0–2.0 秒全显，随后 0.35 秒淡出"
+      },
+      "trend": "Chinamaxxing / “becoming Chinese” (hot water, 养生); remake of R01, batch 2’s most played reel",
+      "accent_color_used": "#C8322B",
+      "accent_parts": "龙珠 (the dragon’s pearl)；印章",
+      "remake_of": "R01-hotwater",
+      "guess": false,
+      "loop_seam": 1.57,
+      "cover_time_sec": 6.3,
+      "cover_note": "画作、题字和印章都已完成，结尾一句已显示。",
+      "title": {
+        "cn": "多喝热水",
+        "en": "Hot Water Dragon"
+      },
+      "theme": "松弛 · 养生（Chinamaxxing 热点）",
+      "description": "一杯冒热气的热水（杯里漂着枸杞），蒸汽被掌心盘成一条龙，龙追着一颗朱红的龙珠，最后点睛。",
+      "hook": {
+        "en": "Hot water → DRAGON",
+        "cn": "多喝热水",
+        "cn_note": "中文只作审稿参考，画面上不显示；画面里的中文只有沙画题字。"
+      },
+      "twist": "一杯热水升起的蒸汽盘旋成一条龙",
+      "on_screen_text": {
+        "hook": {
+          "en": "Hot water → DRAGON",
+          "lines": [
+            "Hot water →",
+            "DRAGON"
+          ]
+        },
+        "payoff": {
+          "en": "Stay hydrated. Stay legendary.",
+          "cn": "多喝热水，龙马精神"
+        },
+        "inscription": {
+          "columns": [
+            "龙马精神"
+          ],
+          "note": "成语"
+        },
+        "seal": "如意"
+      },
+      "caption_en": "In my very Chinese era: hot water, then a dragon 🐉 Stay hydrated, stay legendary. Digital sand art, made with code.",
+      "caption_en_chars": 115,
+      "caption_zh": "我的\"很中国\"时期：先是一杯热水，然后变出一条龙🐉 多喝热水，龙马精神。数字沙画，由代码生成。",
+      "hashtags": [
+        "chinamaxxing",
+        "becomingchinese",
+        "hotwater",
+        "dragon",
+        "sandart",
+        "satisfying",
+        "chineseart",
+        "digitalart"
+      ],
+      "ai_generated": true,
+      "ai": {
+        "label": "AI生成",
+        "tiktok": "两个版本发布前都要在「更多选项」里打开 AI-generated content 标识。",
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "配乐版：原创，由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: bamboo）程序合成，主奏洞箫、古筝；没有使用任何录音、采样或他人作品。静音版没有音轨。",
+        "lead_instrument": [
+          "洞箫",
+          "古筝"
+        ],
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，所以写 null；配乐不含第三方素材，不涉及第三方授权。静音版在 TikTok 里配的曲库音乐，授权以 TikTok 商用曲库的条款为准，由运营选曲时确认。",
+        "tiktok_sound": "配乐版保留原声上传；静音版上传后在 TikTok 里从商用曲库（Commercial Music Library）选曲。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "tiktok_north_america": "2026-09-29 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": "重做 R01（上批播放最多），只换开头，可与 R01 直接对比。"
+      }
+    },
+    {
+      "id": "R08-lantern",
+      "file": "R08-lantern.mp4",
+      "file_nomusic": "R08-lantern-nomusic.mp4",
+      "duration_seconds": 10.93,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "aspect": "9:16",
+        "fps": 30,
+        "container": "mp4",
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 2692528,
+        "size_mb": 2.69
+      },
+      "video_nomusic": {
+        "codec": "h264，无音轨",
+        "size_bytes": 2507714,
+        "size_mb": 2.51,
+        "note": "与配乐版是同一条视频流，只是去掉了音轨。"
+      },
+      "hook_variant": "A",
+      "hook_variant_note": "先闪 0.3 秒成品，0.5 秒倒放回空桌，再从头画（结尾停在成品上，重播时接上开头那一闪）",
+      "hook_text": "Pumpkin → RED LANTERN",
+      "hook_caption": {
+        "lines": [
+          "Pumpkin →",
+          "RED LANTERN"
+        ],
+        "font": "Anton（粗体无衬线），白字深色描边",
+        "cap_height_px": [
+          100,
+          129
+        ],
+        "cap_height_pct_of_frame": [
+          5.2,
+          6.7
+        ],
+        "top_px": 205,
+        "on_screen": "0–2.7 秒全显，随后 0.35 秒淡出"
+      },
+      "trend": "Halloween (Oct 31) × Chinamaxxing; remake of R02, batch 2’s second most played reel",
+      "accent_color_used": "#C8322B",
+      "accent_parts": "灯笼 (lantern body and tassel)；印章",
+      "remake_of": "R02-lantern",
+      "guess": false,
+      "loop_seam": 0.87,
+      "cover_time_sec": 9.9,
+      "cover_note": "画作、题字和印章都已完成，结尾一句已显示。",
+      "title": {
+        "cn": "灯火可亲",
+        "en": "Jack-o’-Lantern to Chinese Lantern"
+      },
+      "theme": "节日 · 万圣节 × 中国风",
+      "description": "发光的南瓜灯笑脸被手掌抹开，按原来的瓣纹重画成挂流苏的红灯笼，月下有蝙蝠（蝠＝福）。",
+      "hook": {
+        "en": "Pumpkin → RED LANTERN",
+        "cn": "万圣节，中国风",
+        "cn_note": "中文只作审稿参考，画面上不显示；画面里的中文只有沙画题字。"
+      },
+      "twist": "发光的南瓜灯被掌心一抹，变成挂着流苏的红灯笼",
+      "on_screen_text": {
+        "hook": {
+          "en": "Pumpkin → RED LANTERN",
+          "lines": [
+            "Pumpkin →",
+            "RED LANTERN"
+          ]
+        },
+        "payoff": {
+          "en": "Same glow. Different story.",
+          "cn": "同一盏灯火，不同的故事"
+        },
+        "inscription": {
+          "columns": [
+            "灯火可亲"
+          ],
+          "note": "化用唐 · 韩愈《符读书城南》“灯火稍可亲”"
+        },
+        "seal": "灯"
+      },
+      "caption_en": "Halloween, but make it Chinese 🎃➡️🏮 Watch the jack-o’-lantern turn into a red lantern. Digital sand art, made with code.",
+      "caption_en_chars": 120,
+      "caption_zh": "中国风万圣节🎃➡️🏮 看南瓜灯变成红灯笼。数字沙画，由代码生成。",
+      "hashtags": [
+        "halloween",
+        "spookyseason",
+        "halloween2026",
+        "jackolantern",
+        "chineselantern",
+        "sandart",
+        "satisfying",
+        "digitalart"
+      ],
+      "ai_generated": true,
+      "ai": {
+        "label": "AI生成",
+        "tiktok": "两个版本发布前都要在「更多选项」里打开 AI-generated content 标识。",
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "配乐版：原创，由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: garden）程序合成，主奏古筝；没有使用任何录音、采样或他人作品。静音版没有音轨。",
+        "lead_instrument": [
+          "古筝"
+        ],
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，所以写 null；配乐不含第三方素材，不涉及第三方授权。静音版在 TikTok 里配的曲库音乐，授权以 TikTok 商用曲库的条款为准，由运营选曲时确认。",
+        "tiktok_sound": "配乐版保留原声上传；静音版上传后在 TikTok 里从商用曲库（Commercial Music Library）选曲。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "tiktok_north_america": "2026-09-30 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": "重做 R02（上批第二），只换开头。万圣节题材，也可以留到 10 月 24 日前后再发。"
+      }
+    },
+    {
+      "id": "R09-tea",
+      "file": "R09-tea.mp4",
+      "file_nomusic": "R09-tea-nomusic.mp4",
+      "duration_seconds": 10.93,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "aspect": "9:16",
+        "fps": 30,
+        "container": "mp4",
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 2313278,
+        "size_mb": 2.31
+      },
+      "video_nomusic": {
+        "codec": "h264，无音轨",
+        "size_bytes": 2129485,
+        "size_mb": 2.13,
+        "note": "与配乐版是同一条视频流，只是去掉了音轨。"
+      },
+      "hook_variant": "B",
+      "hook_variant_note": "直接从变身最惊人的一刻开始（结尾是开头前一帧，重播无缝）",
+      "hook_text": "Tea leaves → KOI",
+      "hook_caption": {
+        "lines": [
+          "Tea leaves →",
+          "KOI"
+        ],
+        "font": "Anton（粗体无衬线），白字深色描边",
+        "cap_height_px": [
+          100,
+          129
+        ],
+        "cap_height_pct_of_frame": [
+          5.2,
+          6.7
+        ],
+        "top_px": 250,
+        "on_screen": "0–2.7 秒全显，随后 0.35 秒淡出"
+      },
+      "trend": "Chinamaxxing (Chinese tea culture is one of its staples; the koi stands for luck)",
+      "accent_color_used": "#C8322B",
+      "accent_parts": "锦鲤 (the koi’s red head and saddle patches, kohaku markings)；印章",
+      "remake_of": null,
+      "guess": false,
+      "loop_seam": 1.1,
+      "cover_time_sec": 4.9,
+      "cover_note": "画作、题字和印章都已完成，结尾一句已显示。",
+      "title": {
+        "cn": "茶中锦鲤",
+        "en": "Tea Leaf Koi"
+      },
+      "theme": "茶文化 · 锦鲤好运（Chinamaxxing 热点）",
+      "description": "一碗绿茶里茶叶正慢慢舒展，掌心一搅，最大的那片茶叶化作一条红白锦鲤，在茶汤里摆尾游开。",
+      "hook": {
+        "en": "Tea leaves → KOI",
+        "cn": "一片茶叶，一条锦鲤",
+        "cn_note": "中文只作审稿参考，画面上不显示；画面里的中文只有沙画题字。"
+      },
+      "twist": "茶碗里最大的一片茶叶被掌心一搅，化作一条红白锦鲤",
+      "on_screen_text": {
+        "hook": {
+          "en": "Tea leaves → KOI",
+          "lines": [
+            "Tea leaves →",
+            "KOI"
+          ]
+        },
+        "payoff": {
+          "en": "Sip slow. Swim free.",
+          "cn": "一盏清茶，如鱼得水"
+        },
+        "inscription": {
+          "columns": [
+            "如鱼得水"
+          ],
+          "note": "成语，典出《三国志·蜀书·诸葛亮传》“孤之有孔明，犹鱼之有水也”"
+        },
+        "seal": "茶"
+      },
+      "caption_en": "Chinamaxxing, tea edition 🍵 Give the cup one stir and a leaf turns into a koi. Digital sand art, made with code.",
+      "caption_en_chars": 112,
+      "caption_zh": "Chinamaxxing 喝茶篇🍵 轻轻一搅，一片茶叶变成一条锦鲤。数字沙画，由代码生成。",
+      "hashtags": [
+        "chinamaxxing",
+        "chinesetea",
+        "tea",
+        "koi",
+        "sandart",
+        "satisfying",
+        "chineseart",
+        "digitalart"
+      ],
+      "ai_generated": true,
+      "ai": {
+        "label": "AI生成",
+        "tiktok": "两个版本发布前都要在「更多选项」里打开 AI-generated content 标识。",
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "配乐版：原创，由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: river）程序合成，主奏古筝；没有使用任何录音、采样或他人作品。静音版没有音轨。",
+        "lead_instrument": [
+          "古筝"
+        ],
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，所以写 null；配乐不含第三方素材，不涉及第三方授权。静音版在 TikTok 里配的曲库音乐，授权以 TikTok 商用曲库的条款为准，由运营选曲时确认。",
+        "tiktok_sound": "配乐版保留原声上传；静音版上传后在 TikTok 里从商用曲库（Commercial Music Library）选曲。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "tiktok_north_america": "2026-10-01 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": null
+      }
+    },
+    {
+      "id": "R10-dumpling",
+      "file": "R10-dumpling.mp4",
+      "file_nomusic": "R10-dumpling-nomusic.mp4",
+      "duration_seconds": 10.93,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "aspect": "9:16",
+        "fps": 30,
+        "container": "mp4",
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 2442649,
+        "size_mb": 2.44
+      },
+      "video_nomusic": {
+        "codec": "h264，无音轨",
+        "size_bytes": 2258402,
+        "size_mb": 2.26,
+        "note": "与配乐版是同一条视频流，只是去掉了音轨。"
+      },
+      "hook_variant": "A",
+      "hook_variant_note": "先闪 0.3 秒成品，0.5 秒倒放回空桌，再从头画（结尾停在成品上，重播时接上开头那一闪）",
+      "hook_text": "Dumpling → GOLDFISH",
+      "hook_caption": {
+        "lines": [
+          "Dumpling →",
+          "GOLDFISH"
+        ],
+        "font": "Anton（粗体无衬线），白字深色描边",
+        "cap_height_px": [
+          100,
+          129
+        ],
+        "cap_height_pct_of_frame": [
+          5.2,
+          6.7
+        ],
+        "top_px": 250,
+        "on_screen": "0–2.7 秒全显，随后 0.35 秒淡出"
+      },
+      "trend": "Chinamaxxing (Chinese food; dumplings are a staple of the trend); 金鱼饺, the goldfish dumpling, is a real dim-sum shape",
+      "accent_color_used": "#C8322B",
+      "accent_parts": "金鱼 (the goldfish body and head)；印章",
+      "remake_of": null,
+      "guess": false,
+      "loop_seam": 1.17,
+      "cover_time_sec": 9.9,
+      "cover_note": "画作、题字和印章都已完成，结尾一句已显示。",
+      "title": {
+        "cn": "金鱼饺",
+        "en": "Goldfish Dumpling"
+      },
+      "theme": "美食 · 饺子（Chinamaxxing 热点）",
+      "description": "盘里一只捏满褶子的饺子冒着热气，掌心一抹，褶子散开成飘逸的尾鳍，饺子变成一条红金鱼游走了。",
+      "hook": {
+        "en": "Dumpling → GOLDFISH",
+        "cn": "一只饺子，一条金鱼",
+        "cn_note": "中文只作审稿参考，画面上不显示；画面里的中文只有沙画题字。"
+      },
+      "twist": "饺子的褶子散开成尾鳍，一只饺子变成一条红金鱼",
+      "on_screen_text": {
+        "hook": {
+          "en": "Dumpling → GOLDFISH",
+          "lines": [
+            "Dumpling →",
+            "GOLDFISH"
+          ]
+        },
+        "payoff": {
+          "en": "Dinner just swam away.",
+          "cn": "煮熟的饺子，游走了"
+        },
+        "inscription": {
+          "columns": [
+            "金玉满堂"
+          ],
+          "note": "成语，语出《老子》第九章“金玉满堂，莫之能守”；“金鱼”谐音“金玉”，金鱼满塘是传统吉祥图案"
+        },
+        "seal": "金鱼"
+      },
+      "caption_en": "Dumpling → goldfish 🥟🐠 Goldfish dumplings are a real dim sum shape. Digital sand art, made with code.",
+      "caption_en_chars": 101,
+      "caption_zh": "饺子变金鱼🥟🐠 金鱼饺是真实存在的点心造型。数字沙画，由代码生成。",
+      "hashtags": [
+        "chinamaxxing",
+        "dumplings",
+        "dimsum",
+        "goldfish",
+        "chinesefood",
+        "sandart",
+        "satisfying",
+        "digitalart"
+      ],
+      "ai_generated": true,
+      "ai": {
+        "label": "AI生成",
+        "tiktok": "两个版本发布前都要在「更多选项」里打开 AI-generated content 标识。",
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "配乐版：原创，由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: garden）程序合成，主奏古筝；没有使用任何录音、采样或他人作品。静音版没有音轨。",
+        "lead_instrument": [
+          "古筝"
+        ],
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，所以写 null；配乐不含第三方素材，不涉及第三方授权。静音版在 TikTok 里配的曲库音乐，授权以 TikTok 商用曲库的条款为准，由运营选曲时确认。",
+        "tiktok_sound": "配乐版保留原声上传；静音版上传后在 TikTok 里从商用曲库（Commercial Music Library）选曲。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "tiktok_north_america": "2026-10-02 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": null
+      }
+    },
+    {
+      "id": "R11-chopsticks",
+      "file": "R11-chopsticks.mp4",
+      "file_nomusic": "R11-chopsticks-nomusic.mp4",
+      "duration_seconds": 10.93,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "aspect": "9:16",
+        "fps": 30,
+        "container": "mp4",
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 1999917,
+        "size_mb": 2
+      },
+      "video_nomusic": {
+        "codec": "h264，无音轨",
+        "size_bytes": 1815310,
+        "size_mb": 1.82,
+        "note": "与配乐版是同一条视频流，只是去掉了音轨。"
+      },
+      "hook_variant": "A",
+      "hook_variant_note": "先闪 0.3 秒成品，0.5 秒倒放回空桌，再从头画（结尾停在成品上，重播时接上开头那一闪）",
+      "hook_text": "Chopsticks → CRANE",
+      "hook_caption": {
+        "lines": [
+          "Chopsticks →",
+          "CRANE"
+        ],
+        "font": "Anton（粗体无衬线），白字深色描边",
+        "cap_height_px": [
+          100,
+          129
+        ],
+        "cap_height_pct_of_frame": [
+          5.2,
+          6.7
+        ],
+        "top_px": 250,
+        "on_screen": "0–2.7 秒全显，随后 0.35 秒淡出"
+      },
+      "trend": "Chinamaxxing (chopsticks and Chinese dining)",
+      "accent_color_used": "#C8322B",
+      "accent_parts": "丹顶 (the crane’s red crown)；印章",
+      "remake_of": null,
+      "guess": false,
+      "loop_seam": 1.02,
+      "cover_time_sec": 9.9,
+      "cover_note": "画作、题字和印章都已完成，结尾一句已显示。",
+      "title": {
+        "cn": "筷子变鹤",
+        "en": "Chopsticks to Crane"
+      },
+      "theme": "中式餐桌 · Chinamaxxing 热点",
+      "description": "光台上先画出一碗冒着热气的米饭和搁在筷架上的一双筷子，筷子在筷架上立起来成了鹤腿，掌心一抹，碗化作鹤身，热气化作鹤颈，一只丹顶鹤亭亭而立。",
+      "hook": {
+        "en": "Chopsticks → CRANE",
+        "cn": "一双筷子，一只仙鹤",
+        "cn_note": "中文只作审稿参考，画面上不显示；画面里的中文只有沙画题字。"
+      },
+      "twist": "搁在筷架上的一双筷子立了起来，成了丹顶鹤的两条长腿，一碗米饭被掌心一抹，成了鹤身",
+      "on_screen_text": {
+        "hook": {
+          "en": "Chopsticks → CRANE",
+          "lines": [
+            "Chopsticks →",
+            "CRANE"
+          ]
+        },
+        "payoff": {
+          "en": "Eat well. Live long.",
+          "cn": "好好吃饭，松鹤延年"
+        },
+        "inscription": {
+          "columns": [
+            "松鹤延年"
+          ],
+          "note": "吉语：松与鹤皆寓长寿"
+        },
+        "seal": "鹤"
+      },
+      "caption_en": "Two chopsticks, one crane 🥢 Etiquette tip: never stand them upright in your rice. Digital sand art, made with code.",
+      "caption_en_chars": 115,
+      "caption_zh": "两根筷子，一只仙鹤🥢 餐桌小知识：筷子不要竖插在米饭里。数字沙画，由代码生成。",
+      "hashtags": [
+        "chinamaxxing",
+        "chopsticks",
+        "crane",
+        "chineseculture",
+        "sandart",
+        "satisfying",
+        "chineseart",
+        "digitalart"
+      ],
+      "ai_generated": true,
+      "ai": {
+        "label": "AI生成",
+        "tiktok": "两个版本发布前都要在「更多选项」里打开 AI-generated content 标识。",
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "配乐版：原创，由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: pine）程序合成，主奏古琴；没有使用任何录音、采样或他人作品。静音版没有音轨。",
+        "lead_instrument": [
+          "古琴"
+        ],
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，所以写 null；配乐不含第三方素材，不涉及第三方授权。静音版在 TikTok 里配的曲库音乐，授权以 TikTok 商用曲库的条款为准，由运营选曲时确认。",
+        "tiktok_sound": "配乐版保留原声上传；静音版上传后在 TikTok 里从商用曲库（Commercial Music Library）选曲。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "tiktok_north_america": "2026-10-04 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": null
+      }
+    },
+    {
+      "id": "R12-kite",
+      "file": "R12-kite.mp4",
+      "file_nomusic": "R12-kite-nomusic.mp4",
+      "duration_seconds": 10.93,
+      "video": {
+        "width": 1080,
+        "height": 1920,
+        "aspect": "9:16",
+        "fps": 30,
+        "container": "mp4",
+        "codec": "h264 + aac 48 kHz",
+        "size_bytes": 2594469,
+        "size_mb": 2.59
+      },
+      "video_nomusic": {
+        "codec": "h264，无音轨",
+        "size_bytes": 2410582,
+        "size_mb": 2.41,
+        "note": "与配乐版是同一条视频流，只是去掉了音轨。"
+      },
+      "hook_variant": "B",
+      "hook_variant_note": "直接从变身最惊人的一刻开始（结尾是开头前一帧，重播无缝）",
+      "hook_text": "Guess what this kite becomes",
+      "hook_caption": {
+        "lines": [
+          "Guess what this",
+          "KITE BECOMES"
+        ],
+        "font": "Anton（粗体无衬线），白字深色描边",
+        "cap_height_px": [
+          100,
+          129
+        ],
+        "cap_height_pct_of_frame": [
+          5.2,
+          6.7
+        ],
+        "top_px": 250,
+        "on_screen": "0–2.7 秒全显，随后 0.35 秒淡出"
+      },
+      "trend": "Double Ninth Festival (重阳节, 18 Oct 2026: kite flying and climbing heights are its customs) × TikTok’s “guess the drawing” format",
+      "accent_color_used": "#C8322B",
+      "accent_parts": "朱雀 (the phoenix: body, head and crest, and the eyes of its tail plumes)；印章",
+      "remake_of": null,
+      "guess": true,
+      "loop_seam": 1.14,
+      "cover_time_sec": 9.4,
+      "cover_note": "画到一半、看不出答案的一帧（风筝还没画完）。",
+      "title": {
+        "cn": "纸鸢化凤",
+        "en": "Kite to Phoenix"
+      },
+      "theme": "节日 · 重阳（10 月 18 日）放风筝 × 猜画",
+      "description": "远山之上一只北京沙燕风筝迎风高飞，掌心一抹，燕翅展开成翎羽、剪尾化作长长的尾羽、风筝线变成中间那根尾翎，朱红的凤凰振翅而起。",
+      "hook": {
+        "en": "Guess what this kite becomes",
+        "cn": "猜猜风筝变成什么",
+        "cn_note": "中文只作审稿参考，画面上不显示；画面里的中文只有沙画题字。"
+      },
+      "twist": "高飞的沙燕风筝被掌心一抹，燕翅生翎、剪尾化羽，变成朱红的凤凰",
+      "on_screen_text": {
+        "hook": {
+          "en": "Guess what this kite becomes",
+          "lines": [
+            "Guess what this",
+            "KITE BECOMES"
+          ]
+        },
+        "payoff": {
+          "en": "It was always meant to fly.",
+          "cn": "它本来就会飞"
+        },
+        "inscription": {
+          "columns": [
+            "凤鸣朝阳"
+          ],
+          "note": "典出《诗经·大雅·卷阿》“凤皇鸣矣，于彼高冈。梧桐生矣，于彼朝阳”"
+        },
+        "seal": "朱雀"
+      },
+      "caption_en": "Guess what this kite becomes before the end 🪁 Comment your guess! Digital sand art, made with code.",
+      "caption_en_chars": 99,
+      "caption_zh": "看到最后之前，猜猜这只风筝会变成什么🪁 把答案写在评论区！数字沙画，由代码生成。",
+      "hashtags": [
+        "guessthedrawing",
+        "kite",
+        "doubleninthfestival",
+        "chinamaxxing",
+        "sandart",
+        "satisfying",
+        "chineseart",
+        "digitalart"
+      ],
+      "ai_generated": true,
+      "ai": {
+        "label": "AI生成",
+        "tiktok": "两个版本发布前都要在「更多选项」里打开 AI-generated content 标识。",
+        "detail": "画面、配乐与字幕均由程序自动生成，程序由 AI（Claude）编写；不是真人手绘沙画，也没有使用真沙。"
+      },
+      "music": {
+        "source": "配乐版：原创，由本项目音乐引擎 sandscroll/src/music 按本条配乐情绪（mood: voyage）程序合成，主奏古筝；没有使用任何录音、采样或他人作品。静音版没有音轨。",
+        "lead_instrument": [
+          "古筝"
+        ],
+        "third_party_content": false,
+        "license": null,
+        "license_note": "仓库没有声明正式许可证，所以写 null；配乐不含第三方素材，不涉及第三方授权。静音版在 TikTok 里配的曲库音乐，授权以 TikTok 商用曲库的条款为准，由运营选曲时确认。",
+        "tiktok_sound": "配乐版保留原声上传；静音版上传后在 TikTok 里从商用曲库（Commercial Music Library）选曲。"
+      },
+      "live_url": null,
+      "suggested_post_time": {
+        "tiktok_north_america": "2026-10-03 19:00–22:00 美国东部时间（约北京时间次日 07:00–10:00）",
+        "note": "猜画：发布后引导评论区猜答案。重阳节是 10 月 18 日，也可以挪到 10 月 15 日前后。"
+      }
+    }
+  ]
+}
