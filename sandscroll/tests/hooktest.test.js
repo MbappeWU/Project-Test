@@ -36,7 +36,7 @@ test('hook-test reels: metadata, copy and three reels per opening', () => {
     assert.match(copy.caption_en, /made with code/, `${scene.id}: caption must disclose code generation`);
     assert.match(copy.caption_zh, /代码生成/, `${scene.id}: Chinese caption must disclose code generation`);
   }
-  assert.ok(count.A <= 3 && count.B <= 3, `three reels per opening at most: ${JSON.stringify(count)}`);
+  assert.deepEqual(count, { A: 3, B: 3 });
 });
 
 test('hook captions are bold sans with capitals at least 5% of the frame height', { skip: !GlobalFonts.has('Anton') && 'Anton is not installed (npm run setup)' }, () => {
