@@ -11,6 +11,8 @@ const WATER = 1046;
 const RIM_RX = 196;
 const BASE_RX = 164;
 
+export { PEARL };
+
 export default {
   id: 'hotwater',
   music: 'bamboo',
@@ -180,6 +182,7 @@ function swirl(stage, spine, wisps, dark) {
     const pts = w.filter(([, y]) => y < 945);
     acts.push(K.palm(pts, { width: 110, speed: 1100, target: dark, rate: 0.8, streak: stage.streaks[0], hard: 0.35, rest: 0.02 }));
   }
+  acts[0].mark = 'twist';
   acts.push(K.carve(spine.pts, { width: 170, strength: 0.6, speed: 900, rim: 0, hard: 0.05, taper: (u) => 0.3 + 0.7 * smoothstep(0, 0.3, u), rest: 0.05 }));
   return acts;
 }
@@ -217,6 +220,7 @@ function dragon(stage, rng, T) {
   const uv = coords(stage, T);
   // The body in one long sweep of the finger, the tail still rising out of the steam.
   acts.push(K.carve(T.pts, { width: Rmax * 2, strength: 0.94, speed: 330, rim: 0.4, hard: 0.55, taper: (u) => R(u) / Rmax, rest: 0.1 }));
+  acts[0].mark = 'dragon';
   // Dorsal fins: flames along the back, tall and short in turn, their tips curling tailward.
   const fins = [];
   let i = 0;
@@ -280,8 +284,10 @@ function dragon(stage, rng, T) {
 const PEARL = [646, 452, 40];
 
 function pearl(stage, x, y, r) {
+  const core = K.reveal((st) => st.mask(ellipse(x, y, r, r, 0, 48), { feather: 1 }), { op: 'carve', strength: 0.97, order: 'spiral', duration: 0.8, jitter: 0.03 });
+  core.mark = 'pearl';
   return [
-    K.reveal((st) => st.mask(ellipse(x, y, r, r, 0, 48), { feather: 1 }), { op: 'carve', strength: 0.97, order: 'spiral', duration: 0.8, jitter: 0.03 }),
+    core,
     K.reveal((st) => K.radialMask(st, x, y, r, r * 2.8, 2.2), { op: 'carve', strength: 0.6, order: 'out', duration: 0.6, jitter: 0.05 }),
   ];
 }

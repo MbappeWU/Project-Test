@@ -40,6 +40,7 @@ const P = { rx: 330, ry: 250 };
 // Face, stalk and smear strokes were laid out for a smaller pumpkin; this scales them up.
 const S = (pts) => pts.map(([x, y]) => [CX + (x - CX) * 1.1, CY + (y - CY) * 1.1]);
 const L = { rx: 318, ry: 250, cy: 850 };
+export const LANTERN = { cx: CX, ...L };
 // Six grooves divide the visible face into seven lobes.
 const MERIDIANS = [-5, -3, -1, 1, 3, 5].map((k) => Math.sin((k * Math.PI) / 14));
 
@@ -222,6 +223,7 @@ function smear(stage) {
   for (const [i, pts] of strokes.entries()) {
     acts.push(K.palm(spline(S(pts), 8), { width: 220, speed: 900, target, rate: 0.85, streak: stage.streaks[i % 3], hard: 0.35, rest: 0.05 }));
   }
+  acts[0].mark = 'twist';
   // One round pass wipes the old contour back into the night.
   const ring = [];
   for (let i = 0; i <= 60; i++) {
@@ -258,6 +260,7 @@ function lantern(stage, rng) {
     return (0.5 + 0.95 * rim + 0.25 * groove - 0.36 * core) * tex(X, Y);
   };
   acts.push(K.reveal((st) => st.mask(lanternOutline(), { feather: 0.9 }), { op: 'set', level, order: 'out', duration: 2.6, jitter: 0.04, rest: 0.1 }));
+  acts[0].mark = 'lantern';
   // Ribs where the grooves were, and the frame's contour.
   for (const a of MERIDIANS) {
     acts.push(K.pour(groove(a, L.rx, L.ry, L.cy, 0), { width: 5, amount: 1.1, speed: 1300, taper: K.taperBoth, scatter: 0, rest: 0.02 }));

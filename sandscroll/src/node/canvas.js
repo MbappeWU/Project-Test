@@ -11,6 +11,7 @@ const FONT_FILES = [
   ['MaShanZheng-Regular.ttf', 'Ma Shan Zheng'],
   ['CormorantGaramond.ttf', 'Cormorant Garamond'],
   ['CormorantGaramond-Italic.ttf', 'Cormorant Garamond'],
+  ['Anton-Regular.ttf', 'Anton'],
 ];
 
 let registered = false;

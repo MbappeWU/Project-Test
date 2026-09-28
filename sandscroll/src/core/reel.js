@@ -12,16 +12,20 @@ import { SHORT_VIRTUAL } from './short.js';
 //   hold with the payoff line (holdSeconds) -> palm sweep back to the opening table
 //   (loopSeconds), so the last frame flows into the first when TikTok replays the video.
 // Hook and payoff are English-first: the reels are made for an international audience.
-const SAFE = { hookTop: 150, payoffBottom: 470 };
+// Options for cut-up reels (tools/make-hooktest.mjs): `ui: false` leaves hook and payoff to
+// the caller, `loop: false` ends on the finished picture instead of sweeping back, and
+// `tailSeconds` compresses what follows the inscription (the seal's pause).
+export const SAFE = { hookTop: 150, payoffBottom: 470 };
 
 export class ReelDirector {
-  constructor({ scene, width = 1080, height = 1920, seed = 1, canvas, drawSeconds = 12, inkSeconds = 2.5, holdSeconds = 2.2, loopSeconds = 0.9 } = {}) {
+  constructor({ scene, width = 1080, height = 1920, seed = 1, canvas, drawSeconds = 12, inkSeconds = 2.5, tailSeconds = null, holdSeconds = 2.2, loopSeconds = 0.9, ui = true, loop = true, sealColor } = {}) {
     this.scene = scene;
     const st = (this.stage = new Stage({ width, height, seed, canvas, virtual: SHORT_VIRTUAL }));
     this.listeners = [];
     st.on((event, data) => this.emit(event, data));
     // On the dark reel table a multiplied seal would vanish, so it is laid on as cinnabar.
     st.sealBlend = 'normal';
+    if (sealColor) st.sealColor = sealColor;
     const sceneSeed = mixSeed(seed, hashString(scene.id));
     const opening = scene.opening ? scene.opening(st, new Rng(sceneSeed ^ 0x5eed)) : st.mottle(2.6, 0.1, 0.01, 3);
     const sweep = () => cover(st, opening, { rows: 5, speed: 2400, rate: 1, width: 440, wave: 22 });
@@ -35,6 +39,16 @@ export class ReelDirector {
 
     seedActions(sceneSeed);
     const acts = scene.build(st, new Rng(sceneSeed)).flat(Infinity).filter(Boolean);
+    // Director time at which each marked act (act.mark) begins.
+    this.marks = {};
+    for (const a of acts) {
+      if (!a.mark) continue;
+      const begin = a.begin;
+      a.begin = (s) => {
+        this.marks[a.mark] ??= this.time;
+        begin?.(s);
+      };
+    }
     const ink = acts.findIndex((a) => a.tag === 'inscription');
     const nDraw = ink >= 0 ? ink : acts.length;
     const draw = acts.slice(0, nDraw);
@@ -43,14 +57,16 @@ export class ReelDirector {
     const hold = [
       call((s) => {
         this.completeAt = this.time;
-        this.showPayoff(holdSeconds + loopSeconds);
+        if (ui) this.showPayoff(holdSeconds + loopSeconds);
       }),
       wait(holdSeconds),
     ];
     seedActions(sceneSeed ^ 0x100b);
-    const loop = [
+    const sweepBack = [
       call((s) => {
         s.sealOverlay?.dismiss(loopSeconds * 0.8);
+        for (const o of s.accents || []) o.dismiss(loopSeconds * 0.8);
+        s.accents = [];
         s.emit('cue', 'gliss');
       }),
       ...sweep(),
@@ -60,10 +76,10 @@ export class ReelDirector {
     const phases = [
       [draw, Math.max(1, span(draw) / drawSeconds)],
       [inkActs, inkActs.length ? Math.max(1, span(inkActs) / inkSeconds) : 1],
-      [tail, 1],
+      [tail, tailSeconds ? Math.max(1, span(tail) / tailSeconds) : 1],
       [hold, 1],
-      [loop, span(loop) / loopSeconds],
     ];
+    if (loop) phases.push([sweepBack, span(sweepBack) / loopSeconds]);
     this.speeds = phases.flatMap(([list, speed]) => list.map(() => speed));
     this.duration = phases.reduce((t, [list, speed]) => t + span(list) / speed, 0);
     this.nInk = inkActs.length;
@@ -73,7 +89,7 @@ export class ReelDirector {
     this.started = false;
     this.completeAt = null;
     this.finishedAt = null;
-    this.showHook();
+    if (ui) this.showHook();
   }
 
   on(fn) {
@@ -124,12 +140,17 @@ export class ReelDirector {
 
   showPayoff(seconds) {
     const st = this.stage;
-    const { payoff } = this.scene;
-    if (!payoff) return;
-    const blocks = [{ text: payoff.en, size: 50, face: 'serif', italic: true, color: 'rgba(255, 246, 228, 0.98)' }];
-    if (payoff.cn) blocks.push({ text: payoff.cn, size: 36, face: 'kai', gap: 4, color: 'rgba(250, 230, 200, 0.94)' });
-    const sprite = textBlockSprite(st, blocks, { maxWidth: 960, pad: 18, halo: 16, band: 0.35 });
-    const y = st.height - SAFE.payoffBottom * st.s - sprite.h;
-    st.addOverlay(new Overlay(sprite, (st.width - sprite.w) / 2, y, { fadeIn: 0.3, hold: Math.max(0, seconds - 0.8), fadeOut: 0.5 }));
+    const o = payoffOverlay(st, this.scene.payoff, { fadeIn: 0.3, hold: Math.max(0, seconds - 0.8), fadeOut: 0.5 });
+    if (o) st.addOverlay(o);
   }
+}
+
+// The closing line, centred above the TikTok caption area.
+export function payoffOverlay(st, payoff, timing) {
+  if (!payoff) return null;
+  const blocks = [{ text: payoff.en, size: 50, face: 'serif', italic: true, color: 'rgba(255, 246, 228, 0.98)' }];
+  if (payoff.cn) blocks.push({ text: payoff.cn, size: 36, face: 'kai', gap: 4, color: 'rgba(250, 230, 200, 0.94)' });
+  const sprite = textBlockSprite(st, blocks, { maxWidth: 960, pad: 18, halo: 16, band: 0.35 });
+  const y = st.height - SAFE.payoffBottom * st.s - sprite.h;
+  return new Overlay(sprite, (st.width - sprite.w) / 2, y, timing);
 }

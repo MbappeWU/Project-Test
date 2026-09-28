@@ -139,7 +139,7 @@ export function inscribe(stage, { columns, x, y, size = 58, mode = 'carve', stre
 export function seal(stage, text, x, y, { size = 70, seed = 5 } = {}) {
   return [
     call((st) => {
-      const sprite = sealSprite(st, text, { size, seed });
+      const sprite = sealSprite(st, text, { size, seed, color: st.sealColor });
       const o = new Overlay(sprite, x * st.s - sprite.w / 2, y * st.s - sprite.h / 2, { fadeIn: 0.35, hold: 1e9, fadeOut: 1.5, blend: st.sealBlend ?? 'multiply', maxOpacity: 0.92 });
       st.addOverlay(o);
       st.sealOverlay = o;
@@ -188,6 +188,29 @@ export function redDot(stage, x, y, r = 5) {
     ctx.fill();
     const sprite = { w: size, h: size, data: ctx.getImageData(0, 0, size, size).data };
     const o = new Overlay(sprite, x * st.s - size / 2, y * st.s - size / 2, { fadeIn: 0.6, hold: 1e9, fadeOut: 1.2, blend: 'multiply', maxOpacity: 0.9 });
+    st.addOverlay(o);
+    (st.accents ||= []).push(o);
+  });
+}
+
+// Vermilion (朱红) for accents on the key part of a subject: a lantern, a koi, a dragon's pearl.
+export const VERMILION = [200, 50, 43];
+
+// Glazes part of the subject vermilion: a multiplied layer, weighted by brightness, turns the
+// lit sand red and leaves the dark table as it is, so grain and shading show through. `shape` is a polygon list (virtual
+// coordinates) or a function (stage) => Mask. It fades in on real time and stays until the
+// picture is swept away (clearOverlays, or the reel's loop sweep).
+export function tint(stage, shape, { color = VERMILION, fadeIn = 0.8, feather = 1.2, strength = 1 } = {}) {
+  return call((st) => {
+    const m = typeof shape === 'function' ? shape(st) : st.mask(shape, { feather });
+    const data = new Uint8ClampedArray(m.w * m.h * 4);
+    for (let i = 0; i < m.a.length; i++) {
+      data[i * 4] = color[0];
+      data[i * 4 + 1] = color[1];
+      data[i * 4 + 2] = color[2];
+      data[i * 4 + 3] = Math.round(clamp(m.a[i], 0, 1) * 255);
+    }
+    const o = new Overlay({ w: m.w, h: m.h, data }, m.x0, m.y0, { fadeIn, hold: 1e9, fadeOut: 1.2, blend: 'tint', maxOpacity: strength });
     st.addOverlay(o);
     (st.accents ||= []).push(o);
   });

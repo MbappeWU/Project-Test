@@ -23,10 +23,11 @@ Project-Test/
     ├── src/scenes/    #   one file per painting (16:9 livestream)
     ├── src/shorts/    #   一沙一世界 vertical shorts: 9:16 scenes and posting copy
     ├── src/reels/     #   沙画变身 loopable TikTok reels (director in src/core/reel.js)
+    ├── src/hooktest/  #   batch 3 hook test: same reels, new openings (cut in src/core/hookcut.js)
     ├── src/music/     #   generative guzheng / xiao / guqin music engine
     ├── src/node/      #   broadcaster (render -> ffmpeg -> YouTube RTMPS)
     ├── src/web/       #   browser player (preview, OBS browser source)
-    ├── tools/         #   make-shorts, make-reels, snapshots, web build, health check
+    ├── tools/         #   make-shorts, make-reels, make-hooktest, snapshots, web build, health check
     └── docs/          #   livestream and shorts playbooks, screenshots
 ```
 
@@ -146,6 +147,7 @@ Document deployment procedures here when configured.
 | `sandscroll/program.json` | Running order and time-sensitive notes for the stream |
 | `sandscroll/docs/短视频运营手册.md` | Shorts playbook: posting plan, platform rules, AI labelling |
 | `sandscroll/tools/make-shorts.mjs` | Renders the vertical shorts, covers and posting copy |
+| `sandscroll/tools/make-hooktest.mjs` | Renders the hook-test reels, with and without music |
 
 ## Common Tasks for AI Assistants
 

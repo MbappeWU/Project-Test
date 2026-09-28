@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Downloads the SIL Open Font License fonts used for inscriptions, seals and captions.
+# Downloads the SIL Open Font License fonts used for inscriptions, seals, captions and hooks.
 set -eu
 DIR="$(cd "$(dirname "$0")/.." && pwd)/assets/fonts"
 BASE="https://raw.githubusercontent.com/google/fonts/main/ofl"
@@ -13,5 +13,6 @@ fetch "zhimangxing/ZhiMangXing-Regular.ttf" "ZhiMangXing-Regular.ttf"
 fetch "mashanzheng/MaShanZheng-Regular.ttf" "MaShanZheng-Regular.ttf"
 fetch "cormorantgaramond/CormorantGaramond%5Bwght%5D.ttf" "CormorantGaramond.ttf"
 fetch "cormorantgaramond/CormorantGaramond-Italic%5Bwght%5D.ttf" "CormorantGaramond-Italic.ttf"
+fetch "anton/Anton-Regular.ttf" "Anton-Regular.ttf"
 fetch "zhimangxing/OFL.txt" "OFL.txt"
 echo "fonts ready in $DIR"

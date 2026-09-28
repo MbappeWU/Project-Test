@@ -72,6 +72,14 @@ node tools/make-shorts.mjs --only moon --preview --snap 4   # 低清预览 + 截
 node tools/make-reels.mjs --out reels        # 6 条 MP4 + reels.json（封面秒数、英文文案、话题标签）
 ```
 
+### 第三批：开头改版试验（TikTok）
+
+同一系列只改开头，每条约 11 秒：A 型先闪 0.3 秒成品、倒放回空桌再从头画；B 型直接从变身最惊人的一刻开始。钩子字幕改为 Anton 粗体大字，主体关键部位加朱红。每条出两个文件：带程序配乐的 `Rxx-id.mp4` 和没有音轨的 `Rxx-id-nomusic.mp4`。剪辑逻辑在 `src/core/hookcut.js`，场景在 `src/hooktest/`，试验设计见运营手册第 9 节。
+
+```bash
+node tools/make-hooktest.mjs --out hooktest  # 6 条 × 2 个文件 + hooktest.json（开头类型、钩子、热点、封面秒数、文案）
+```
+
 ## 配置
 
 | 位置 | 作用 |
@@ -88,6 +96,7 @@ sandscroll/
 ├── src/scenes/      12 幅横屏场景（每个文件一幅画：构图、动作序列、题诗、印章、配乐情绪）
 ├── src/shorts/      竖屏短视频系列「一沙一世界」：场景、文案
 ├── src/reels/       TikTok 循环短片「沙画变身」：场景、文案
+├── src/hooktest/    第三批「开头改版试验」：场景、文案（剪辑在 src/core/hookcut.js）
 ├── src/music/       音乐引擎：乐器建模、混响、五声调式作曲
 ├── src/node/        推流程序 stream.mjs、Node 画布与字体、配置读取
 ├── src/web/         浏览器播放器（预览 / OBS 浏览器来源）
@@ -129,6 +138,6 @@ export default {
 
 ## 许可与致谢
 
-- 字体：Zhi Mang Xing、Ma Shan Zheng、Cormorant Garamond，均为 SIL Open Font License（运行 `npm run setup` 下载）。
+- 字体：Zhi Mang Xing、Ma Shan Zheng、Cormorant Garamond、Anton（短视频钩子字幕），均为 SIL Open Font License（运行 `npm run setup` 下载）。
 - 诗词均为公有领域古籍；「各美其美，美人之美，美美与共，天下大同」引自费孝通并署名。
 - 音乐由本项目算法实时生成，不含任何第三方录音或编曲。

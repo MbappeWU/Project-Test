@@ -64,13 +64,20 @@ export class Overlay {
     const x1 = Math.min(rx1, this.x + w);
     const y1 = Math.min(ry1, this.y + h);
     const multiply = this.blend === 'multiply';
+    const tint = this.blend === 'tint';
     for (let y = y0; y < y1; y++) {
       let si = ((y - this.y) * w + (x0 - this.x)) * 4;
       let di = (y * W + x0) * 4;
       for (let x = x0; x < x1; x++, si += 4, di += 4) {
-        const a = (data[si + 3] / 255) * o;
+        let a = (data[si + 3] / 255) * o;
         if (a <= 0) continue;
-        if (multiply) {
+        if (tint) {
+          // Multiply weighted by brightness: lit sand takes the colour, dark sand stays as it is.
+          const lum = 0.3 * frame[di] + 0.59 * frame[di + 1] + 0.11 * frame[di + 2];
+          a *= ease(Math.min(1, Math.max(0, (lum - TINT_DARK) / (TINT_LIT - TINT_DARK))));
+          if (a <= 0) continue;
+        }
+        if (multiply || tint) {
           frame[di] *= 1 - a + (a * data[si]) / 255;
           frame[di + 1] *= 1 - a + (a * data[si + 1]) / 255;
           frame[di + 2] *= 1 - a + (a * data[si + 2]) / 255;
@@ -83,6 +90,9 @@ export class Overlay {
     }
   }
 }
+
+const TINT_DARK = 45;
+const TINT_LIT = 125;
 
 function ease(t) {
   return t * t * (3 - 2 * t);
@@ -186,7 +196,7 @@ function wrapMixed(ctx, text, maxW, cjkFont, latinFont) {
   return fill(hi);
 }
 
-const FACE = { kai: FONTS.kai, brush: FONTS.brush, serif: FONTS.serif };
+const FACE = { kai: FONTS.kai, brush: FONTS.brush, serif: FONTS.serif, display: FONTS.display };
 
 // Centred block of wrapped text lines with a soft dark halo, used for captions, notes, hooks.
 // blocks: [{ text, size, face: 'kai'|'brush'|'serif', italic, color, gap }], sizes in virtual px.
@@ -226,6 +236,54 @@ export function textBlockSprite(stage, blocks, { maxWidth = Math.min(1560, stage
   return toSprite(ctx, w, h);
 }
 
+// Short-video hook caption: bold sans (Anton) in white with a dark outline and drop shadow, so it
+// reads at a glance over any part of the table. lines: [{ text, size, face?, color? }], sizes in
+// virtual px; a line too wide for maxWidth is scaled down to fit.
+export function hookSprite(stage, lines, { maxWidth = 1000, pad = 26, gap = 16, stroke = 0.16 } = {}) {
+  const s = stage.s;
+  const inner = (maxWidth - pad * 2) * s;
+  const probe = stage.scratch(8, 8).getContext('2d');
+  const laid = [];
+  let y = pad * s;
+  for (const [i, l] of lines.entries()) {
+    const face = l.face ? FACE[l.face] : FONTS.display;
+    let px = l.size * s;
+    probe.font = `${px.toFixed(1)}px ${face}`;
+    const fit = inner / (probe.measureText(l.text).width + px * stroke);
+    if (fit < 1) px *= fit;
+    const font = `${px.toFixed(1)}px ${face}`;
+    probe.font = font;
+    const m = probe.measureText(l.text);
+    if (i) y += gap * s;
+    y += m.actualBoundingBoxAscent + px * stroke * 0.5;
+    laid.push({ text: l.text, font, px, y, color: l.color || '#ffffff' });
+    y += m.actualBoundingBoxDescent + px * stroke * 0.5;
+  }
+  const w = Math.round(maxWidth * s);
+  const h = Math.max(1, Math.round(y + pad * s));
+  const canvas = stage.scratch(w, h);
+  const ctx = canvas.getContext('2d');
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.lineJoin = 'round';
+  for (const l of laid) {
+    ctx.font = l.font;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.55)';
+    ctx.shadowBlur = l.px * 0.14;
+    ctx.shadowOffsetY = l.px * 0.04;
+    ctx.lineWidth = l.px * stroke;
+    ctx.strokeStyle = 'rgb(20, 10, 4)';
+    ctx.strokeText(l.text, w / 2, l.y);
+    ctx.restore();
+    ctx.fillStyle = l.color;
+    ctx.fillText(l.text, w / 2, l.y);
+  }
+  const sprite = toSprite(ctx, w, h);
+  sprite.lines = laid.map(({ text, font, px }) => ({ text, font, px }));
+  return sprite;
+}
+
 // Museum-label caption: poem line, English rendering and attribution.
 export function captionSprite(stage, { cn, en, by }, { maxWidth, scale = 1 } = {}) {
   return textBlockSprite(
@@ -258,7 +316,7 @@ function paintLines(ctx, lines, cx, s, halo = 14) {
 }
 
 // Cinnabar seal with characters cut out (白文印), read right column first, top to bottom.
-export function sealSprite(stage, text, { size = 78, seed = 3 } = {}) {
+export function sealSprite(stage, text, { size = 78, seed = 3, color = 'rgb(176, 30, 26)' } = {}) {
   const s = stage.s;
   const S = Math.round(size * s);
   const pad = Math.round(S * 0.12);
@@ -266,7 +324,7 @@ export function sealSprite(stage, text, { size = 78, seed = 3 } = {}) {
   const canvas = stage.scratch(W, W);
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, W, W);
-  ctx.fillStyle = 'rgb(176, 30, 26)';
+  ctx.fillStyle = color;
   const rng = new Rng(seed);
   const r = S * 0.06;
   roundRect(ctx, pad, pad, S, S, r);

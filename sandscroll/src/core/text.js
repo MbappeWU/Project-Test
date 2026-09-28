@@ -6,6 +6,7 @@ export const FONTS = {
   brush: '"Zhi Mang Xing", "Ma Shan Zheng", "STXingkai", "KaiTi", serif',
   kai: '"Ma Shan Zheng", "STKaiti", "KaiTi", serif',
   serif: '"Cormorant Garamond", "EB Garamond", Georgia, serif',
+  display: 'Anton, Impact, "Arial Black", sans-serif',
 };
 
 // Vertical inscription (竖排), columns read right to left. `x` is the centre of the first
